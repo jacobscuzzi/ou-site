@@ -1,10 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { searchBars } from './api/client'
 import type { Bar } from './api/types'
 import Logo from './components/Logo'
 import SearchBar from './components/SearchBar'
 import Suggestions from './components/Suggestions'
 import BarList from './components/BarList'
+import MiniMap from './components/MiniMap'
+
+const MapView = lazy(() => import('./components/MapView'))
 
 export default function App() {
   const [value, setValue] = useState('')
@@ -13,6 +16,8 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
+  const [mapOpen, setMapOpen] = useState(false)
+  const [selectedId, setSelectedId] = useState('')
   const abortRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
@@ -27,6 +32,7 @@ export default function App() {
     Promise.all([searchBars(query, 6, ctrl.signal), minWait])
       .then(([res]) => {
         setBars(res.results)
+        setSelectedId(res.results[0]?.id ?? '')
         setLoading(false)
       })
       .catch((err: Error) => {
@@ -41,6 +47,7 @@ export default function App() {
   function search(q: string) {
     const trimmed = q.trim()
     if (!trimmed) return
+    setMapOpen(false)
     setValue(trimmed)
     setQuery(trimmed)
     setAttempt((n) => n + 1)
@@ -49,6 +56,7 @@ export default function App() {
 
   function home() {
     abortRef.current?.abort()
+    setMapOpen(false)
     setQuery(null)
     setValue('')
     setBars([])
@@ -58,6 +66,7 @@ export default function App() {
   }
 
   const searchBar = <SearchBar value={value} loading={loading} onChange={setValue} onSubmit={search} onHome={home} />
+  const hasResults = !loading && !error && bars.length > 0
 
   return (
     <main className="app">
@@ -74,11 +83,13 @@ export default function App() {
       <div className="content">
         {query === null ? (
           <section className="start">
-            <h1 className="start-title">
-              <Logo size="var(--text-hero)" /> ce soir ?
-            </h1>
-            <p className="start-text">Let&apos;s find the best bar for you.</p>
-            {searchBar}
+            <div className="start-hero">
+              <h1 className="start-title">
+                <Logo size="var(--text-hero)" /> ce soir ?
+              </h1>
+              <p className="start-text">Let&apos;s find the best bar for you.</p>
+              {searchBar}
+            </div>
             <Suggestions onPick={search} />
           </section>
         ) : (
@@ -86,6 +97,12 @@ export default function App() {
             {searchBar}
             <BarList bars={bars} loading={loading} error={error} onRetry={() => setAttempt((n) => n + 1)} />
             <p className="credit">Map data from OpenStreetMap contributors</p>
+            {hasResults && !mapOpen && <MiniMap bars={bars} onOpen={() => setMapOpen(true)} />}
+            {hasResults && mapOpen && (
+              <Suspense fallback={null}>
+                <MapView bars={bars} selectedId={selectedId} onSelect={setSelectedId} onClose={() => setMapOpen(false)} />
+              </Suspense>
+            )}
           </>
         )}
       </div>
