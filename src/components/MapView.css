@@ -12,6 +12,27 @@
   inset: 0;
 }
 
+.mapview::before,
+.mapview::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  height: 160px;
+  pointer-events: none;
+}
+
+.mapview::before {
+  top: 0;
+  background: linear-gradient(180deg, var(--glass-bubble), transparent);
+}
+
+.mapview::after {
+  bottom: 0;
+  background: linear-gradient(0deg, var(--glass-bubble), transparent);
+}
+
 .mapview .maplibregl-ctrl-attrib {
   font-size: 10px;
   background: var(--glass);
@@ -50,14 +71,14 @@
   border: 2px solid var(--glass-bubble);
   font-size: var(--text-sm);
   font-weight: 700;
-  box-shadow: var(--shadow-pin);
+  box-shadow: 0 0 0 3px var(--glass), var(--shadow-pin);
   cursor: pointer;
   transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
 }
 
 .pin-selected {
   transform: scale(1.3);
-  box-shadow: var(--shadow-pin-selected);
+  box-shadow: 0 0 0 3px var(--glass), var(--shadow-pin-selected);
   z-index: 1;
 }
 
