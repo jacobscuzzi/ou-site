@@ -6,8 +6,8 @@ type Rule = { re: RegExp; en: string; fr: string; emoji: string }
 const rules: Rule[] = [
   { re: /\bdarts?\b|fléchettes/, en: 'Darts', fr: 'Fléchettes', emoji: '🎯' },
   { re: /billiard|pool table|snooker/, en: 'Billiards', fr: 'Billard', emoji: '🎱' },
-  { re: /live music|live band|concert/, en: 'Live music', fr: 'Musique live', emoji: '🎸' },
-  { re: /\bdj\b|dancefloor|\bclub\b/, en: 'DJ', fr: 'DJ', emoji: '🎧' },
+  { re: /live music|live band|live sets?|live jazz|concert|jam session/, en: 'Live music', fr: 'Musique live', emoji: '🎸' },
+  { re: /\bdjs?\b|dancefloor|dance bar|night ?club|basement club|boîte/, en: 'DJ', fr: 'DJ', emoji: '🎧' },
   { re: /student|étudiant/, en: 'Students', fr: 'Étudiants', emoji: '🎓' },
   { re: /after ?work/, en: 'Afterwork', fr: 'Afterwork', emoji: '💼' },
   { re: /international|expat|erasmus/, en: 'Internationals', fr: 'Internationaux', emoji: '🌍' },
