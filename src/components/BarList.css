@@ -5,6 +5,22 @@
   padding: var(--space-1) var(--space-5) calc(var(--space-7) + env(safe-area-inset-bottom));
 }
 
+.list-eyebrow {
+  padding: var(--space-1) var(--space-2) 0;
+  animation: fade-up 0.5s var(--ease) both;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+
 .notice {
   display: flex;
   flex-direction: column;
@@ -17,7 +33,7 @@
   -webkit-backdrop-filter: var(--blur-2);
   backdrop-filter: var(--blur-2);
   border: 1px solid var(--glass-border-strong);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--glass-edge), var(--hairline), var(--shadow-card);
   text-align: center;
 }
 

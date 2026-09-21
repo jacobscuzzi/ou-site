@@ -40,6 +40,7 @@ export default function BarList({ bars, loading, error, onRetry }: Props) {
 
   return (
     <div className="list">
+      <p className="eyebrow list-eyebrow">{bars.length} picks for tonight</p>
       {bars.map((bar, i) => (
         <BarCard key={bar.id} bar={bar} index={i} />
       ))}

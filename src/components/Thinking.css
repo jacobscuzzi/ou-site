@@ -2,6 +2,18 @@
   display: flex;
   justify-content: center;
   padding: calc(var(--space-7) * 3) var(--space-5) var(--space-7);
+  animation: fade-up 0.5s var(--ease) both;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
 }
 
 .thinking-panel {
@@ -16,7 +28,7 @@
   -webkit-backdrop-filter: var(--blur-3);
   backdrop-filter: var(--blur-3);
   border: 1.5px solid var(--glass-border-strong);
-  box-shadow: var(--glass-edge), var(--shadow-3);
+  box-shadow: var(--glass-edge), var(--hairline), var(--shadow-3);
   animation: breathe 1.6s ease-in-out infinite;
 }
 
@@ -112,6 +124,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .thinking,
   .thinking-panel,
   .thinking-beer {
     animation: none;

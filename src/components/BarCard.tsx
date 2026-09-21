@@ -33,6 +33,7 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
       onClick={() => setOpen((o) => !o)}
       onKeyDown={onKey}
     >
+      <span className="card-glare" />
       <div className="card-photo">
         <img src={bar.photos[0]} alt="" loading="lazy" />
         <span className="card-rank">{bar.rank}</span>
@@ -57,7 +58,7 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
           )}
         </div>
 
-        {open && (
+        <div className="card-detail-wrap" aria-hidden={!open}>
           <div className="card-detail">
             <p className="card-why">
               <strong>Why here? </strong>
@@ -82,13 +83,14 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
                 href={bar.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                tabIndex={open ? 0 : -1}
                 onClick={(e) => e.stopPropagation()}
               >
                 Open in Google Maps
               </a>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </article>
   )

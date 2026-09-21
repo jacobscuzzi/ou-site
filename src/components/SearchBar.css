@@ -13,17 +13,17 @@
   height: 52px;
   padding: 0 var(--space-2) 0 var(--space-4);
   border-radius: var(--radius-pill);
-  background: var(--glass);
+  background: var(--glass-pill);
   -webkit-backdrop-filter: var(--blur-3);
   backdrop-filter: var(--blur-3);
   border: 1.5px solid var(--glass-border);
-  box-shadow: var(--glass-edge), var(--shadow-3);
+  box-shadow: var(--glass-edge), var(--hairline), var(--shadow-3);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .search-pill:focus-within {
   border-color: var(--pink);
-  box-shadow: var(--glass-edge), var(--focus-ring), var(--shadow-3);
+  box-shadow: var(--glass-edge), var(--hairline), var(--focus-ring), var(--shadow-3);
 }
 
 .search-glare {
