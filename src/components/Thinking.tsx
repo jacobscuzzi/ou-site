@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { useT } from '../i18n'
 import { BeerIcon } from './icons'
 import './Thinking.css'
 
@@ -14,12 +15,13 @@ const beers = [
 ]
 
 export default function Thinking() {
+  const t = useT()
   return (
     <div className="thinking" role="status" aria-live="polite">
       <div className="thinking-panel">
         <span className="thinking-glare" />
         <span className="thinking-text">
-          Running the numbers
+          {t.thinking}
           <span className="thinking-dots" aria-hidden="true">
             <i />
             <i />

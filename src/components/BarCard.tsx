@@ -1,5 +1,6 @@
 import { useState, type CSSProperties, type KeyboardEvent } from 'react'
 import type { Bar } from '../api/types'
+import { useT } from '../i18n'
 import { BeerIcon, ClockIcon, CocktailIcon, PinIcon } from './icons'
 import './BarCard.css'
 
@@ -14,6 +15,7 @@ function hour(t: string) {
 
 export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
   const [open, setOpen] = useState(false)
+  const t = useT()
 
   function onKey(e: KeyboardEvent) {
     if (e.target !== e.currentTarget) return
@@ -48,12 +50,12 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
         <div className="card-chips">
           <span className="chip">
             <span className="chip-icon"><ClockIcon /></span>
-            {bar.openUntil ? `Open today till ${bar.openUntil}` : 'Closed today'}
+            {bar.openUntil ? t.openTill(bar.openUntil) : t.closedToday}
           </span>
           {bar.pintPrice !== null && (
             <span className="chip chip-pink">
               <span className="chip-icon"><BeerIcon /></span>
-              Pint {price(bar.pintPrice)}
+              {t.pint(price(bar.pintPrice))}
             </span>
           )}
         </div>
@@ -61,14 +63,14 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
         <div className="card-detail-wrap" aria-hidden={!open}>
           <div className="card-detail">
             <p className="card-why">
-              <strong>Why here? </strong>
+              <strong>{t.whyHere} </strong>
               {bar.whyHere}
             </p>
             {bar.happyHour && (
               <div className="card-chips">
                 <span className="chip">
                   <span className="chip-icon"><CocktailIcon /></span>
-                  Happy hour {hour(bar.happyHour.from)}–{hour(bar.happyHour.to)}:
+                  {t.happyHour(hour(bar.happyHour.from), hour(bar.happyHour.to))}
                   <span className="chip-amount">{price(bar.happyHour.pintPrice)}</span>
                 </span>
               </div>
@@ -86,7 +88,7 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
                 tabIndex={open ? 0 : -1}
                 onClick={(e) => e.stopPropagation()}
               >
-                Open in Google Maps
+                {t.openMaps}
               </a>
             </div>
           </div>

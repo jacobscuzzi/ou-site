@@ -1,7 +1,9 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { searchBars } from './api/client'
 import type { Bar } from './api/types'
+import { initialLang, LangContext, strings, type Lang } from './i18n'
 import Logo from './components/Logo'
+import LangSwitch from './components/LangSwitch'
 import SearchBar from './components/SearchBar'
 import Suggestions from './components/Suggestions'
 import BarList from './components/BarList'
@@ -10,6 +12,7 @@ import MiniMap from './components/MiniMap'
 const MapView = lazy(() => import('./components/MapView'))
 
 export default function App() {
+  const [lang, setLang] = useState<Lang>(initialLang)
   const [value, setValue] = useState('')
   const [query, setQuery] = useState<string | null>(null)
   const [bars, setBars] = useState<Bar[]>([])
@@ -19,6 +22,16 @@ export default function App() {
   const [mapOpen, setMapOpen] = useState(false)
   const [selectedId, setSelectedId] = useState('')
   const abortRef = useRef<AbortController | null>(null)
+  const t = strings[lang]
+
+  useEffect(() => {
+    document.documentElement.lang = lang
+    try {
+      localStorage.setItem('ou-lang', lang)
+    } catch {
+      // storage unavailable, the choice just lasts for this visit
+    }
+  }, [lang])
 
   useEffect(() => {
     if (query === null) return
@@ -65,48 +78,53 @@ export default function App() {
     window.scrollTo({ top: 0 })
   }
 
-  const searchBar = <SearchBar value={value} loading={loading} onChange={setValue} onSubmit={search} onHome={home} />
+  const langSwitch = <LangSwitch lang={lang} onChange={setLang} />
   const hasResults = !loading && !error && bars.length > 0
 
   return (
-    <main className="app">
-      <div className={query === null ? 'backdrop' : 'backdrop backdrop-map-on'} aria-hidden="true">
-        <div className="backdrop-column">
-          <img className="backdrop-map" src="/map-paris.jpg" alt="" />
-          <span className="backdrop-veil" />
-          <span className="glow" />
-          <span className="glow" />
-          <span className="glow" />
-          <span className="glow" />
+    <LangContext.Provider value={lang}>
+      <main className="app">
+        <div className={query === null ? 'backdrop' : 'backdrop backdrop-map-on'} aria-hidden="true">
+          <div className="backdrop-column">
+            <img className="backdrop-map" src="/map-paris.jpg" alt="" />
+            <span className="backdrop-veil" />
+            <span className="glow" />
+            <span className="glow" />
+            <span className="glow" />
+            <span className="glow" />
+          </div>
         </div>
-      </div>
-      <div className="content">
-        {query === null ? (
-          <section className="start">
-            <div className="start-hero">
-              <p className="eyebrow">Paris, tonight</p>
-              <h1 className="start-title">
-                <Logo size="var(--text-hero)" /> ce soir ?
-              </h1>
-              <p className="start-text">Let&apos;s find the best bar for you.</p>
-              {searchBar}
-            </div>
-            <Suggestions onPick={search} />
-          </section>
-        ) : (
-          <>
-            {searchBar}
-            <BarList bars={bars} loading={loading} error={error} onRetry={() => setAttempt((n) => n + 1)} />
-            <p className="credit">Map data from OpenStreetMap contributors</p>
-            {hasResults && !mapOpen && <MiniMap bars={bars} onOpen={() => setMapOpen(true)} />}
-            {hasResults && mapOpen && (
-              <Suspense fallback={null}>
-                <MapView bars={bars} selectedId={selectedId} onSelect={setSelectedId} onClose={() => setMapOpen(false)} />
-              </Suspense>
-            )}
-          </>
-        )}
-      </div>
-    </main>
+        <div className="content">
+          {query === null ? (
+            <section className="start">
+              <div className="start-corner">{langSwitch}</div>
+              <div className="start-hero">
+                <p className="eyebrow">{t.eyebrow}</p>
+                <h1 className="start-title">
+                  <Logo size="var(--text-hero)" /> ?
+                </h1>
+                <p className="start-text">{t.tagline}</p>
+                <SearchBar value={value} loading={loading} onChange={setValue} onSubmit={search} onHome={home} />
+              </div>
+              <Suggestions onPick={search} />
+            </section>
+          ) : (
+            <>
+              <SearchBar value={value} loading={loading} onChange={setValue} onSubmit={search} onHome={home}>
+                {langSwitch}
+              </SearchBar>
+              <BarList bars={bars} loading={loading} error={error} onRetry={() => setAttempt((n) => n + 1)} />
+              <p className="credit">{t.credit}</p>
+              {hasResults && !mapOpen && <MiniMap bars={bars} onOpen={() => setMapOpen(true)} />}
+              {hasResults && mapOpen && (
+                <Suspense fallback={null}>
+                  <MapView bars={bars} selectedId={selectedId} onSelect={setSelectedId} onClose={() => setMapOpen(false)} />
+                </Suspense>
+              )}
+            </>
+          )}
+        </div>
+      </main>
+    </LangContext.Provider>
   )
 }

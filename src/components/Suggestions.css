@@ -1,8 +1,16 @@
 .start {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
   padding: calc(var(--space-7) + env(safe-area-inset-top)) var(--space-5) calc(var(--space-5) + env(safe-area-inset-bottom));
+}
+
+.start-corner {
+  position: absolute;
+  top: calc(var(--space-4) + env(safe-area-inset-top));
+  right: var(--space-5);
+  animation: fade-up 0.7s var(--ease) both;
 }
 
 .start-hero {
@@ -166,7 +174,14 @@
 
   .row-track,
   .row,
-  .start-hero {
+  .start-corner {
+  position: absolute;
+  top: calc(var(--space-4) + env(safe-area-inset-top));
+  right: var(--space-5);
+  animation: fade-up 0.7s var(--ease) both;
+}
+
+.start-hero {
     animation: none;
   }
 }

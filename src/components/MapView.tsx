@@ -3,6 +3,7 @@ import { Map as MaplibreMap, Marker, setWorkerUrl } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Bar } from '../api/types'
+import { useT } from '../i18n'
 import { BeerIcon, ClockIcon } from './icons'
 import { bounds } from './MiniMap'
 import './MapView.css'
@@ -19,6 +20,7 @@ type Props = {
 }
 
 export default function MapView({ bars, selectedId, onSelect, onClose }: Props) {
+  const t = useT()
   const mapEl = useRef<HTMLDivElement>(null)
   const stripEl = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MaplibreMap | null>(null)
@@ -111,9 +113,9 @@ export default function MapView({ bars, selectedId, onSelect, onClose }: Props) 
   }, [])
 
   return (
-    <div className="mapview" role="dialog" aria-label="Results on the map">
+    <div className="mapview" role="dialog" aria-label={t.mapTitle}>
       <div className="mapview-map" ref={mapEl} />
-      <button className="mapview-close" type="button" onClick={onClose} aria-label="Close map">
+      <button className="mapview-close" type="button" onClick={onClose} aria-label={t.closeMap}>
         <span aria-hidden="true">×</span>
       </button>
       <div className="strip" ref={stripEl}>
@@ -136,7 +138,7 @@ export default function MapView({ bars, selectedId, onSelect, onClose }: Props) 
               <span className="strip-chips">
                 <span className="chip chip-sm">
                   <span className="chip-icon"><ClockIcon /></span>
-                  {bar.openUntil ? `Till ${bar.openUntil}` : 'Closed'}
+                  {bar.openUntil ? t.till(bar.openUntil) : t.closed}
                 </span>
                 {bar.pintPrice !== null && (
                   <span className="chip chip-sm chip-pink">

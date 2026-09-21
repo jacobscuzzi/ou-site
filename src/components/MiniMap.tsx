@@ -1,4 +1,5 @@
 import type { Bar } from '../api/types'
+import { useT } from '../i18n'
 import './MiniMap.css'
 
 export function bounds(bars: Bar[]) {
@@ -30,6 +31,7 @@ function project(bar: Bar) {
 }
 
 export default function MiniMap({ bars, onOpen }: { bars: Bar[]; onOpen: () => void }) {
+  const t = useT()
   const points = bars.map(project)
   const xs = points.map((p) => p.x)
   const ys = points.map((p) => p.y)
@@ -43,7 +45,7 @@ export default function MiniMap({ bars, onOpen }: { bars: Bar[]; onOpen: () => v
       className="minimap"
       type="button"
       onClick={onOpen}
-      aria-label="Show results on the map"
+      aria-label={t.showMap}
       style={{
         backgroundSize: `${IMAGE * scale}px`,
         backgroundPosition: `${-left * scale}px ${-top * scale}px`,
