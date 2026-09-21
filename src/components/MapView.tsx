@@ -43,12 +43,14 @@ export default function MapView({ bars, selectedId, onSelect, onClose }: Props) 
     mapRef.current = map
 
     for (const bar of bars) {
+      const anchor = document.createElement('div')
       const el = document.createElement('div')
       el.className = 'pin'
       el.textContent = String(bar.rank)
       el.addEventListener('click', () => onSelectRef.current(bar.id))
+      anchor.appendChild(el)
       pins.current.set(bar.id, el)
-      new Marker({ element: el }).setLngLat([bar.lng, bar.lat]).addTo(map)
+      new Marker({ element: anchor }).setLngLat([bar.lng, bar.lat]).addTo(map)
     }
 
     return () => {
