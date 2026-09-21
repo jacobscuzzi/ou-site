@@ -56,23 +56,37 @@ export default function App() {
     window.scrollTo({ top: 0 })
   }
 
+  const searchBar = <SearchBar value={value} loading={loading} onChange={setValue} onSubmit={search} onHome={home} />
+
   return (
     <main className="app">
-      <div className="glow" aria-hidden="true">
-        <div className="glow-column">
-          <span />
-          <span />
-          <span />
-          <span />
+      <div className="backdrop" aria-hidden="true">
+        <div className="backdrop-column">
+          <img className="backdrop-map" src="/map-paris.jpg" alt="" />
+          <span className="backdrop-veil" />
+          <span className="glow" />
+          <span className="glow" />
+          <span className="glow" />
+          <span className="glow" />
         </div>
       </div>
       <div className="content">
-        <SearchBar value={value} loading={loading} onChange={setValue} onSubmit={search} onHome={home} />
         {query === null ? (
-          <Suggestions onPick={search} />
+          <section className="start">
+            <h1 className="start-title">
+              <span className="start-brand">Où</span> ce soir ?
+            </h1>
+            <p className="start-text">Say what kind of evening you want and où finds the bar. Or start from one of these.</p>
+            {searchBar}
+            <Suggestions onPick={search} />
+          </section>
         ) : (
-          <BarList bars={bars} loading={loading} error={error} onRetry={() => setAttempt((n) => n + 1)} />
+          <>
+            {searchBar}
+            <BarList bars={bars} loading={loading} error={error} onRetry={() => setAttempt((n) => n + 1)} />
+          </>
         )}
+        <p className="credit">Map data from OpenStreetMap contributors</p>
       </div>
     </main>
   )

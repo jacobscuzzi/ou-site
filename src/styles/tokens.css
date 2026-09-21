@@ -14,7 +14,7 @@
   --skeleton: repeating-linear-gradient(135deg, #ecebe8 0 6px, #e2e1dd 6px 12px);
 
   --glass: rgba(255, 255, 255, 0.48);
-  --glass-card: rgba(255, 255, 255, 0.4);
+  --glass-card: rgba(255, 255, 255, 0.28);
   --glass-badge: rgba(255, 255, 255, 0.5);
   --glass-bubble: rgba(255, 255, 255, 0.9);
   --glass-border: rgba(255, 255, 255, 0.8);
@@ -34,6 +34,8 @@
   --glow-orange: rgba(255, 120, 60, 0.16);
   --glow-violet: rgba(120, 80, 255, 0.1);
   --glow-blur: 70px;
+  --map-blur: 4px;
+  --veil: rgba(247, 246, 244, 0.42);
 
   --font: -apple-system, 'SF Pro Text', 'Inter', system-ui, sans-serif;
   --text-xs: 12px;
@@ -42,6 +44,7 @@
   --text-md: 17px;
   --text-lg: 22px;
   --text-xl: 28px;
+  --text-hero: 44px;
 
   --space-1: 4px;
   --space-2: 8px;
