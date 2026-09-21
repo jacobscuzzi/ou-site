@@ -38,6 +38,11 @@ export default function App() {
     abortRef.current?.abort()
     const ctrl = new AbortController()
     abortRef.current = ctrl
+    let timedOut = false
+    const timer = setTimeout(() => {
+      timedOut = true
+      ctrl.abort()
+    }, 15000)
     setLoading(true)
     setError(null)
 
@@ -49,12 +54,16 @@ export default function App() {
         setLoading(false)
       })
       .catch((err: Error) => {
-        if (err.name === 'AbortError') return
-        setError(err.message)
+        if (err.name === 'AbortError' && !timedOut) return
+        setError(timedOut ? strings[lang].timeout : err.message)
         setLoading(false)
       })
+      .finally(() => clearTimeout(timer))
 
-    return () => ctrl.abort()
+    return () => {
+      clearTimeout(timer)
+      ctrl.abort()
+    }
   }, [query, attempt])
 
   function search(q: string) {

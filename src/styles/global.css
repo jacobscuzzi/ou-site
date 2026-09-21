@@ -121,10 +121,31 @@ a {
   }
 }
 
+.backdrop-map-on .glow {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .glow {
     animation: none;
   }
+}
+
+[data-lite] .glow {
+  animation: none;
+}
+
+[data-lite] .search-pill,
+[data-lite] .card,
+[data-lite] .card-rank,
+[data-lite] .notice,
+[data-lite] .thinking-panel,
+[data-lite] .lang,
+[data-lite] .mapview-close,
+[data-lite] .strip-card {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: var(--glass-lite);
 }
 
 .glow:nth-of-type(1) {

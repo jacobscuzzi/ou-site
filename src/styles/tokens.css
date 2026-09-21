@@ -22,6 +22,8 @@
 
   --glass: rgba(255, 255, 255, 0.48);
   --glass-pill: rgba(255, 255, 255, 0.36);
+  --glass-lite: rgba(255, 255, 255, 0.82);
+  --glass-bubble-bg: rgba(255, 255, 255, 0.6);
   --glass-card: rgba(255, 255, 255, 0.28);
   --glass-badge: rgba(255, 255, 255, 0.5);
   --glass-bubble: rgba(255, 255, 255, 0.9);
