@@ -4,6 +4,10 @@
   --pink-tint: #ffeaf3;
   --pink-soft: rgba(255, 31, 142, 0.12);
   --pink-gradient: linear-gradient(180deg, #ff5cb0, #ff1f8e);
+  --pink-glass: linear-gradient(180deg, #ff8ac8 0%, #ff5cb0 42%, #ff1f8e 100%);
+  --pink-highlight: rgba(255, 255, 255, 0.7);
+  --pink-shade: rgba(180, 0, 90, 0.25);
+  --pink-glow: rgba(255, 31, 142, 0.45);
   --on-pink: #ffffff;
 
   --bg: #f7f6f4;
