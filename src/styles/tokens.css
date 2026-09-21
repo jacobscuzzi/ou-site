@@ -1,43 +1,78 @@
 :root {
-  --pink: #d3227a;
-  --pink-soft: rgba(211, 34, 122, 0.12);
+  --pink: #ff1f8e;
+  --pink-text: #d6106f;
+  --pink-tint: #ffeaf3;
+  --pink-soft: rgba(255, 31, 142, 0.12);
+  --pink-gradient: linear-gradient(180deg, #ff5cb0, #ff1f8e);
   --on-pink: #ffffff;
 
-  --bg: #f7f4ef;
-  --bg-desktop: #e4e0d9;
+  --bg: #f7f6f4;
+  --bg-desktop: #ecebe8;
   --surface: #ffffff;
-  --glass: rgba(255, 255, 255, 0.62);
-  --glass-border: rgba(255, 255, 255, 0.7);
-  --skeleton: #e9e5de;
+  --fill: #f2f1ef;
+  --map: #e9ecea;
+  --skeleton: repeating-linear-gradient(135deg, #ecebe8 0 6px, #e2e1dd 6px 12px);
+  --skeleton-flat: #e2e1dd;
 
-  --text: #17141a;
-  --text-muted: #6d6873;
-  --text-on-photo: #ffffff;
-  --line: rgba(23, 20, 26, 0.08);
-  --open: #1f8a4c;
-  --closed: #a23b3b;
+  --glass: rgba(255, 255, 255, 0.48);
+  --glass-card: rgba(255, 255, 255, 0.66);
+  --glass-badge: rgba(255, 255, 255, 0.5);
+  --glass-bubble: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-border-strong: rgba(255, 255, 255, 0.9);
+  --glass-edge: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 0 22px rgba(255, 255, 255, 0.5);
+  --glass-glare: linear-gradient(115deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, 0) 62%, rgba(255, 255, 255, 0.45) 100%);
 
-  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --ink: #111114;
+  --ink-2: #6e6e76;
+  --ink-3: #3a3a40;
+  --chip: rgba(17, 17, 20, 0.06);
+  --line: rgba(17, 17, 20, 0.06);
+  --outline: rgba(17, 17, 20, 0.05);
+
+  --glow-pink: rgba(255, 31, 142, 0.26);
+  --glow-pink-2: rgba(255, 31, 142, 0.2);
+  --glow-orange: rgba(255, 120, 60, 0.16);
+  --glow-violet: rgba(120, 80, 255, 0.1);
+  --glow-blur: 70px;
+
+  --font: -apple-system, 'SF Pro Text', 'Inter', system-ui, sans-serif;
   --text-xs: 12px;
-  --text-sm: 14px;
-  --text-md: 16px;
-  --text-lg: 20px;
-  --text-xl: 26px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-md: 17px;
+  --text-lg: 22px;
+  --text-xl: 28px;
 
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
 
-  --radius-sm: 12px;
-  --radius-card: 24px;
+  --radius-card: 26px;
+  --radius-tile: 20px;
+  --radius-photo: 16px;
   --radius-pill: 999px;
 
-  --blur: 18px;
-  --shadow-card: 0 8px 28px rgba(23, 20, 26, 0.1);
-  --shadow-float: 0 12px 32px rgba(23, 20, 26, 0.22);
+  --shadow-1: 0 1px 2px rgba(17, 17, 20, 0.06);
+  --shadow-2: 0 8px 24px rgba(17, 17, 20, 0.08);
+  --shadow-3: 0 16px 48px rgba(17, 17, 20, 0.16);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 12px 32px rgba(17, 17, 20, 0.1);
+  --shadow-badge: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 2px 8px rgba(17, 17, 20, 0.12);
+  --shadow-bubble: 0 1px 2px rgba(17, 17, 20, 0.1);
+  --shadow-pink: 0 4px 12px rgba(255, 31, 142, 0.3);
+  --shadow-send: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 6px 16px rgba(255, 31, 142, 0.45);
+  --shadow-pin: 0 4px 12px rgba(255, 31, 142, 0.35);
+  --shadow-pin-selected: 0 0 0 5px rgba(255, 31, 142, 0.18), 0 6px 16px rgba(255, 31, 142, 0.4);
+  --focus-ring: 0 0 0 4px rgba(255, 31, 142, 0.14);
 
+  --blur-1: blur(16px) saturate(1.7);
+  --blur-2: blur(24px) saturate(1.7);
+  --blur-3: blur(32px) saturate(1.9);
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --app-width: 430px;
 }
