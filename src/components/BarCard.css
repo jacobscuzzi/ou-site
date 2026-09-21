@@ -1,0 +1,135 @@
+.card {
+  flex: none;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--glass-card);
+  -webkit-backdrop-filter: var(--blur-2);
+  backdrop-filter: var(--blur-2);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+}
+
+.card:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-card), var(--focus-ring);
+}
+
+.card-photo {
+  position: relative;
+  height: 214px;
+  background: var(--skeleton);
+}
+
+.card-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-rank {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  min-width: 28px;
+  padding: 0 9px;
+  border-radius: var(--radius-pill);
+  background: var(--glass-badge);
+  -webkit-backdrop-filter: var(--blur-1);
+  backdrop-filter: var(--blur-1);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-badge);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+}
+
+.card-open .card-body {
+  padding: var(--space-4);
+  gap: var(--space-3);
+}
+
+.card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.card-name {
+  font-size: var(--text-md);
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  transition: font-size 0.2s var(--ease);
+}
+
+.card-open .card-name {
+  font-size: var(--text-lg);
+  letter-spacing: -0.4px;
+}
+
+.card-arr {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.card-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.card-why {
+  margin: 0;
+  font-size: var(--text-base);
+  line-height: 1.45;
+  color: var(--ink-3);
+  text-wrap: pretty;
+}
+
+.card-why strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+.card-address {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-sm);
+  line-height: 1.35;
+  color: var(--ink-2);
+}
+
+.card-address svg {
+  flex: none;
+}
