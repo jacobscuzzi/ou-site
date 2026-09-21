@@ -1,12 +1,29 @@
+import { useEffect, useState } from 'react'
 import { useT } from '../i18n'
 import './Suggestions.css'
 
+const wideQuery = '(min-width: 768px)'
+
+function useWide() {
+  const [wide, setWide] = useState(() => window.matchMedia(wideQuery).matches)
+  useEffect(() => {
+    const media = window.matchMedia(wideQuery)
+    const update = () => setWide(media.matches)
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
+  return wide
+}
+
 export default function Suggestions({ onPick }: { onPick: (q: string) => void }) {
   const t = useT()
+  const wide = useWide()
+  const flat = t.suggestions.flat()
+  const rows = wide ? [flat.slice(0, 6), flat.slice(6)] : t.suggestions
 
   return (
     <div className="rows">
-      {t.suggestions.map((row, i) => (
+      {rows.map((row, i) => (
         <div key={i} className={i % 2 ? 'row row-right' : 'row'}>
           <div className="row-track">
             {[0, 1].map((copy) => (

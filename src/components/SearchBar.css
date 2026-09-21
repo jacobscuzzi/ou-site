@@ -8,6 +8,14 @@
   padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-5) var(--space-3);
 }
 
+@media (min-width: 768px) {
+  .search {
+    width: 100%;
+    max-width: var(--reading-width);
+    margin: 0 auto;
+  }
+}
+
 .search-pill {
   position: relative;
   flex: 1;

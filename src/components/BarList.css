@@ -5,6 +5,27 @@
   padding: var(--space-1) var(--space-5) calc(var(--space-7) + env(safe-area-inset-bottom));
 }
 
+@media (min-width: 768px) {
+  .list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-4);
+    align-items: start;
+    padding-top: var(--space-2);
+  }
+
+  .list-eyebrow,
+  .notice {
+    grid-column: 1 / -1;
+  }
+
+  .notice {
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+  }
+}
+
 .list-eyebrow {
   padding: var(--space-1) var(--space-2) 0;
   animation: fade-up 0.5s var(--ease) both;
