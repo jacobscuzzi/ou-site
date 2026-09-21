@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { searchBars } from './api/client'
 import type { Bar } from './api/types'
+import Logo from './components/Logo'
 import SearchBar from './components/SearchBar'
 import Suggestions from './components/Suggestions'
 import BarList from './components/BarList'
@@ -60,7 +61,7 @@ export default function App() {
 
   return (
     <main className="app">
-      <div className="backdrop" aria-hidden="true">
+      <div className={query === null ? 'backdrop' : 'backdrop backdrop-map-on'} aria-hidden="true">
         <div className="backdrop-column">
           <img className="backdrop-map" src="/map-paris.jpg" alt="" />
           <span className="backdrop-veil" />
@@ -74,9 +75,9 @@ export default function App() {
         {query === null ? (
           <section className="start">
             <h1 className="start-title">
-              <span className="start-brand">Où</span> ce soir ?
+              <Logo size="var(--text-hero)" /> ce soir ?
             </h1>
-            <p className="start-text">Say what kind of evening you want and où finds the bar. Or start from one of these.</p>
+            <p className="start-text">Let&apos;s find the best bar for you.</p>
             {searchBar}
             <Suggestions onPick={search} />
           </section>
@@ -84,9 +85,9 @@ export default function App() {
           <>
             {searchBar}
             <BarList bars={bars} loading={loading} error={error} onRetry={() => setAttempt((n) => n + 1)} />
+            <p className="credit">Map data from OpenStreetMap contributors</p>
           </>
         )}
-        <p className="credit">Map data from OpenStreetMap contributors</p>
       </div>
     </main>
   )

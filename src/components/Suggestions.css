@@ -10,10 +10,6 @@
   line-height: 1.05;
 }
 
-.start-brand {
-  color: var(--pink);
-}
-
 .start-text {
   margin: var(--space-3) 0 0;
   font-size: var(--text-base);

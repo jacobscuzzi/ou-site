@@ -38,6 +38,7 @@
   --veil: rgba(247, 246, 244, 0.42);
 
   --font: -apple-system, 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  --font-display: -apple-system, 'SF Pro Display', 'Inter', system-ui, sans-serif;
   --text-xs: 12px;
   --text-sm: 13px;
   --text-base: 15px;

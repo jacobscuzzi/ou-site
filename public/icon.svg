@@ -1,0 +1,5 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="22.4" fill="#ffffff"/>
+  <text x="50" y="69" text-anchor="middle" font-family="-apple-system, 'SF Pro Display', Inter, sans-serif" font-weight="800" font-size="57.5" letter-spacing="-3.45" fill="#111114">ou</text>
+  <rect x="60" y="28" width="20.1" height="8.05" rx="4.03" fill="#ff1f8e" transform="rotate(38 70.05 32)"/>
+</svg>

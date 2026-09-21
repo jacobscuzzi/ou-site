@@ -1,0 +1,22 @@
+.logo {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: var(--f);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: var(--ink);
+}
+
+.logo::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--f) * 0.72);
+  top: calc(var(--f) * 0.12);
+  width: calc(var(--f) * 0.35);
+  height: calc(var(--f) * 0.14);
+  border-radius: var(--radius-pill);
+  background: var(--pink);
+  transform: rotate(38deg);
+}
