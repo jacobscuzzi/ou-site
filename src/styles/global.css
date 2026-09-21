@@ -94,6 +94,31 @@ a {
   position: absolute;
   border-radius: var(--radius-pill);
   filter: blur(var(--glow-blur));
+  animation: glow-drift 16s ease-in-out infinite alternate;
+}
+
+.glow:nth-of-type(2) {
+  animation-duration: 20s;
+  animation-direction: alternate-reverse;
+}
+
+.glow:nth-of-type(4) {
+  animation-duration: 24s;
+}
+
+@keyframes glow-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(30px, -24px) scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow {
+    animation: none;
+  }
 }
 
 .glow:nth-of-type(1) {

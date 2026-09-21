@@ -84,6 +84,7 @@ export default function App() {
         {query === null ? (
           <section className="start">
             <div className="start-hero">
+              <p className="start-eyebrow">Paris, tonight</p>
               <h1 className="start-title">
                 <Logo size="var(--text-hero)" /> ce soir ?
               </h1>
