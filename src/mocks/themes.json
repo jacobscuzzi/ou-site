@@ -1,0 +1,96 @@
+{
+  "student": [
+    "red-factory-paris",
+    "rockstar-cafe-paris",
+    "bon-ami-paris",
+    "au-mathurin-burger-pizza-music-grand-ecran-paris",
+    "le-five-bar-paris",
+    "solluna-faidherbe-paris"
+  ],
+  "psg": [
+    "cafe-oz-grands-boulevards",
+    "belushis-gare-du-nord",
+    "halls-beer-tavern",
+    "the-long-hop",
+    "la-victoire",
+    "the-bombardier"
+  ],
+  "quiz": [
+    "belushis-gare-du-nord",
+    "the-long-hop",
+    "the-cork-and-cavan",
+    "the-highlander",
+    "the-bombardier",
+    "the-pub-paris"
+  ],
+  "late": [
+    "cafe-charbon",
+    "raidd-bar",
+    "dirty-lemon",
+    "cafe-oz-grands-boulevards",
+    "the-highlander",
+    "frequence"
+  ],
+  "lgbtq": [
+    "la-mutinerie",
+    "le-cox",
+    "raidd-bar",
+    "bonjour-madame",
+    "rosa-bonheur-buttes-chaumont",
+    "sister-midnight"
+  ],
+  "safe": [
+    "la-mutinerie",
+    "bonjour-madame",
+    "sister-midnight",
+    "cabaret-des-merveilles",
+    "dirty-lemon",
+    "le-social-bar"
+  ],
+  "alone": [
+    "sister-midnight",
+    "le-social-bar",
+    "dernier-bar-avant-la-fin-du-monde",
+    "the-good-game",
+    "loufoque-paris-5",
+    "l-exode"
+  ],
+  "espresso": [
+    "prescription-cocktail-club",
+    "experimental-cocktail-club",
+    "le-syndicat",
+    "the-cambridge-public-house",
+    "sister-midnight",
+    "le-calbar"
+  ],
+  "wine": [
+    "le-barav",
+    "le-garde-robe",
+    "la-cave-du-paul-bert",
+    "pratz",
+    "chez-nous"
+  ],
+  "jazz": [
+    "le-baiser-sale",
+    "38riv",
+    "caveau-de-la-huchette",
+    "chez-papa-jazz-club",
+    "la-gare-le-gore"
+  ],
+  "rooftop": [
+    "le-perchoir-menilmontant",
+    "le-toit-de-la-bellevilloise",
+    "terrass-rooftop-bar",
+    "khayma-rooftop-generator",
+    "dame-des-arts-rooftop",
+    "sequoia-rooftop-bar"
+  ],
+  "terrace11": [
+    "le-perchoir-menilmontant",
+    "rockstar-cafe-paris",
+    "lobo",
+    "pause-cafe-charonne",
+    "la-place-verte",
+    "cafe-charbon"
+  ]
+}
