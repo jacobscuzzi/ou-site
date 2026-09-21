@@ -12,5 +12,16 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      setTimeout(function () {
+        var root = document.getElementById('root')
+        if (root && !root.firstChild) {
+          root.innerHTML =
+            '<p style="margin:40vh 24px 0;text-align:center;font:15px/1.5 system-ui,sans-serif;color:#3a3a40">' +
+            'où could not start in this browser. Please try a recent Safari, Chrome or Firefox.<br>' +
+            'où ne démarre pas dans ce navigateur. Essaie un Safari, Chrome ou Firefox récent.</p>'
+        }
+      }, 8000)
+    </script>
   </body>
 </html>
