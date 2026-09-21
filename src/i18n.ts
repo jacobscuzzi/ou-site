@@ -70,8 +70,12 @@ export const strings: Record<Lang, typeof en> = { en, fr }
 
 export const LangContext = createContext<Lang>('en')
 
+export function useLang() {
+  return useContext(LangContext)
+}
+
 export function useT() {
-  return strings[useContext(LangContext)]
+  return strings[useLang()]
 }
 
 export function initialLang(): Lang {

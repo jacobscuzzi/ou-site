@@ -1,6 +1,7 @@
 import { useState, type CSSProperties, type KeyboardEvent } from 'react'
 import type { Bar } from '../api/types'
-import { useT } from '../i18n'
+import { useLang, useT } from '../i18n'
+import { tagsFor } from '../tags'
 import { BeerIcon, ClockIcon, CocktailIcon, PinIcon } from './icons'
 import './BarCard.css'
 
@@ -16,6 +17,7 @@ function hour(t: string) {
 export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
   const [open, setOpen] = useState(false)
   const t = useT()
+  const tags = tagsFor(bar, useLang())
 
   function onKey(e: KeyboardEvent) {
     if (e.target !== e.currentTarget) return
@@ -50,7 +52,7 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
         <div className="card-chips">
           <span className="chip">
             <span className="chip-icon"><ClockIcon /></span>
-            {bar.openUntil ? t.openTill(bar.openUntil) : t.closedToday}
+            {bar.openUntil ? (open ? t.openTill(bar.openUntil) : t.till(bar.openUntil)) : t.closedToday}
           </span>
           {bar.pintPrice !== null && (
             <span className="chip chip-pink">
@@ -58,6 +60,12 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
               {t.pint(price(bar.pintPrice))}
             </span>
           )}
+          {tags.map((tag) => (
+            <span key={tag.label} className="chip">
+              <span className="chip-icon chip-emoji">{tag.emoji}</span>
+              {tag.label}
+            </span>
+          ))}
         </div>
 
         <div className="card-detail-wrap" aria-hidden={!open}>

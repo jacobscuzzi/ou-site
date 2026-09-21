@@ -223,6 +223,11 @@ a {
   height: 10px;
 }
 
+.chip-emoji {
+  font-size: 10px;
+  line-height: 1;
+}
+
 .chip-amount {
   margin-left: var(--space-1);
   color: var(--pink-text);
