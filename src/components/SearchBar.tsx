@@ -1,32 +1,33 @@
-import { useState, type FormEvent } from 'react'
+import type { FormEvent } from 'react'
 import { ArrowUpIcon } from './icons'
 import './SearchBar.css'
 
 type Props = {
-  initialQuery: string
+  value: string
   loading: boolean
-  onSearch: (q: string) => void
+  onChange: (q: string) => void
+  onSubmit: (q: string) => void
+  onHome: () => void
 }
 
-export default function SearchBar({ initialQuery, loading, onSearch }: Props) {
-  const [value, setValue] = useState(initialQuery)
-
+export default function SearchBar({ value, loading, onChange, onSubmit, onHome }: Props) {
   function submit(e: FormEvent) {
     e.preventDefault()
-    const q = value.trim()
-    if (q) onSearch(q)
+    onSubmit(value)
   }
 
   return (
     <header className="search">
       <form className="search-pill" onSubmit={submit}>
         <span className="search-glare" />
-        <span className="search-brand">où</span>
+        <button className="search-brand" type="button" onClick={onHome} aria-label="Start over">
+          où
+        </button>
         <input
           className="search-input"
           type="text"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           placeholder="Describe your evening"
           enterKeyHint="search"
           autoComplete="off"

@@ -1,0 +1,109 @@
+.start {
+  padding: var(--space-6) var(--space-5) calc(var(--space-7) + env(safe-area-inset-bottom));
+}
+
+.start-title {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.start-text {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-base);
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-2);
+  margin: var(--space-7) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cloud li {
+  animation: drift 7s ease-in-out infinite;
+}
+
+.cloud li:nth-child(3n + 1) {
+  animation-duration: 8s;
+  animation-delay: -2s;
+}
+
+.cloud li:nth-child(3n + 2) {
+  animation-duration: 6.5s;
+  animation-delay: -4s;
+}
+
+.cloud li:nth-child(4n) {
+  margin-left: var(--space-5);
+}
+
+.cloud li:nth-child(5n + 2) {
+  margin-right: var(--space-4);
+}
+
+.bubble {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--glass);
+  -webkit-backdrop-filter: var(--blur-3);
+  backdrop-filter: var(--blur-3);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: var(--glass-edge), var(--shadow-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--ink);
+  text-align: left;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.bubble:hover,
+.bubble:focus-visible {
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: var(--glass-edge), var(--focus-ring), var(--shadow-3);
+}
+
+.bubble:active {
+  transform: scale(0.97);
+}
+
+.bubble-text {
+  position: relative;
+}
+
+.bubble-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-pill);
+  background: var(--glass-glare);
+  pointer-events: none;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(2px, -5px) rotate(-0.6deg);
+  }
+  66% {
+    transform: translate(-2px, 3px) rotate(0.5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud li {
+    animation: none;
+  }
+}
