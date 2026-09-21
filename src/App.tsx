@@ -22,8 +22,9 @@ export default function App() {
     setLoading(true)
     setError(null)
 
-    searchBars(query, 6, ctrl.signal)
-      .then((res) => {
+    const minWait = new Promise((resolve) => setTimeout(resolve, 1200))
+    Promise.all([searchBars(query, 6, ctrl.signal), minWait])
+      .then(([res]) => {
         setBars(res.results)
         setLoading(false)
       })

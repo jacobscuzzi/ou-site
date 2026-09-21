@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from 'react'
+import { useState, type CSSProperties, type KeyboardEvent } from 'react'
 import type { Bar } from '../api/types'
 import { BeerIcon, ClockIcon, CocktailIcon, PinIcon } from './icons'
 import './BarCard.css'
@@ -12,7 +12,7 @@ function hour(t: string) {
   return m === '00' ? `${h}h` : `${h}h${m}`
 }
 
-export default function BarCard({ bar }: { bar: Bar }) {
+export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
   const [open, setOpen] = useState(false)
 
   function onKey(e: KeyboardEvent) {
@@ -26,6 +26,7 @@ export default function BarCard({ bar }: { bar: Bar }) {
   return (
     <article
       className={open ? 'card card-open' : 'card'}
+      style={{ '--i': index } as CSSProperties}
       role="button"
       tabIndex={0}
       aria-expanded={open}

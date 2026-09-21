@@ -1,5 +1,6 @@
 import type { Bar } from '../api/types'
 import BarCard from './BarCard'
+import Thinking from './Thinking'
 import './BarList.css'
 
 type Props = {
@@ -9,34 +10,8 @@ type Props = {
   onRetry: () => void
 }
 
-function Skeleton() {
-  return (
-    <div className="card skeleton" aria-hidden="true">
-      <div className="card-photo" />
-      <div className="card-body">
-        <div className="card-head">
-          <span className="skeleton-line" style={{ width: '55%' }} />
-          <span className="skeleton-line" style={{ width: '18%' }} />
-        </div>
-        <div className="card-chips">
-          <span className="skeleton-chip" style={{ width: 132 }} />
-          <span className="skeleton-chip" style={{ width: 96 }} />
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function BarList({ bars, loading, error, onRetry }: Props) {
-  if (loading) {
-    return (
-      <div className="list" aria-busy="true">
-        <Skeleton />
-        <Skeleton />
-        <Skeleton />
-      </div>
-    )
-  }
+  if (loading) return <Thinking />
 
   if (error) {
     return (
@@ -65,8 +40,8 @@ export default function BarList({ bars, loading, error, onRetry }: Props) {
 
   return (
     <div className="list">
-      {bars.map((bar) => (
-        <BarCard key={bar.id} bar={bar} />
+      {bars.map((bar, i) => (
+        <BarCard key={bar.id} bar={bar} index={i} />
       ))}
     </div>
   )
