@@ -2,17 +2,9 @@ import { useState, type CSSProperties, type KeyboardEvent } from 'react'
 import type { Bar } from '../api/types'
 import { useLang, useT } from '../i18n'
 import { tagsFor } from '../tags'
-import { BeerIcon, ClockIcon, CocktailIcon, PinIcon } from './icons'
+import BarDetail, { price } from './BarDetail'
+import { BeerIcon, ClockIcon } from './icons'
 import './BarCard.css'
-
-function price(n: number) {
-  return `${n.toFixed(2)} EUR`
-}
-
-function hour(t: string) {
-  const [h, m] = t.split(':')
-  return m === '00' ? `${h}h` : `${h}h${m}`
-}
 
 export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
   const [open, setOpen] = useState(false)
@@ -68,39 +60,7 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
           ))}
         </div>
 
-        <div className="card-detail-wrap" aria-hidden={!open}>
-          <div className="card-detail">
-            <p className="card-why">
-              <strong>{t.whyHere} </strong>
-              {bar.whyHere}
-            </p>
-            {bar.happyHour && (
-              <div className="card-chips">
-                <span className="chip">
-                  <span className="chip-icon"><CocktailIcon /></span>
-                  {t.happyHour(hour(bar.happyHour.from), hour(bar.happyHour.to))}
-                  <span className="chip-amount">{price(bar.happyHour.pintPrice)}</span>
-                </span>
-              </div>
-            )}
-            <div className="card-foot">
-              <span className="card-address">
-                <PinIcon />
-                {bar.address}
-              </span>
-              <a
-                className="btn-primary"
-                href={bar.googleMapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                tabIndex={open ? 0 : -1}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {t.openMaps}
-              </a>
-            </div>
-          </div>
-        </div>
+        <BarDetail bar={bar} open={open} />
       </div>
     </article>
   )

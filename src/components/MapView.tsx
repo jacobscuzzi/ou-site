@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { Map as MaplibreMap, Marker, setWorkerUrl } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Bar } from '../api/types'
 import { useT } from '../i18n'
+import BarDetail from './BarDetail'
 import { BeerIcon, ClockIcon } from './icons'
 import { bounds } from './MiniMap'
 import './MapView.css'
@@ -27,6 +28,24 @@ export default function MapView({ bars, selectedId, onSelect, onClose }: Props) 
   const pins = useRef(new Map<string, HTMLDivElement>())
   const onSelectRef = useRef(onSelect)
   onSelectRef.current = onSelect
+  const [openId, setOpenId] = useState<string | null>(null)
+
+  function tapCard(id: string) {
+    if (id === selectedId) {
+      setOpenId((o) => (o === id ? null : id))
+    } else {
+      onSelect(id)
+      setOpenId(id)
+    }
+  }
+
+  function onCardKey(e: ReactKeyboardEvent, id: string) {
+    if (e.target !== e.currentTarget) return
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      tapCard(id)
+    }
+  }
 
   useEffect(() => {
     const box = bounds(bars)
@@ -62,6 +81,7 @@ export default function MapView({ bars, selectedId, onSelect, onClose }: Props) 
   const lastSelected = useRef(selectedId)
 
   useEffect(() => {
+    setOpenId((o) => (o === selectedId ? o : null))
     for (const [id, el] of pins.current) el.classList.toggle('pin-selected', id === selectedId)
     const card = stripEl.current?.querySelector<HTMLElement>(`[data-id="${selectedId}"]`)
     if (selectedId === lastSelected.current) {
@@ -121,37 +141,47 @@ export default function MapView({ bars, selectedId, onSelect, onClose }: Props) 
         <span aria-hidden="true">×</span>
       </button>
       <div className="strip" ref={stripEl}>
-        {bars.map((bar) => (
-          <button
-            key={bar.id}
-            type="button"
-            data-id={bar.id}
-            className={bar.id === selectedId ? 'strip-card strip-card-selected' : 'strip-card'}
-            onClick={() => onSelect(bar.id)}
-          >
-            <span className="strip-glare" />
-            <span className="strip-photo">
-              <img src={bar.photos[0]} alt="" loading="lazy" />
-              <span className="strip-rank">{bar.rank}</span>
-            </span>
-            <span className="strip-body">
-              <span className="strip-name">{bar.name}</span>
-              <span className="strip-arr">{bar.arrondissement}</span>
-              <span className="strip-chips">
-                <span className="chip chip-sm">
-                  <span className="chip-icon"><ClockIcon /></span>
-                  {bar.openUntil ? t.till(bar.openUntil) : t.closed}
+        {bars.map((bar) => {
+          const open = bar.id === openId
+          const classes = ['strip-card', bar.id === selectedId && 'strip-card-selected', open && 'strip-card-open']
+          return (
+            <div
+              key={bar.id}
+              data-id={bar.id}
+              className={classes.filter(Boolean).join(' ')}
+              role="button"
+              tabIndex={0}
+              aria-expanded={open}
+              onClick={() => tapCard(bar.id)}
+              onKeyDown={(e) => onCardKey(e, bar.id)}
+            >
+              <span className="strip-glare" />
+              <div className="strip-row">
+                <span className="strip-photo">
+                  <img src={bar.photos[0]} alt="" loading="lazy" />
+                  <span className="strip-rank">{bar.rank}</span>
                 </span>
-                {bar.pintPrice !== null && (
-                  <span className="chip chip-sm chip-pink">
-                    <span className="chip-icon"><BeerIcon /></span>
-                    {bar.pintPrice.toFixed(2)} EUR
+                <span className="strip-body">
+                  <span className="strip-name">{bar.name}</span>
+                  <span className="strip-arr">{bar.arrondissement}</span>
+                  <span className="strip-chips">
+                    <span className="chip chip-sm">
+                      <span className="chip-icon"><ClockIcon /></span>
+                      {bar.openUntil ? t.till(bar.openUntil) : t.closed}
+                    </span>
+                    {bar.pintPrice !== null && (
+                      <span className="chip chip-sm chip-pink">
+                        <span className="chip-icon"><BeerIcon /></span>
+                        {bar.pintPrice.toFixed(2)} EUR
+                      </span>
+                    )}
                   </span>
-                )}
-              </span>
-            </span>
-          </button>
-        ))}
+                </span>
+              </div>
+              <BarDetail bar={bar} open={open} />
+            </div>
+          )
+        })}
       </div>
     </div>
   )
