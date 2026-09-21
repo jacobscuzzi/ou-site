@@ -4,10 +4,12 @@
   --pink-tint: #ffeaf3;
   --pink-soft: rgba(255, 31, 142, 0.12);
   --pink-gradient: linear-gradient(180deg, #ff5cb0, #ff1f8e);
-  --pink-glass: linear-gradient(180deg, #ff8ac8 0%, #ff5cb0 42%, #ff1f8e 100%);
-  --pink-highlight: rgba(255, 255, 255, 0.7);
-  --pink-shade: rgba(180, 0, 90, 0.25);
-  --pink-glow: rgba(255, 31, 142, 0.45);
+  --pink-glass: linear-gradient(180deg, rgba(255, 110, 190, 0.92) 0%, rgba(255, 40, 150, 0.94) 55%, rgba(226, 0, 112, 0.97) 100%);
+  --pink-gloss: linear-gradient(180deg, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0.22) 36%, rgba(255, 255, 255, 0) 52%);
+  --pink-rim: rgba(255, 255, 255, 0.55);
+  --pink-bounce: rgba(255, 255, 255, 0.5);
+  --pink-shade: rgba(150, 0, 75, 0.3);
+  --pink-glow: rgba(255, 31, 142, 0.4);
   --on-pink: #ffffff;
 
   --bg: #f7f6f4;
