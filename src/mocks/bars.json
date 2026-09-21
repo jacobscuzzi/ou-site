@@ -1,0 +1,218 @@
+[
+  {
+    "id": "red-factory-paris",
+    "rank": 1,
+    "name": "Red Factory",
+    "address": "25 Rue de Lappe, 75011 Paris",
+    "arrondissement": "11e",
+    "lat": 48.8536644,
+    "lng": 2.3728762,
+    "photos": [
+      "/photos/red-factory-paris.webp"
+    ],
+    "whyHere": "Rue de Lappe party bar where happy hour runs from 17:00 until closing, so the pint stays at 3.30 all night.",
+    "pintPrice": 4.3,
+    "happyHour": {
+      "from": "17:00",
+      "to": "02:00",
+      "pintPrice": 3.3
+    },
+    "openUntil": "02:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Red%20Factory&query_place_id=ChIJw7rNLwdy5kcRTw4IXdcwhvQ",
+    "sources": [
+      {
+        "type": "mistergoodbeer",
+        "url": "https://www.mistergoodbeer.com/bars/red-factory-paris"
+      }
+    ]
+  },
+  {
+    "id": "rockstar-cafe-paris",
+    "rank": 2,
+    "name": "Rockstar Café",
+    "address": "46 Bd Voltaire, 75011 Paris",
+    "arrondissement": "11e",
+    "lat": 48.8633448,
+    "lng": 2.3704967,
+    "photos": [
+      "/photos/rockstar-cafe-paris.webp"
+    ],
+    "whyHere": "Rock bar with karaoke, beer pong and table football on Boulevard Voltaire. Seven beers on tap and a terrace.",
+    "pintPrice": 4.5,
+    "happyHour": {
+      "from": "15:00",
+      "to": "02:00",
+      "pintPrice": 3.5
+    },
+    "openUntil": "02:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rockstar%20Caf%C3%A9&query_place_id=ChIJIRPRsMRt5kcRpKyjOmkXkMM",
+    "sources": [
+      {
+        "type": "mistergoodbeer",
+        "url": "https://www.mistergoodbeer.com/bars/rockstar-cafe-paris"
+      }
+    ]
+  },
+  {
+    "id": "bon-ami-paris",
+    "rank": 3,
+    "name": "BON AMI",
+    "address": "162 Av. du Maine, 75014 Paris",
+    "arrondissement": "14e",
+    "lat": 48.8333848,
+    "lng": 2.3243459,
+    "photos": [
+      "/photos/bon-ami-paris.webp"
+    ],
+    "whyHere": "Neighbourhood bistro near Pernety with a terrace, sport on the screens and a long happy hour until 21:00.",
+    "pintPrice": 4.5,
+    "happyHour": {
+      "from": "15:00",
+      "to": "21:00",
+      "pintPrice": 3.5
+    },
+    "openUntil": "02:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=BON%20AMI&query_place_id=ChIJV_btIgZx5kcR4K0bgj--VS8",
+    "sources": [
+      {
+        "type": "mistergoodbeer",
+        "url": "https://www.mistergoodbeer.com/bars/bon-ami-paris"
+      }
+    ]
+  },
+  {
+    "id": "au-mathurin-burger-pizza-music-grand-ecran-paris",
+    "rank": 4,
+    "name": "AU MATHURIN",
+    "address": "12 Av. Mathurin Moreau, 75019 Paris",
+    "arrondissement": "19e",
+    "lat": 48.8780782,
+    "lng": 2.3721278,
+    "photos": [
+      "/photos/au-mathurin-burger-pizza-music-grand-ecran-paris.webp"
+    ],
+    "whyHere": "Relaxed spot by Buttes-Chaumont with burgers, a big screen and happy hour from noon to closing.",
+    "pintPrice": 5,
+    "happyHour": {
+      "from": "12:00",
+      "to": "02:00",
+      "pintPrice": 3.5
+    },
+    "openUntil": "02:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=AU%20MATHURIN&query_place_id=ChIJ8Vg576Zt5kcRwvWRAprnqFs",
+    "sources": [
+      {
+        "type": "mistergoodbeer",
+        "url": "https://www.mistergoodbeer.com/bars/au-mathurin-burger-pizza-music-grand-ecran-paris"
+      }
+    ]
+  },
+  {
+    "id": "le-five-bar-paris",
+    "rank": 5,
+    "name": "Le Five",
+    "address": "5 Rue Saint-Sulpice, 75006 Paris",
+    "arrondissement": "6e",
+    "lat": 48.8514527,
+    "lng": 2.337925,
+    "photos": [
+      "/photos/le-five-bar-paris.webp"
+    ],
+    "whyHere": "Cosy Saint-Sulpice bar that fills up with students early. Pints drop to 3.50 between 18:00 and 20:00.",
+    "pintPrice": 6,
+    "happyHour": {
+      "from": "18:00",
+      "to": "20:00",
+      "pintPrice": 3.5
+    },
+    "openUntil": "01:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Le%20Five&query_place_id=ChIJlx5TVtlx5kcR26hJKbLGi9A",
+    "sources": [
+      {
+        "type": "mistergoodbeer",
+        "url": "https://www.mistergoodbeer.com/bars/le-five-bar-paris"
+      }
+    ]
+  },
+  {
+    "id": "solluna-faidherbe-paris",
+    "rank": 6,
+    "name": "Solluna Faidherbe",
+    "address": "247 Rue du Faubourg Saint-Antoine, 75011 Paris",
+    "arrondissement": "11e",
+    "lat": 48.8501169,
+    "lng": 2.3857689,
+    "photos": [
+      "/photos/solluna-faidherbe-paris.webp"
+    ],
+    "whyHere": "Classic corner cafe on Faubourg Saint-Antoine, six beers on tap and a cheap pint from 16:00 onwards.",
+    "pintPrice": 4,
+    "happyHour": {
+      "from": "16:00",
+      "to": "02:00",
+      "pintPrice": 3.5
+    },
+    "openUntil": "02:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Solluna%20Faidherbe&query_place_id=ChIJu8LOLRdz5kcRTwBdxPPrFi0",
+    "sources": [
+      {
+        "type": "mistergoodbeer",
+        "url": "https://www.mistergoodbeer.com/bars/solluna-faidherbe-paris"
+      }
+    ]
+  },
+  {
+    "id": "le-gentilly-paris",
+    "rank": 7,
+    "name": "Le Gentilly",
+    "address": "97 Rue de l'Amiral Mouchez, 75013 Paris",
+    "arrondissement": "13e",
+    "lat": 48.8197079,
+    "lng": 2.3446957,
+    "photos": [
+      "/photos/le-gentilly-paris.webp"
+    ],
+    "whyHere": "Unpretentious local bar in the 13e with a big terrace, match nights and a 3.50 pint after 17:00.",
+    "pintPrice": 6,
+    "happyHour": {
+      "from": "17:00",
+      "to": "02:00",
+      "pintPrice": 3.5
+    },
+    "openUntil": "02:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Le%20Gentilly&query_place_id=ChIJobTd5p5x5kcRQtkZbpwQwPc",
+    "sources": [
+      {
+        "type": "mistergoodbeer",
+        "url": "https://www.mistergoodbeer.com/bars/le-gentilly-paris"
+      }
+    ]
+  },
+  {
+    "id": "workshow-paris",
+    "rank": 8,
+    "name": "WorkshoW PARIS",
+    "address": "173 Rue Saint-Martin, 75003 Paris",
+    "arrondissement": "3e",
+    "lat": 48.8626005,
+    "lng": 2.3520042,
+    "photos": [
+      "/photos/workshow-paris.webp"
+    ],
+    "whyHere": "Retro arcade bar near Beaubourg with a basement club. Busy crowd and pints at 3.50 until 22:00.",
+    "pintPrice": 6.9,
+    "happyHour": {
+      "from": "17:00",
+      "to": "22:00",
+      "pintPrice": 3.5
+    },
+    "openUntil": "02:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=WorkshoW%20PARIS&query_place_id=ChIJG7RDvxtu5kcRf4QMcyVP2zY",
+    "sources": [
+      {
+        "type": "mistergoodbeer",
+        "url": "https://www.mistergoodbeer.com/bars/workshow-paris"
+      }
+    ]
+  }
+]
