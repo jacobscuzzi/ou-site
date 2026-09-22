@@ -9,11 +9,22 @@ if ((memory !== undefined && memory <= 2) || navigator.hardwareConcurrency <= 2)
   document.documentElement.dataset.lite = ''
 }
 
-async function start() {
-  if (import.meta.env.VITE_USE_MOCK === 'true') {
+// Best effort: without a service worker the API client answers from the in-page mock.
+async function startMock() {
+  if (!('serviceWorker' in navigator)) return
+  try {
     const { worker } = await import('./mocks/browser')
-    await worker.start({ onUnhandledRequest: 'bypass', quiet: true })
+    await Promise.race([
+      worker.start({ onUnhandledRequest: 'bypass', quiet: true }),
+      new Promise((resolve) => setTimeout(resolve, 4000)),
+    ])
+  } catch {
+    // registration refused, the in-page mock covers it
   }
+}
+
+async function start() {
+  if (import.meta.env.VITE_USE_MOCK === 'true') await startMock()
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
