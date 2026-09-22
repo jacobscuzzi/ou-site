@@ -6,6 +6,7 @@ import './SearchBar.css'
 
 type Props = {
   value: string
+  submitted: string | null
   loading: boolean
   onChange: (q: string) => void
   onSubmit: (q: string) => void
@@ -13,12 +14,20 @@ type Props = {
   children?: ReactNode
 }
 
-export default function SearchBar({ value, loading, onChange, onSubmit, onHome, children }: Props) {
+export default function SearchBar({ value, submitted, loading, onChange, onSubmit, onHome, children }: Props) {
   const t = useT()
 
   function submit(e: FormEvent) {
     e.preventDefault()
     onSubmit(value)
+  }
+
+  function focus() {
+    if (submitted !== null && value === submitted) onChange('')
+  }
+
+  function blur() {
+    if (submitted !== null && value.trim() === '') onChange(submitted)
   }
 
   return (
@@ -33,6 +42,8 @@ export default function SearchBar({ value, loading, onChange, onSubmit, onHome, 
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onFocus={focus}
+          onBlur={blur}
           placeholder={t.placeholder}
           enterKeyHint="search"
           autoComplete="off"

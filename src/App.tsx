@@ -113,13 +113,13 @@ export default function App() {
                   <Logo size="var(--text-hero)" /> ?
                 </h1>
                 <p className="start-text">{t.tagline}</p>
-                <SearchBar value={value} loading={loading} onChange={setValue} onSubmit={search} onHome={home} />
+                <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={home} />
               </div>
               <Suggestions onPick={search} />
             </section>
           ) : (
             <>
-              <SearchBar value={value} loading={loading} onChange={setValue} onSubmit={search} onHome={home}>
+              <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={home}>
                 {langSwitch}
               </SearchBar>
               <BarList bars={bars} loading={loading} error={error} onRetry={() => setAttempt((n) => n + 1)} />
