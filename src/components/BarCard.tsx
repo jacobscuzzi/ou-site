@@ -1,6 +1,6 @@
 import { useState, type CSSProperties, type KeyboardEvent } from 'react'
 import type { Bar } from '../api/types'
-import { useLang, useT } from '../i18n'
+import { hintFor, useLang, useT } from '../i18n'
 import { tagsFor } from '../tags'
 import BarDetail, { price } from './BarDetail'
 import { BeerIcon, ClockIcon } from './icons'
@@ -30,8 +30,8 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
       onKeyDown={onKey}
     >
       <span className="card-glare" />
-      <div className="card-photo">
-        <img src={bar.photos[0]} alt="" loading="lazy" />
+      <div className={bar.photos.length > 0 ? 'card-photo' : 'card-photo card-photo-empty'}>
+        {bar.photos.length > 0 && <img src={bar.photos[0]} alt="" loading="lazy" />}
         <span className="card-rank">{bar.rank}</span>
       </div>
 
@@ -59,6 +59,13 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
             </span>
           ))}
         </div>
+
+        {!bar.compliant && bar.constraintsNotMet.length > 0 && (
+          <p className="card-hint">
+            <span className="card-hint-mark" aria-hidden="true">!</span>
+            {hintFor(bar.constraintsNotMet, t)}
+          </p>
+        )}
 
         <BarDetail bar={bar} open={open} />
       </div>

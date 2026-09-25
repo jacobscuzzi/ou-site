@@ -1,6 +1,27 @@
 import { createContext, useContext } from 'react'
+import type { ConstraintNotMet } from './api/types'
 
 export type Lang = 'en' | 'fr'
+
+function amount(v: string | number, lang: Lang) {
+  const n = Number(v)
+  if (Number.isNaN(n)) return String(v)
+  const text = Number.isInteger(n) ? String(n) : n.toFixed(2)
+  return lang === 'fr' ? text.replace('.', ',') : text
+}
+
+function clock(v: string | number) {
+  return String(v).match(/\d{1,2}:\d{2}/)?.[0] ?? null
+}
+
+const levels = {
+  en: { cheap: 'cheap', moderate: 'mid-range', expensive: 'upscale' },
+  fr: { cheap: 'pas cher', moderate: 'moyen', expensive: 'chic' },
+}
+
+function level(v: string | number, lang: Lang) {
+  return levels[lang][v as keyof (typeof levels)['en']] ?? String(v)
+}
 
 const en = {
   eyebrow: 'Paris, tonight',
@@ -36,6 +57,29 @@ const en = {
   closeMap: 'Close map',
   mapTitle: 'Results on the map',
   switchTo: 'Passer en français',
+  hint: (c: ConstraintNotMet) => {
+    switch (c.type) {
+      case 'max_beer_price':
+        return c.actual === null
+          ? 'Pint price unknown'
+          : `Pint ${amount(c.actual, 'en')} EUR (asked ≤ ${amount(c.requested, 'en')} EUR)`
+      case 'price_level': {
+        const asked = level(c.requested, 'en')
+        const wanted = asked.charAt(0).toUpperCase() + asked.slice(1)
+        return c.actual === null
+          ? `${wanted} asked, pint price unknown`
+          : `${wanted} asked, pint ${amount(c.actual, 'en')} EUR`
+      }
+      case 'opening':
+        return c.requested === 'open now' ? 'Closed right now' : `Closed at the requested time (${c.requested})`
+      case 'happy_hour_opening': {
+        const at = clock(c.requested)
+        return at ? `No happy hour at ${at}` : 'No happy hour at the requested time'
+      }
+      case 'location':
+        return `Far from ${c.requested}`
+    }
+  },
 }
 
 const fr: typeof en = {
@@ -72,9 +116,33 @@ const fr: typeof en = {
   closeMap: 'Fermer la carte',
   mapTitle: 'Résultats sur la carte',
   switchTo: 'Switch to English',
+  hint: (c: ConstraintNotMet) => {
+    switch (c.type) {
+      case 'max_beer_price':
+        return c.actual === null
+          ? 'Prix de la pinte inconnu'
+          : `Pinte à ${amount(c.actual, 'fr')} € (demandé ≤ ${amount(c.requested, 'fr')} €)`
+      case 'price_level':
+        return c.actual === null
+          ? `Plutôt ${level(c.requested, 'fr')} demandé, prix de la pinte inconnu`
+          : `Plutôt ${level(c.requested, 'fr')} demandé, pinte à ${amount(c.actual, 'fr')} €`
+      case 'opening':
+        return c.requested === 'open now' ? 'Fermé en ce moment' : `Fermé à l'heure demandée (${c.requested})`
+      case 'happy_hour_opening': {
+        const at = clock(c.requested)
+        return at ? `Pas de happy hour à ${at}` : "Pas de happy hour à l'heure demandée"
+      }
+      case 'location':
+        return `Loin de ${c.requested}`
+    }
+  },
 }
 
 export const strings: Record<Lang, typeof en> = { en, fr }
+
+export function hintFor(list: ConstraintNotMet[], t: typeof en) {
+  return list.slice(0, 2).map(t.hint).join(' · ')
+}
 
 export const LangContext = createContext<Lang>('en')
 
