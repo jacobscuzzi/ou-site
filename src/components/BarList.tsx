@@ -9,9 +9,15 @@ type Props = {
   loading: boolean
   error: string | null
   onRetry: () => void
+  hasMore: boolean
+  loadingMore: boolean
+  moreError: string | null
+  onMore: () => void
 }
 
-export default function BarList({ bars, loading, error, onRetry }: Props) {
+const FIRST_PAGE = 5
+
+export default function BarList({ bars, loading, error, onRetry, hasMore, loadingMore, moreError, onMore }: Props) {
   const t = useT()
   if (loading) return <Thinking />
 
@@ -44,8 +50,25 @@ export default function BarList({ bars, loading, error, onRetry }: Props) {
     <div className="list">
       <p className="eyebrow list-eyebrow">{t.picks(bars.length)}</p>
       {bars.map((bar, i) => (
-        <BarCard key={bar.id} bar={bar} index={i} />
+        <BarCard key={bar.id} bar={bar} index={i < FIRST_PAGE ? i : (i - FIRST_PAGE) % 10} />
       ))}
+      {moreError ? (
+        <div className="notice list-more-error" role="alert">
+          <p className="notice-title">{t.moreError}</p>
+          <p className="notice-text">{moreError}</p>
+          <button className="btn-secondary" type="button" onClick={onMore}>
+            {t.retry}
+          </button>
+        </div>
+      ) : (
+        hasMore && (
+          <div className="list-more">
+            <button className="btn-secondary" type="button" onClick={onMore} disabled={loadingMore}>
+              {loadingMore ? t.loadingMore : t.more}
+            </button>
+          </div>
+        )
+      )}
     </div>
   )
 }

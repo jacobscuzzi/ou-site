@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
-import { searchBars } from './api/client'
+import { moreBars, searchBars } from './api/client'
 import type { Bar } from './api/types'
 import { initialLang, LangContext, strings, type Lang } from './i18n'
 import Logo from './components/Logo'
@@ -21,7 +21,13 @@ export default function App() {
   const [attempt, setAttempt] = useState(0)
   const [mapOpen, setMapOpen] = useState(false)
   const [selectedId, setSelectedId] = useState('')
+  const [searchId, setSearchId] = useState<string | null>(null)
+  const [page, setPage] = useState(0)
+  const [hasMore, setHasMore] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [moreError, setMoreError] = useState<string | null>(null)
   const abortRef = useRef<AbortController | null>(null)
+  const moreRef = useRef<AbortController | null>(null)
   const t = strings[lang]
 
   useEffect(() => {
@@ -43,13 +49,21 @@ export default function App() {
       timedOut = true
       ctrl.abort()
     }, 15000)
+    moreRef.current?.abort()
     setLoading(true)
     setError(null)
+    setSearchId(null)
+    setPage(0)
+    setHasMore(false)
+    setLoadingMore(false)
+    setMoreError(null)
 
     const minWait = new Promise((resolve) => setTimeout(resolve, 1200))
     Promise.all([searchBars(query, ctrl.signal), minWait])
       .then(([res]) => {
         setBars(res.results)
+        setSearchId(res.searchId)
+        setHasMore(res.hasMore)
         setSelectedId(res.results[0]?.id ?? '')
         setLoading(false)
       })
@@ -76,8 +90,50 @@ export default function App() {
     window.scrollTo({ top: 0 })
   }
 
+  async function loadMore() {
+    if (loadingMore || !hasMore || !searchId || query === null) return
+    const next = page + 1
+    if (next > 30) {
+      setHasMore(false)
+      return
+    }
+    const ctrl = new AbortController()
+    moreRef.current = ctrl
+    setLoadingMore(true)
+    setMoreError(null)
+    try {
+      let res
+      try {
+        res = await moreBars(searchId, next, ctrl.signal)
+      } catch (err) {
+        if ((err as Error).name !== 'SearchExpired') throw err
+        const fresh = await searchBars(query, ctrl.signal)
+        setSearchId(fresh.searchId)
+        res = await moreBars(fresh.searchId, next, ctrl.signal)
+      }
+      const results = res.results
+      setBars((prev) => {
+        const seen = new Set(prev.map((b) => b.id))
+        return [...prev, ...results.filter((b) => !seen.has(b.id))]
+      })
+      setPage(next)
+      setHasMore(res.hasMore && next < 30)
+      setLoadingMore(false)
+    } catch (err) {
+      if ((err as Error).name === 'AbortError') return
+      setMoreError((err as Error).message)
+      setLoadingMore(false)
+    }
+  }
+
   function home() {
     abortRef.current?.abort()
+    moreRef.current?.abort()
+    setSearchId(null)
+    setPage(0)
+    setHasMore(false)
+    setLoadingMore(false)
+    setMoreError(null)
     setMapOpen(false)
     setQuery(null)
     setValue('')
@@ -122,7 +178,16 @@ export default function App() {
               <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={home}>
                 {langSwitch}
               </SearchBar>
-              <BarList bars={bars} loading={loading} error={error} onRetry={() => setAttempt((n) => n + 1)} />
+              <BarList
+                bars={bars}
+                loading={loading}
+                error={error}
+                onRetry={() => setAttempt((n) => n + 1)}
+                hasMore={hasMore}
+                loadingMore={loadingMore}
+                moreError={moreError}
+                onMore={loadMore}
+              />
               <p className="credit">{t.credit}</p>
               {hasResults && !mapOpen && <MiniMap bars={bars} onOpen={() => setMapOpen(true)} />}
               {hasResults && mapOpen && (
