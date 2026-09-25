@@ -59,7 +59,7 @@ export function mockSearch(q: string): SearchResponse {
     }
   }
 
-  const searchId = crypto.randomUUID()
+  const searchId = Math.random().toString(36).slice(2)
   searches.set(searchId, { query: q, bars: ranked })
   return { searchId, query: q, results: ranked.slice(0, FIRST), hasMore: ranked.length > FIRST, meta }
 }

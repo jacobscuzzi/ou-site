@@ -71,7 +71,7 @@ const en = {
           : `${wanted} asked, pint ${amount(c.actual, 'en')} EUR`
       }
       case 'opening':
-        return c.requested === 'open now' ? 'Closed right now' : `Closed at the requested time (${c.requested})`
+        return c.requested === 'open now' ? 'Closed right now' : `Closed at the requested time (${clock(c.requested) ?? c.requested})`
       case 'happy_hour_opening': {
         const at = clock(c.requested)
         return at ? `No happy hour at ${at}` : 'No happy hour at the requested time'
@@ -127,7 +127,7 @@ const fr: typeof en = {
           ? `Plutôt ${level(c.requested, 'fr')} demandé, prix de la pinte inconnu`
           : `Plutôt ${level(c.requested, 'fr')} demandé, pinte à ${amount(c.actual, 'fr')} €`
       case 'opening':
-        return c.requested === 'open now' ? 'Fermé en ce moment' : `Fermé à l'heure demandée (${c.requested})`
+        return c.requested === 'open now' ? 'Fermé en ce moment' : `Fermé à l'heure demandée (${clock(c.requested) ?? c.requested})`
       case 'happy_hour_opening': {
         const at = clock(c.requested)
         return at ? `Pas de happy hour à ${at}` : "Pas de happy hour à l'heure demandée"

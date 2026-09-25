@@ -47,7 +47,7 @@ export default function BarList({ bars, loading, error, onRetry, hasMore, loadin
   }
 
   return (
-    <div className="list">
+    <div className="list" aria-busy={loadingMore}>
       <p className="eyebrow list-eyebrow">{t.picks(bars.length)}</p>
       {bars.map((bar, i) => (
         <BarCard key={bar.id} bar={bar} index={i < FIRST_PAGE ? i : (i - FIRST_PAGE) % 10} />
