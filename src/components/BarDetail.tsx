@@ -27,7 +27,7 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
             <span className="chip">
               <span className="chip-icon"><CocktailIcon /></span>
               {t.happyHour(hour(bar.happyHour.from), hour(bar.happyHour.to))}
-              <span className="chip-amount">{price(bar.happyHour.pintPrice)}</span>
+              {bar.happyHour.pintPrice !== null && <span className="chip-amount">{price(bar.happyHour.pintPrice)}</span>}
             </span>
           </div>
         )}

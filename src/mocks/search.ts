@@ -33,15 +33,51 @@ function pickTheme(q: string): Theme {
   return best
 }
 
-const byId = new Map((bars as Bar[]).map((b) => [b.id, b]))
+const all: Bar[] = (bars as Omit<Bar, 'compliant' | 'constraintsNotMet'>[]).map((b) => ({
+  ...b,
+  compliant: true,
+  constraintsNotMet: [],
+}))
+const byId = new Map(all.map((b) => [b.id, b]))
+const searches = new Map<string, { query: string; bars: Bar[] }>()
 
-export function mockSearch(q: string, limit: number): SearchResponse {
+const FIRST = 5
+const PAGE = 10
+const meta = { parsed: true, rankingVersion: 0 }
+
+export function mockSearch(q: string): SearchResponse {
   const theme = pickTheme(q)
   const ids = themes[theme].length ? themes[theme] : themes.student
-  const results = ids
-    .map((id) => byId.get(id))
-    .filter((b): b is Bar => Boolean(b))
-    .map((b, i) => ({ ...b, rank: i + 1 }))
-    .slice(0, limit)
-  return { query: q, results }
+  const picked = ids.map((id) => byId.get(id)).filter((b): b is Bar => Boolean(b))
+  const ranked = [...picked, ...all.filter((b) => !ids.includes(b.id))].map((b, i) => ({ ...b, rank: i + 1 }))
+
+  if (theme === 'student' && ranked.length >= FIRST) {
+    ranked[FIRST - 1] = {
+      ...ranked[FIRST - 1],
+      compliant: false,
+      constraintsNotMet: [{ type: 'max_beer_price', requested: 5, actual: 6.5 }],
+    }
+  }
+
+  const searchId = crypto.randomUUID()
+  searches.set(searchId, { query: q, bars: ranked })
+  return { searchId, query: q, results: ranked.slice(0, FIRST), hasMore: ranked.length > FIRST, meta }
+}
+
+export function mockMore(searchId: string, page: number): SearchResponse {
+  const search = searches.get(searchId)
+  if (!search) {
+    const err = new Error('search expired')
+    err.name = 'SearchExpired'
+    throw err
+  }
+  const start = FIRST + (page - 1) * PAGE
+  const end = start + PAGE
+  return {
+    searchId,
+    query: search.query,
+    results: search.bars.slice(start, end),
+    hasMore: end < search.bars.length && page < 30,
+    meta,
+  }
 }

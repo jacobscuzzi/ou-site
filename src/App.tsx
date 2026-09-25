@@ -47,7 +47,7 @@ export default function App() {
     setError(null)
 
     const minWait = new Promise((resolve) => setTimeout(resolve, 1200))
-    Promise.all([searchBars(query, 6, ctrl.signal), minWait])
+    Promise.all([searchBars(query, ctrl.signal), minWait])
       .then(([res]) => {
         setBars(res.results)
         setSelectedId(res.results[0]?.id ?? '')
