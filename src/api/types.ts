@@ -12,6 +12,15 @@ export type ConstraintNotMet = {
   actual: string | number | null
 }
 
+export type Facts = {
+  terrace?: boolean
+  dancing?: boolean
+  music?: string[]
+  vibe?: string[]
+  busyLevel?: string
+  crowdAge?: string
+}
+
 export type Bar = {
   id: string
   rank: number
@@ -29,6 +38,7 @@ export type Bar = {
   sources: { type: SourceType; url: string }[]
   compliant: boolean
   constraintsNotMet: ConstraintNotMet[]
+  facts?: Facts
 }
 
 export type SearchResponse = {

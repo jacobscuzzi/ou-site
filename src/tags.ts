@@ -1,7 +1,8 @@
-import type { Bar } from './api/types'
+import type { Bar, Facts } from './api/types'
 import type { Lang } from './i18n'
 
 type Rule = { re: RegExp; en: string; fr: string; emoji: string }
+type Label = { en: string; fr: string; emoji: string }
 
 const rules: Rule[] = [
   { re: /\bdarts?\b|fléchettes/, en: 'Darts', fr: 'Fléchettes', emoji: '🎯' },
@@ -37,9 +38,56 @@ const rules: Rule[] = [
   { re: /busy|crowd|packed|lively|animé/, en: 'Lively', fr: 'Animé', emoji: '🔥' },
 ]
 
+const music: Record<string, Label> = {
+  electro: { en: 'Electro', fr: 'Électro', emoji: '🎧' },
+  techno: { en: 'Techno', fr: 'Techno', emoji: '🎧' },
+  hip_hop: { en: 'Hip-hop', fr: 'Hip-hop', emoji: '🎤' },
+  latin: { en: 'Latin', fr: 'Latino', emoji: '💃' },
+  afro: { en: 'Afro', fr: 'Afro', emoji: '🥁' },
+  rock: { en: 'Rock', fr: 'Rock', emoji: '🤘' },
+  pop: { en: 'Pop', fr: 'Pop', emoji: '🎶' },
+  jazz: { en: 'Jazz', fr: 'Jazz', emoji: '🎷' },
+  live_band: { en: 'Live music', fr: 'Musique live', emoji: '🎸' },
+  dj: { en: 'DJ', fr: 'DJ', emoji: '🎧' },
+  karaoke: { en: 'Karaoke', fr: 'Karaoké', emoji: '🎤' },
+}
+
+const vibe: Record<string, Label> = {
+  cheap: { en: 'Cheap', fr: 'Pas cher', emoji: '🪙' },
+  chic: { en: 'Chic', fr: 'Chic', emoji: '✨' },
+  cosy: { en: 'Cosy', fr: 'Cosy', emoji: '🛋️' },
+  lively: { en: 'Lively', fr: 'Animé', emoji: '🔥' },
+  dive: { en: 'Dive bar', fr: 'Rade', emoji: '🍺' },
+  romantic: { en: 'Romantic', fr: 'Romantique', emoji: '🌹' },
+  party: { en: 'Party', fr: 'Fête', emoji: '🎉' },
+  laid_back: { en: 'Laid-back', fr: 'Tranquille', emoji: '🌿' },
+  hidden: { en: 'Hidden', fr: 'Caché', emoji: '🚪' },
+  touristy: { en: 'Touristy', fr: 'Touristique', emoji: '📸' },
+}
+
+const dancing: Label = { en: 'Dancing', fr: 'Danse', emoji: '💃' }
+const terrace: Label = { en: 'Terrace', fr: 'Terrasse', emoji: '☀️' }
+const packed: Label = { en: 'Packed', fr: 'Bondé', emoji: '🔥' }
+
 export type Tag = { label: string; emoji: string }
 
+const tag = (l: Label, lang: Lang): Tag => ({ label: l[lang], emoji: l.emoji })
+
+function tagsFromFacts(facts: Facts, lang: Lang): Tag[] {
+  const out: Tag[] = []
+  for (const m of facts.music ?? []) if (music[m]) out.push(tag(music[m], lang))
+  if (facts.dancing) out.push(tag(dancing, lang))
+  for (const v of facts.vibe ?? []) if (vibe[v]) out.push(tag(vibe[v], lang))
+  if (facts.terrace) out.push(tag(terrace, lang))
+  if (facts.busyLevel === 'packed') out.push(tag(packed, lang))
+  return out
+}
+
 export function tagsFor(bar: Bar, lang: Lang, max = 3): Tag[] {
+  if (bar.facts) {
+    const fromFacts = tagsFromFacts(bar.facts, lang)
+    if (fromFacts.length > 0) return fromFacts.slice(0, max)
+  }
   const text = `${bar.name} ${bar.whyHere}`.toLowerCase()
   return rules
     .filter((r) => r.re.test(text))
