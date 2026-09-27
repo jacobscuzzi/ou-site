@@ -1,5 +1,5 @@
 import type { Bar } from '../api/types'
-import { useT } from '../i18n'
+import { useLang, useT } from '../i18n'
 import { CocktailIcon, PinIcon } from './icons'
 import './BarDetail.css'
 
@@ -14,13 +14,14 @@ function hour(t: string) {
 
 export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
   const t = useT()
+  const lang = useLang()
 
   return (
     <div className={open ? 'detail-wrap detail-open' : 'detail-wrap'} aria-hidden={!open}>
       <div className="detail">
         <p className="detail-why">
           <strong>{t.whyHere} </strong>
-          {bar.whyHere}
+          {bar.description?.[lang] ?? bar.whyHere}
         </p>
         {bar.happyHour && (
           <div className="detail-chips">

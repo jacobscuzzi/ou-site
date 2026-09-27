@@ -21,6 +21,11 @@ export type Facts = {
   crowdAge?: string
 }
 
+export type Description = {
+  fr: string
+  en: string
+}
+
 export type Bar = {
   id: string
   rank: number
@@ -39,6 +44,7 @@ export type Bar = {
   compliant: boolean
   constraintsNotMet: ConstraintNotMet[]
   facts?: Facts
+  description?: Description
 }
 
 export type SearchResponse = {
