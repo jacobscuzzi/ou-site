@@ -72,7 +72,7 @@
   --shadow-pink: 0 4px 12px rgba(255, 31, 142, 0.3);
   --shadow-send: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 6px 16px rgba(255, 31, 142, 0.45);
   --shadow-pin-selected: 0 0 0 5px rgba(255, 31, 142, 0.18), 0 6px 16px rgba(255, 31, 142, 0.4);
-  --shadow-bubble-photo: 0 6px 16px rgba(122, 60, 255, 0.35), 0 2px 6px rgba(255, 31, 142, 0.25);
+  --shadow-bubble-photo: 0 6px 16px rgba(255, 31, 142, 0.38), 0 2px 6px rgba(255, 122, 92, 0.28);
   --shadow-bubble-selected: 0 0 0 4px rgba(255, 31, 142, 0.2), 0 10px 24px rgba(255, 31, 142, 0.45);
   --focus-ring: 0 0 0 4px rgba(255, 31, 142, 0.14);
 
@@ -80,21 +80,23 @@
   --blur-2: blur(24px) saturate(1.7);
   --blur-3: blur(32px) saturate(1.9) brightness(1.04);
 
-  --violet: #7a3cff;
+  --coral: #ff7a5c;
+  --rose: #ff94c6;
+  --rose-deep: #e0488f;
   --map-land: #fdf8f2;
   --map-water: #7b93ff;
   --map-water-edge: #6a82f0;
   --map-water-ink: #1b2a86;
   --map-water-halo: #aebcff;
   --map-park: #86dfae;
-  --map-building: #eee5fa;
-  --map-building-edge: #ddd0f2;
+  --map-building: #f2e7e2;
+  --map-building-edge: #e7d8d2;
   --map-road: #ffffff;
-  --map-road-case: #e4d9e4;
+  --map-road-case: #eedcd6;
   --map-road-main: #ffebcc;
   --map-road-main-case: #f0c59a;
-  --map-path: #eed9e4;
-  --map-ink: #2b1a52;
+  --map-path: #f4d8de;
+  --map-ink: #3d2230;
   --map-halo: var(--map-land);
   --metro-casing: var(--map-land);
   --metro-opacity-min: 0.55;
@@ -109,16 +111,16 @@
   --metro-station-r-hub: 5.5px;
   --metro-station-width: 1.5px;
   --metro-label-size: var(--text-chip);
-  --dot: var(--violet);
+  --dot: var(--rose);
   --dot-top: var(--pink);
-  --dot-stroke: var(--surface);
+  --dot-stroke: var(--rose-deep);
   --dot-selected: var(--ink);
   --dot-r-min: 3px;
   --dot-r-max: 8px;
   --dot-r-selected: 11px;
   --dot-stroke-width: 1px;
   --dot-selected-width: 3px;
-  --dot-opacity-min: 0.55;
+  --dot-opacity-min: 0.8;
   --dot-opacity-max: 1;
   --dot-dim-opacity: 0.25;
   --dot-hit: 12px;
@@ -139,7 +141,7 @@
   --bubble-badge: 20px;
   --bubble-badge-border: 2px;
   --bubble-letter: 0.4;
-  --bubble-gradient: linear-gradient(135deg, var(--pink), var(--violet));
+  --bubble-gradient: linear-gradient(135deg, var(--pink), var(--coral));
   --bubble-pulse: 1.08;
   --bubble-selected-scale: 1.2;
   --bubble-period: 2.8s;
