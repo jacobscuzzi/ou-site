@@ -61,9 +61,8 @@ function traitHint(c: ConstraintNotMet, lang: Lang) {
 }
 
 const en = {
-  eyebrow: 'Paris, tonight',
   tagline: "Let's find the best bar for you.",
-  placeholder: "Describe what you're looking for",
+  placeholder: 'Describe your night',
   search: 'Search',
   startOver: 'Start over',
   suggestions: [
@@ -76,7 +75,6 @@ const en = {
   openTill: (t: string) => `Open today till ${t}`,
   closedToday: 'Closed today',
   till: (t: string) => `Till ${t}`,
-  closed: 'Closed',
   chipOpen: 'Open now',
   chipTerrace: 'Terrace',
   chipDancing: 'People dance',
@@ -87,6 +85,11 @@ const en = {
   exploreEmptyHint: 'Zoom out or remove a filter.',
   exploreLoading: 'Loading bars',
   exploreError: "Couldn't load the bars",
+  back: 'Back',
+  barLoading: 'Loading the bar',
+  barError: "Couldn't load this bar",
+  barWarming: 'The bars are still loading, try again in a moment.',
+  barMissing: 'This bar is no longer listed.',
   openUntil: (t: string) => `Open until ${t}`,
   pint: (p: string) => `Pint ${p}`,
   happyHour: (from: string, to: string) => `Happy hour ${from}–${to}:`,
@@ -101,9 +104,6 @@ const en = {
   emptyTitle: 'Nothing for that yet',
   emptyText: 'Try describing the evening differently.',
   credit: 'Map data from OpenStreetMap contributors',
-  showMap: 'Show results on the map',
-  closeMap: 'Close map',
-  mapTitle: 'Results on the map',
   locate: 'Show my location',
   sheetHandle: { peek: 'Panel collapsed, raise it', half: 'Panel half open, raise it', full: 'Panel fully open, lower it' },
   switchTo: 'Passer en français',
@@ -135,9 +135,8 @@ const en = {
 }
 
 const fr: typeof en = {
-  eyebrow: 'Paris, ce soir',
   tagline: 'Trouvons le meilleur bar pour toi.',
-  placeholder: 'Décris ce que tu cherches',
+  placeholder: 'Décris ta soirée',
   search: 'Rechercher',
   startOver: 'Recommencer',
   suggestions: [
@@ -150,7 +149,6 @@ const fr: typeof en = {
   openTill: (t: string) => `Ouvert ce soir jusqu'à ${t}`,
   closedToday: "Fermé aujourd'hui",
   till: (t: string) => `Jusqu'à ${t}`,
-  closed: 'Fermé',
   chipOpen: 'Ouvert',
   chipTerrace: 'Terrasse',
   chipDancing: 'On danse',
@@ -161,6 +159,11 @@ const fr: typeof en = {
   exploreEmptyHint: 'Dézoome ou retire un filtre.',
   exploreLoading: 'Chargement des bars',
   exploreError: 'Impossible de charger les bars',
+  back: 'Retour',
+  barLoading: 'Chargement du bar',
+  barError: 'Impossible de charger ce bar',
+  barWarming: 'Les bars se chargent encore, réessaie dans un instant.',
+  barMissing: "Ce bar n'est plus référencé.",
   openUntil: (t: string) => `Ouvert jusqu'à ${t}`,
   pint: (p: string) => `Pinte ${p}`,
   happyHour: (from: string, to: string) => `Happy hour ${from}–${to} :`,
@@ -175,9 +178,6 @@ const fr: typeof en = {
   emptyTitle: 'Rien pour ça, pour le moment',
   emptyText: 'Essaie de décrire la soirée autrement.',
   credit: 'Données cartographiques OpenStreetMap',
-  showMap: 'Voir les résultats sur la carte',
-  closeMap: 'Fermer la carte',
-  mapTitle: 'Résultats sur la carte',
   locate: 'Me localiser',
   sheetHandle: { peek: 'Panneau réduit, le monter', half: 'Panneau à moitié ouvert, le monter', full: 'Panneau ouvert, le descendre' },
   switchTo: 'Switch to English',

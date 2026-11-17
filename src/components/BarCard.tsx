@@ -7,33 +7,41 @@ import { BeerIcon, ClockIcon } from './icons'
 import Photo from './Photo'
 import './BarCard.css'
 
-export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
-  const [open, setOpen] = useState(false)
+type Props = { bar: Bar; index: number; selected?: boolean; defaultOpen?: boolean; onSelect?: () => void }
+
+export default function BarCard({ bar, index, selected = false, defaultOpen = false, onSelect }: Props) {
+  const [open, setOpen] = useState(defaultOpen)
   const t = useT()
   const tags = tagsFor(bar, useLang())
+
+  function toggle() {
+    setOpen((o) => !o)
+    onSelect?.()
+  }
 
   function onKey(e: KeyboardEvent) {
     if (e.target !== e.currentTarget) return
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
-      setOpen((o) => !o)
+      toggle()
     }
   }
 
   return (
     <article
-      className={open ? 'card card-open' : 'card'}
+      className={['card', open && 'card-open', selected && 'card-selected'].filter(Boolean).join(' ')}
+      data-id={bar.id}
       style={{ '--i': index } as CSSProperties}
       role="button"
       tabIndex={0}
       aria-expanded={open}
-      onClick={() => setOpen((o) => !o)}
+      onClick={toggle}
       onKeyDown={onKey}
     >
       <span className="card-glare" />
       <div className="card-photo">
         <Photo className="card-photo-img" src={bar.photos[0]} />
-        <span className="card-rank">{bar.rank}</span>
+        {bar.rank > 0 && <span className="card-rank">{bar.rank}</span>}
       </div>
 
       <div className="card-body">

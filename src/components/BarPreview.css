@@ -1,0 +1,19 @@
+.preview-skeleton {
+  height: var(--card-skeleton);
+  border-radius: var(--radius-card);
+  background: var(--skeleton);
+}
+
+.preview-note {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+.preview-note-title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 600;
+}

@@ -15,14 +15,14 @@ function useWide() {
   return wide
 }
 
-export default function Suggestions({ onPick }: { onPick: (q: string) => void }) {
+export default function Suggestions({ onPick, single = false }: { onPick: (q: string) => void; single?: boolean }) {
   const t = useT()
   const wide = useWide()
   const flat = t.suggestions.flat()
-  const rows = wide ? [flat.slice(0, 6), flat.slice(6)] : t.suggestions
+  const rows = single ? [flat] : wide ? [flat.slice(0, 6), flat.slice(6)] : t.suggestions
 
   return (
-    <div className="rows">
+    <div className={single ? 'rows rows-single' : 'rows'}>
       {rows.map((row, i) => (
         <div key={i} className={i % 2 ? 'row row-right' : 'row'}>
           <div className="row-track">

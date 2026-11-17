@@ -41,8 +41,17 @@ a {
   min-height: 100dvh;
 }
 
+html.locked,
+html.locked body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 .app {
   position: relative;
+  display: flex;
+  flex-direction: column;
   max-width: var(--app-width);
   min-height: 100dvh;
   margin: 0 auto;
@@ -55,137 +64,102 @@ a {
   }
 }
 
-.backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.backdrop-column {
-  position: relative;
-  height: 100%;
-  max-width: var(--app-width);
-  margin: 0 auto;
-  overflow: hidden;
-}
-
-.backdrop-map,
-.backdrop-veil {
-  opacity: 0;
-  transition: opacity 0.6s var(--ease);
-}
-
-.backdrop-map-on .backdrop-map,
-.backdrop-map-on .backdrop-veil {
-  opacity: 1;
-}
-
-.backdrop-map {
-  position: absolute;
-  inset: calc(-1 * var(--map-blur) * 2);
-  width: calc(100% + var(--map-blur) * 4);
-  height: calc(100% + var(--map-blur) * 4);
-  object-fit: cover;
-  filter: blur(var(--map-blur)) saturate(0.85);
-}
-
-.backdrop-veil {
-  position: absolute;
-  inset: 0;
-  background: var(--veil);
-}
-
-.glow {
-  position: absolute;
-  border-radius: var(--radius-pill);
-  filter: blur(var(--glow-blur));
-  animation: glow-drift 16s ease-in-out infinite alternate;
-}
-
-.glow:nth-of-type(2) {
-  animation-duration: 20s;
-  animation-direction: alternate-reverse;
-}
-
-.glow:nth-of-type(4) {
-  animation-duration: 24s;
-}
-
-@keyframes glow-drift {
-  from {
-    transform: translate(0, 0) scale(1);
-  }
-  to {
-    transform: translate(30px, -24px) scale(1.12);
-  }
-}
-
-.backdrop-map-on .glow {
-  animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .glow {
-    animation: none;
-  }
-}
-
-[data-lite] .glow {
-  animation: none;
-}
-
 [data-lite] .search-pill,
 [data-lite] .card,
 [data-lite] .card-rank,
 [data-lite] .notice,
 [data-lite] .thinking-panel,
-[data-lite] .lang,
-[data-lite] .mapview-close,
-[data-lite] .strip-card {
+[data-lite] .lang {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   background-color: var(--glass-lite);
 }
 
-.glow:nth-of-type(1) {
-  left: -80px;
-  top: -120px;
-  width: 360px;
-  height: 360px;
-  background: var(--glow-pink);
+.stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--map);
 }
 
-.glow:nth-of-type(2) {
-  right: -60px;
-  top: 300px;
-  width: 260px;
-  height: 260px;
-  background: var(--glow-orange);
-}
-
-.glow:nth-of-type(3) {
-  right: -120px;
-  bottom: -120px;
-  width: 340px;
-  height: 340px;
-  background: var(--glow-pink-2);
-}
-
-.glow:nth-of-type(4) {
-  left: -100px;
-  bottom: 120px;
-  width: 260px;
-  height: 260px;
-  background: var(--glow-violet);
-}
-
-.content {
-  position: relative;
-  z-index: 1;
+.top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  max-width: var(--app-width);
+  margin: 0 auto;
+  pointer-events: none;
+  touch-action: none;
+}
+
+.top :is(.search-pill, .lang, .chips, .bubble) {
+  pointer-events: auto;
+}
+
+.top .search {
+  position: static;
+}
+
+.top .chips {
+  margin: calc(-1 * var(--space-2)) 0 0;
+  padding: var(--space-2) var(--space-5);
+  touch-action: pan-x;
+}
+
+.top .rows {
+  margin: var(--space-1) 0 0;
+}
+
+.pane {
+  padding: 0 var(--space-4) var(--space-5);
+}
+
+.sheet .credit {
+  margin: 0;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: var(--control-size);
+  margin-left: calc(-1 * var(--space-2));
+  padding: 0 var(--space-3) 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.back:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+@media (min-width: 768px) {
+  .top {
+    left: calc(var(--panel-width) + var(--space-2));
+    max-width: calc(var(--reading-width) + 2 * var(--space-5));
+    margin: 0;
+  }
+
+  .top .search {
+    max-width: none;
+    margin: 0;
+  }
+
+  .pane,
+  .sheet .list {
+    padding-top: var(--space-5);
+  }
+
+  .sheet-header + .sheet-content .pane {
+    padding-top: 0;
+  }
 }
 
 .eyebrow {

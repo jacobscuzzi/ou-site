@@ -25,7 +25,7 @@ const ALL_LABELS_ZOOM = 15
 const STREET_ZOOM = 15
 const START_CENTER: [number, number] = [2.3488, 48.86]
 const START_ZOOM = 12.3
-const PAN_MARGIN = 0.08
+const PAN_MARGIN = 0.2
 const STYLE_TIMEOUT = 10000
 
 type Props = {
@@ -68,14 +68,19 @@ function readTokens() {
 }
 
 function padding() {
-  const css = getComputedStyle(document.documentElement)
-  const num = (name: string) => parseFloat(css.getPropertyValue(name))
-  return {
-    top: num('--map-pad-top'),
-    bottom: num('--map-pad-bottom'),
-    left: num('--map-pad-left'),
-    right: num('--map-pad-right'),
+  const probe = document.createElement('div')
+  probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none'
+  probe.style.padding = 'var(--map-pad-top) var(--map-pad-right) var(--map-pad-bottom) var(--map-pad-left)'
+  document.body.appendChild(probe)
+  const css = getComputedStyle(probe)
+  const pad = {
+    top: parseFloat(css.paddingTop),
+    bottom: parseFloat(css.paddingBottom),
+    left: parseFloat(css.paddingLeft),
+    right: parseFloat(css.paddingRight),
   }
+  probe.remove()
+  return pad
 }
 
 function centreOffset(): [number, number] {
@@ -239,8 +244,18 @@ export default function CityMap(props: Props) {
     }
     const timer = window.setTimeout(fail, STYLE_TIMEOUT)
     const emitBounds = () => {
-      const b = map.getBounds()
-      latest.current.onBounds({ minLng: b.getWest(), minLat: b.getSouth(), maxLng: b.getEast(), maxLat: b.getNorth() })
+      const pad = padding()
+      const box = map.getContainer()
+      const right = box.clientWidth - pad.right
+      const bottom = box.clientHeight - pad.bottom
+      if (right <= pad.left || bottom <= pad.top) {
+        const b = map.getBounds()
+        latest.current.onBounds({ minLng: b.getWest(), minLat: b.getSouth(), maxLng: b.getEast(), maxLat: b.getNorth() })
+        return
+      }
+      const nw = map.unproject([pad.left, pad.top])
+      const se = map.unproject([right, bottom])
+      latest.current.onBounds({ minLng: nw.lng, minLat: se.lat, maxLng: se.lng, maxLat: nw.lat })
     }
 
     map.on('error', (e) => {

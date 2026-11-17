@@ -64,3 +64,11 @@ export function LocateIcon({ size = 18 }: IconProps) {
     </svg>
   )
 }
+
+export function BackIcon({ size = 18 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M15 5l-7 7 7 7" />
+    </svg>
+  )
+}

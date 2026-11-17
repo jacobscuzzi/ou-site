@@ -13,11 +13,13 @@ type Props = {
   loadingMore: boolean
   moreError: string | null
   onMore: () => void
+  selectedId?: string | null
+  onSelect?: (id: string) => void
 }
 
 const FIRST_PAGE = 5
 
-export default function BarList({ bars, loading, error, onRetry, hasMore, loadingMore, moreError, onMore }: Props) {
+export default function BarList({ bars, loading, error, onRetry, hasMore, loadingMore, moreError, onMore, selectedId, onSelect }: Props) {
   const t = useT()
   if (loading) return <Thinking />
 
@@ -50,7 +52,13 @@ export default function BarList({ bars, loading, error, onRetry, hasMore, loadin
     <div className="list" aria-busy={loadingMore}>
       <p className="eyebrow list-eyebrow">{t.picks(bars.length)}</p>
       {bars.map((bar, i) => (
-        <BarCard key={bar.id} bar={bar} index={i < FIRST_PAGE ? i : (i - FIRST_PAGE) % 10} />
+        <BarCard
+          key={bar.id}
+          bar={bar}
+          index={i < FIRST_PAGE ? i : (i - FIRST_PAGE) % 10}
+          selected={bar.id === selectedId}
+          onSelect={onSelect && (() => onSelect(bar.id))}
+        />
       ))}
       {moreError ? (
         <div className="notice list-more-error" role="alert">

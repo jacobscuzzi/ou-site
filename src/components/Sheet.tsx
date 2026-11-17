@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type FocusEvent, type PointerEvent, type ReactNode } from 'react'
 import { useT } from '../i18n'
 import './Sheet.css'
 
@@ -8,6 +8,7 @@ type Props = {
   height: SheetHeight
   onHeight: (h: SheetHeight) => void
   header?: ReactNode
+  scrollKey?: string
   children: ReactNode
 }
 
@@ -19,6 +20,7 @@ const DRAG_START = 6
 const FLICK = 0.5
 const WINDOW = 90
 const desktop = '(min-width: 768px)'
+const focusVisible = CSS.supports('selector(:focus-visible)')
 
 function velocity(samples: Sample[], now: number) {
   const first = samples[0]
@@ -27,13 +29,18 @@ function velocity(samples: Sample[], now: number) {
   return (first.y - last.y) / (last.t - first.t)
 }
 
-export default function Sheet({ height, onHeight, header, children }: Props) {
+export default function Sheet({ height, onHeight, header, scrollKey, children }: Props) {
   const t = useT()
   const root = useRef<HTMLElement>(null)
   const marks = useRef<Record<SheetHeight, HTMLElement | null>>({ peek: null, half: null, full: null })
   const drag = useRef<Drag | null>(null)
   const swallow = useRef(false)
   const [dragging, setDragging] = useState(false)
+  const content = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    content.current?.scrollTo({ top: 0 })
+  }, [scrollKey])
 
   const px = (h: SheetHeight) => marks.current[h]?.offsetHeight ?? 0
   const place = (h: number) => {
@@ -87,6 +94,12 @@ export default function Sheet({ height, onHeight, header, children }: Props) {
     if (root.current) root.current.style.transform = ''
   }
 
+  const focusIn = (e: FocusEvent<HTMLElement>) => {
+    if (height === 'full' || window.matchMedia(desktop).matches) return
+    if (focusVisible && !e.target.matches(':focus-visible')) return
+    onHeight('full')
+  }
+
   const cycle = () => onHeight(order[(order.indexOf(height) + 1) % order.length])
 
   return (
@@ -109,7 +122,9 @@ export default function Sheet({ height, onHeight, header, children }: Props) {
         <span className="sheet-grip" />
       </button>
       {header && <div className="sheet-header">{header}</div>}
-      <div className="sheet-content" onFocusCapture={() => height !== 'full' && onHeight('full')}>{children}</div>
+      <div ref={content} className="sheet-content" onFocusCapture={focusIn}>
+        {children}
+      </div>
     </section>
   )
 }
