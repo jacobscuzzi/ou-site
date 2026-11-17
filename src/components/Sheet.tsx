@@ -11,12 +11,21 @@ type Props = {
   children: ReactNode
 }
 
-type Drag = { id: number; y: number; h0: number; moved: boolean; last: number; lastT: number; v: number }
+type Sample = { y: number; t: number }
+type Drag = { id: number; y: number; h0: number; moved: boolean; samples: Sample[] }
 
 const order: SheetHeight[] = ['peek', 'half', 'full']
 const DRAG_START = 6
 const FLICK = 0.5
+const WINDOW = 90
 const desktop = '(min-width: 768px)'
+
+function velocity(samples: Sample[], now: number) {
+  const first = samples[0]
+  const last = samples[samples.length - 1]
+  if (now - last.t > WINDOW || last.t === first.t) return 0
+  return (first.y - last.y) / (last.t - first.t)
+}
 
 export default function Sheet({ height, onHeight, header, children }: Props) {
   const t = useT()
@@ -34,8 +43,9 @@ export default function Sheet({ height, onHeight, header, children }: Props) {
 
   const down = (e: PointerEvent<HTMLElement>) => {
     if (window.matchMedia(desktop).matches || !e.isPrimary) return
+    if (e.pointerType === 'mouse' && e.button !== 0) return
     if (height === 'full' && (e.target as HTMLElement).closest('.sheet-content')) return
-    drag.current = { id: e.pointerId, y: e.clientY, h0: px(height), moved: false, last: e.clientY, lastT: e.timeStamp, v: 0 }
+    drag.current = { id: e.pointerId, y: e.clientY, h0: px(height), moved: false, samples: [{ y: e.clientY, t: e.timeStamp }] }
   }
 
   const move = (e: PointerEvent<HTMLElement>) => {
@@ -47,10 +57,7 @@ export default function Sheet({ height, onHeight, header, children }: Props) {
       e.currentTarget.setPointerCapture(e.pointerId)
       setDragging(true)
     }
-    const dt = e.timeStamp - d.lastT
-    if (dt > 0) d.v = (d.last - e.clientY) / dt
-    d.last = e.clientY
-    d.lastT = e.timeStamp
+    d.samples = [...d.samples.filter((s) => e.timeStamp - s.t <= WINDOW), { y: e.clientY, t: e.timeStamp }]
     place(Math.min(px('full'), Math.max(px('peek'), d.h0 + d.y - e.clientY)))
   }
 
@@ -64,8 +71,9 @@ export default function Sheet({ height, onHeight, header, children }: Props) {
     setDragging(false)
     if (root.current) root.current.style.transform = ''
     const i = order.indexOf(height)
-    if (Math.abs(d.v) > FLICK) {
-      onHeight(order[Math.min(order.length - 1, Math.max(0, i + (d.v > 0 ? 1 : -1)))])
+    const v = velocity(d.samples, e.timeStamp)
+    if (Math.abs(v) > FLICK) {
+      onHeight(order[Math.min(order.length - 1, Math.max(0, i + (v > 0 ? 1 : -1)))])
       return
     }
     const h = Math.min(px('full'), Math.max(px('peek'), d.h0 + d.y - e.clientY))
@@ -97,11 +105,11 @@ export default function Sheet({ height, onHeight, header, children }: Props) {
       {order.map((h) => (
         <i key={h} ref={(el) => void (marks.current[h] = el)} className={`sheet-mark sheet-mark-${h}`} aria-hidden="true" />
       ))}
-      <button type="button" className="sheet-handle" aria-label={t.sheetHandle} aria-expanded={height !== 'peek'} onClick={cycle}>
+      <button type="button" className="sheet-handle" aria-label={t.sheetHandle[height]} aria-expanded={height !== 'peek'} onClick={cycle}>
         <span className="sheet-grip" />
       </button>
       {header && <div className="sheet-header">{header}</div>}
-      <div className="sheet-content">{children}</div>
+      <div className="sheet-content" onFocusCapture={() => height !== 'full' && onHeight('full')}>{children}</div>
     </section>
   )
 }

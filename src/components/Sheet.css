@@ -17,7 +17,6 @@
   border-bottom: 0;
   box-shadow: var(--glass-edge), var(--shadow-sheet);
   padding-bottom: env(safe-area-inset-bottom);
-  overscroll-behavior: none;
   touch-action: none;
   transform: translateY(calc(var(--sheet-full) - var(--sheet-peek)));
   transition: transform 0.35s var(--ease);
@@ -92,6 +91,7 @@
   min-height: 0;
   overflow: hidden;
   overscroll-behavior: contain;
+  touch-action: none;
 }
 
 .sheet[data-height='full'] .sheet-content {
@@ -131,7 +131,7 @@
     padding-top: var(--space-4);
   }
 
-  .sheet .sheet-content {
+  .sheet[data-height] .sheet-content {
     overflow-y: auto;
     touch-action: auto;
   }

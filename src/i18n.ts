@@ -104,7 +104,7 @@ const en = {
   closeMap: 'Close map',
   mapTitle: 'Results on the map',
   locate: 'Show my location',
-  sheetHandle: 'Change panel height',
+  sheetHandle: { peek: 'Panel collapsed, raise it', half: 'Panel half open, raise it', full: 'Panel fully open, lower it' },
   switchTo: 'Passer en français',
   hint: (c: ConstraintNotMet) => {
     switch (c.type) {
@@ -177,7 +177,7 @@ const fr: typeof en = {
   closeMap: 'Fermer la carte',
   mapTitle: 'Résultats sur la carte',
   locate: 'Me localiser',
-  sheetHandle: 'Changer la hauteur du panneau',
+  sheetHandle: { peek: 'Panneau réduit, le monter', half: 'Panneau à moitié ouvert, le monter', full: 'Panneau ouvert, le descendre' },
   switchTo: 'Switch to English',
   hint: (c: ConstraintNotMet) => {
     switch (c.type) {
