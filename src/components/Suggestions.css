@@ -63,7 +63,8 @@
   animation-name: slide-right;
 }
 
-.row:hover .row-track {
+.row:hover .row-track,
+.row:focus-within .row-track {
   animation-play-state: paused;
 }
 

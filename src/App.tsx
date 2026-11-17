@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ComponentProps, type ComponentType } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ComponentProps, type ComponentType, type FocusEvent } from 'react'
 import { fetchBars, moreBars, searchBars } from './api/client'
 import type { Bar, MapBar } from './api/types'
 import { initialLang, LangContext, strings, type Lang } from './i18n'
@@ -25,6 +25,8 @@ const CityMap = lazy<ComponentType<MapProps>>(() => import('./components/CityMap
 const NO_RESULTS: Bar[] = []
 const BARS_RETRIES = 6
 const BARS_RETRY_DELAY = 5000
+const BARS_TIMEOUT = 10000
+const desktop = '(min-width: 768px)'
 
 export default function App() {
   const [lang, setLang] = useState<Lang>(initialLang)
@@ -44,6 +46,7 @@ export default function App() {
   const [mapBars, setMapBars] = useState<MapBar[]>([])
   const [barsState, setBarsState] = useState<'loading' | 'ready' | 'error'>('loading')
   const [barsAttempt, setBarsAttempt] = useState(0)
+  const [barsWarming, setBarsWarming] = useState(false)
   const [bounds, setBounds] = useState<Bounds | null>(null)
   const [chips, setChips] = useState<ReadonlySet<ChipKey>>(() => new Set())
   const [sheet, setSheet] = useState<SheetHeight>('peek')
@@ -72,6 +75,7 @@ export default function App() {
     let tries = 0
     let timer = 0
     const retry = () => {
+      setBarsWarming(true)
       if (tries >= BARS_RETRIES) {
         setBarsState('error')
         return
@@ -80,17 +84,31 @@ export default function App() {
       timer = window.setTimeout(load, BARS_RETRY_DELAY)
     }
     const load = () => {
-      fetchBars(ctrl.signal)
+      const attemptCtrl = new AbortController()
+      let timedOut = false
+      const abort = () => attemptCtrl.abort()
+      const limit = window.setTimeout(() => {
+        timedOut = true
+        abort()
+      }, BARS_TIMEOUT)
+      ctrl.signal.addEventListener('abort', abort)
+      fetchBars(attemptCtrl.signal)
         .then((res) => {
           if (res.bars.length === 0) return retry()
           setMapBars(res.bars)
+          setBarsWarming(false)
           setBarsState('ready')
         })
         .catch((err: Error) => {
-          if (err.name !== 'AbortError') retry()
+          if (err.name !== 'AbortError' || timedOut) retry()
+        })
+        .finally(() => {
+          window.clearTimeout(limit)
+          ctrl.signal.removeEventListener('abort', abort)
         })
     }
     setBarsState('loading')
+    setBarsWarming(false)
     load()
     return () => {
       window.clearTimeout(timer)
@@ -155,6 +173,7 @@ export default function App() {
     setSelectedId(null)
     setReveal(null)
     setSheet('half')
+    ;(document.activeElement as HTMLElement | null)?.blur()
     window.scrollTo({ top: 0 })
   }
 
@@ -248,8 +267,17 @@ export default function App() {
     }
     const id = returnFocus.current
     returnFocus.current = null
-    if (id) document.querySelector<HTMLElement>(`.sheet [data-id="${CSS.escape(id)}"]`)?.focus({ preventScroll: true })
+    if (!id) return
+    const row = document.querySelector<HTMLElement>(`.sheet [data-id="${CSS.escape(id)}"]`)
+    ;(row ?? document.querySelector<HTMLElement>('.sheet'))?.focus({ preventScroll: true })
   }, [previewId])
+
+  function topFocus(e: FocusEvent<HTMLElement>) {
+    if (sheet !== 'full' || window.matchMedia(desktop).matches) return
+    if (!(e.target as HTMLElement).matches(':focus-visible')) return
+    if ((e.target as HTMLElement).closest('.search')) return
+    setSheet('half')
+  }
 
   function back() {
     returnFocus.current = previewId
@@ -306,7 +334,7 @@ export default function App() {
     <LangContext.Provider value={lang}>
       <main className="stage" data-sheet={sheet} data-mode={query === null ? 'explore' : 'results'}>
         {heading}
-        <div className="top">
+        <div className="top" onFocusCapture={topFocus}>
           {searchBar}
           <Chips value={chips} onToggle={toggleChip} />
           {query === null && <Suggestions single onPick={search} />}
@@ -346,6 +374,7 @@ export default function App() {
               <ExploreList
                 bars={top}
                 state={exploreState}
+                warming={barsWarming}
                 selectedId={selectedId}
                 onSelect={pickFromList}
                 onRetry={() => setBarsAttempt((n) => n + 1)}

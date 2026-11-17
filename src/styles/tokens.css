@@ -120,7 +120,6 @@
   --handle-height: 5px;
   --shadow-sheet: 0 -8px 32px rgba(17, 17, 20, 0.12);
   --map-pad-top: calc(var(--top-clear) + var(--control-size) + var(--space-5));
-  --map-pad-bottom: calc(var(--sheet-half) + var(--space-5));
   --map-pad-left: 40px;
   --map-pad-right: 40px;
 
@@ -140,7 +139,6 @@
   :root {
     --app-width: 1120px;
     --sheet-peek: 0px;
-    --map-pad-bottom: 40px;
     --map-pad-left: calc(var(--panel-width) + var(--space-7));
   }
 }

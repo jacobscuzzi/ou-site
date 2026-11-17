@@ -69,7 +69,9 @@ html.locked body {
 [data-lite] .card-rank,
 [data-lite] .notice,
 [data-lite] .thinking-panel,
-[data-lite] .lang {
+[data-lite] .lang,
+[data-lite] .sheet,
+[data-lite] .citymap-locate {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   background-color: var(--glass-lite);
@@ -186,7 +188,7 @@ html.locked body {
 
   .stage[data-sheet] {
     --sheet-now: var(--sheet-peek);
-    --map-pad-bottom: var(--space-7);
+    --map-pad-bottom: calc(var(--space-7) + var(--space-5));
   }
 
   .pane,

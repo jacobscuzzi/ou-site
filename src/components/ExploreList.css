@@ -105,6 +105,18 @@
   background: var(--skeleton);
 }
 
+.explore-status {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.explore-warming {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
 .explore-note {
   display: flex;
   flex-direction: column;

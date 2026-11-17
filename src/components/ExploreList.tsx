@@ -9,6 +9,7 @@ import './ExploreList.css'
 type Props = {
   bars: MapBar[]
   state: 'loading' | 'ready' | 'empty' | 'error'
+  warming: boolean
   selectedId: string | null
   onSelect: (id: string) => void
   onRetry: () => void
@@ -54,14 +55,16 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
   )
 }
 
-export default function ExploreList({ bars, state, selectedId, onSelect, onRetry }: Props) {
+export default function ExploreList({ bars, state, warming, selectedId, onSelect, onRetry }: Props) {
   const t = useT()
 
   return (
     <section className="explore">
       <h2 className="explore-title">{t.exploreTitle}</h2>
       {state === 'loading' && (
-        <div role="status" aria-label={t.exploreLoading}>
+        <div className="explore-status" role="status">
+          <span className="visually-hidden">{t.exploreLoading}</span>
+          {warming && <p className="explore-warming">{t.exploreWarming}</p>}
           <ul className="explore-list" aria-hidden="true">
             {[0, 1, 2].map((i) => (
               <li key={i} className="xrow-skeleton" />

@@ -47,7 +47,8 @@ export default function BarPreview({ id }: { id: string }) {
   }
 
   return (
-    <div role="status" aria-label={t.barLoading}>
+    <div role="status">
+      <span className="visually-hidden">{t.barLoading}</span>
       <div className="preview-skeleton" aria-hidden="true" />
     </div>
   )

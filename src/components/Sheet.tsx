@@ -111,6 +111,7 @@ export default function Sheet({ height, onHeight, header, scrollKey, children }:
       ref={root}
       className={dragging ? 'sheet sheet-dragging' : 'sheet'}
       data-height={height}
+      tabIndex={-1}
       aria-label={t.sheetLabel}
       onPointerDown={down}
       onPointerMove={move}

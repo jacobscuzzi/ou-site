@@ -22,6 +22,10 @@
   transition: transform 0.35s var(--ease);
 }
 
+.sheet:focus {
+  outline: none;
+}
+
 .sheet[data-height='half'] {
   transform: translateY(calc(var(--sheet-full) - var(--sheet-half)));
 }
