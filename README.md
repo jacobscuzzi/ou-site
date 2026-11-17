@@ -17,15 +17,15 @@ Deux états, sur la même carte :
   Quatre filtres (ouvert maintenant, terrasse, danse, bière pas chère) restreignent la liste et les
   points.
 - **Résultats** (après une recherche) : les résultats sont numérotés sur la carte et listés dans la
-  feuille. Charger plus ajoute des pages. Un aperçu du bar s'ouvre depuis la liste ou un point de la carte, avec un bouton retour.
+  feuille. Charger plus ajoute des pages. En explorer, une ligne de la liste ou un point de la carte ouvre l'aperçu du bar, avec un bouton retour ; en résultats, une carte de la liste sélectionne le bar sans ouvrir d'aperçu.
 
 Sur téléphone, la feuille est une fenêtre en bas d'écran, à trois hauteurs (réduite, mi-hauteur,
 pleine). À partir de 768px, c'est un panneau à gauche.
 
 ### Repli sans carte
 
-Si le style de la carte ne charge pas dans les 10 secondes, ou si le code de la carte ne se charge
-pas, l'application passe en mode sans carte : page d'accueil avec des suggestions de recherche et
+Si le navigateur n'a pas WebGL (la création de la carte échoue), si le style de la carte ne charge pas
+dans les 10 secondes, ou si le code de la carte ne se charge pas, l'application passe en mode sans carte : page d'accueil avec des suggestions de recherche et
 liste de résultats. La recherche reste disponible, les bars ne sont pas chargés pour la carte.
 
 Les bars de la carte sont chargés au démarrage. En cas d'échec (réponse vide ou erreur), l'appli
