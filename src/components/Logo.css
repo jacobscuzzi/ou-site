@@ -1,0 +1,42 @@
+.logo {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: var(--f);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: var(--ink);
+}
+
+.logo::before,
+.logo::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--f) * 0.72);
+  top: calc(var(--f) * 0.12);
+  width: calc(var(--f) * 0.35);
+  height: calc(var(--f) * 0.14);
+  border-radius: var(--radius-pill);
+  transform: rotate(38deg);
+}
+
+.logo::before {
+  background: var(--pink-glass);
+  -webkit-backdrop-filter: blur(calc(var(--f) * 0.03)) saturate(1.6);
+  backdrop-filter: blur(calc(var(--f) * 0.03)) saturate(1.6);
+  box-shadow:
+    inset 0 0 0 calc(var(--f) * 0.008) var(--pink-rim),
+    inset 0 calc(var(--f) * -0.035) calc(var(--f) * 0.035) var(--pink-bounce),
+    inset 0 calc(var(--f) * 0.02) calc(var(--f) * 0.03) var(--pink-shade),
+    0 calc(var(--f) * 0.02) calc(var(--f) * 0.04) var(--pink-glow),
+    0 calc(var(--f) * 0.08) calc(var(--f) * 0.22) var(--pink-glow);
+}
+
+.logo::after {
+  left: calc(var(--f) * 0.735);
+  top: calc(var(--f) * 0.13);
+  width: calc(var(--f) * 0.32);
+  height: calc(var(--f) * 0.12);
+  background: var(--pink-gloss);
+}

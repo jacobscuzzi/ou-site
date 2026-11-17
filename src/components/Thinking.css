@@ -1,0 +1,136 @@
+.thinking {
+  display: flex;
+  justify-content: center;
+  padding: calc(var(--space-7) * 3) var(--space-5) var(--space-7);
+  animation: fade-up 0.5s var(--ease) both;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+.thinking-panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-card);
+  background: var(--glass);
+  -webkit-backdrop-filter: var(--blur-3);
+  backdrop-filter: var(--blur-3);
+  border: 1.5px solid var(--glass-border-strong);
+  box-shadow: var(--glass-edge), var(--hairline), var(--shadow-3);
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+.thinking-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-card);
+  background: var(--glass-glare);
+  pointer-events: none;
+}
+
+.thinking-text {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.thinking-dots {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: var(--space-1);
+}
+
+.thinking-dots i {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--pink);
+  animation: blink 1.2s ease-in-out infinite;
+}
+
+.thinking-dots i:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.thinking-dots i:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.thinking-beers {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+}
+
+.thinking-beer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  color: var(--pink);
+  opacity: 0;
+  animation: fly 1.8s var(--ease) infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes fly {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.1) rotate(35deg);
+  }
+}
+
+@keyframes blink {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thinking,
+  .thinking-panel,
+  .thinking-beer {
+    animation: none;
+  }
+
+  .thinking-beer {
+    display: none;
+  }
+}
