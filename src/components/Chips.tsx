@@ -1,5 +1,5 @@
 import { useT } from '../i18n'
-import type { ChipKey } from '../map/geo'
+import { CHEAP_PINT, type ChipKey } from '../map/geo'
 import './Chips.css'
 
 type Props = { value: ReadonlySet<ChipKey>; onToggle: (k: ChipKey) => void }
@@ -10,7 +10,7 @@ export default function Chips({ value, onToggle }: Props) {
     ['open', t.chipOpen],
     ['terrace', t.chipTerrace],
     ['dancing', t.chipDancing],
-    ['cheap', t.chipCheap],
+    ['cheap', t.chipCheap(CHEAP_PINT)],
   ]
 
   return (

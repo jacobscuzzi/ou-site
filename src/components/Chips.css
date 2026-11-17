@@ -1,6 +1,8 @@
 .chips {
   display: flex;
   gap: var(--space-2);
+  margin: calc(var(--space-2) * -1);
+  padding: var(--space-2);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -11,7 +13,7 @@
 
 .filter {
   flex: none;
-  height: var(--chip-height);
+  height: var(--control-size);
   padding: 0 var(--space-4);
   border: var(--border-1) solid var(--glass-border);
   border-radius: var(--radius-pill);

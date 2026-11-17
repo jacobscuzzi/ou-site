@@ -19,3 +19,8 @@
   background: var(--fill);
   color: var(--ink-2);
 }
+
+.photo-empty svg {
+  width: var(--photo-icon);
+  height: var(--photo-icon);
+}

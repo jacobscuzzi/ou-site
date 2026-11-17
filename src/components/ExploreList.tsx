@@ -19,7 +19,7 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
   const lang = useLang()
 
   return (
-    <button type="button" className={selected ? 'xrow xrow-selected' : 'xrow'} aria-pressed={selected} onClick={onSelect}>
+    <button type="button" className={selected ? 'xrow xrow-selected' : 'xrow'} aria-current={selected || undefined} onClick={onSelect}>
       <Photo className="xrow-photo" src={bar.cover} />
       <span className="xrow-body">
         <span className="xrow-head">
@@ -55,18 +55,22 @@ export default function ExploreList({ bars, state, selectedId, onSelect, onRetry
     <section className="explore">
       <h2 className="explore-title">{t.exploreTitle}</h2>
       {state === 'loading' && (
-        <div className="explore-list" aria-hidden="true">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="xrow-skeleton" />
-          ))}
+        <div role="status" aria-label={t.exploreLoading}>
+          <ul className="explore-list" aria-hidden="true">
+            {[0, 1, 2].map((i) => (
+              <li key={i} className="xrow-skeleton" />
+            ))}
+          </ul>
         </div>
       )}
       {state === 'ready' && (
-        <div className="explore-list">
+        <ul className="explore-list">
           {bars.map((bar) => (
-            <Row key={bar.id} bar={bar} selected={bar.id === selectedId} onSelect={() => onSelect(bar.id)} />
+            <li key={bar.id}>
+              <Row bar={bar} selected={bar.id === selectedId} onSelect={() => onSelect(bar.id)} />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
       {state === 'empty' && (
         <div className="explore-note">

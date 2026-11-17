@@ -95,7 +95,15 @@ export function tagsFor(bar: Bar, lang: Lang, max = 3): Tag[] {
     .map((r) => ({ label: r[lang], emoji: r.emoji }))
 }
 
+const named = new Map<string, Label>([
+  ...Object.entries(music),
+  ...Object.entries(vibe),
+  ['dancing', dancing],
+  ['terrace', terrace],
+  ['packed', packed],
+])
+
 export function labelFor(raw: string, lang: Lang): string {
-  const known = music[raw] ?? vibe[raw] ?? ({ dancing, terrace, packed } as Record<string, Label>)[raw]
+  const known = named.get(raw)
   return known ? known[lang] : raw.replace(/_/g, ' ')
 }

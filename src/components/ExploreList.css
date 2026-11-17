@@ -12,6 +12,9 @@
 }
 
 .explore-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -42,6 +45,10 @@
 .xrow:focus-visible {
   outline: none;
   box-shadow: var(--hairline), var(--focus-ring);
+}
+
+.xrow-selected:focus-visible {
+  box-shadow: var(--hairline), var(--shadow-pin-selected), var(--focus-ring);
 }
 
 .xrow-photo {
