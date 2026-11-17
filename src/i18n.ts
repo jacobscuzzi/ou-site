@@ -3,14 +3,14 @@ import type { ConstraintNotMet } from './api/types'
 
 export type Lang = 'en' | 'fr'
 
-function amount(v: string | number, lang: Lang) {
+function amount(v: string | number | boolean, lang: Lang) {
   const n = Number(v)
   if (Number.isNaN(n)) return String(v)
   const text = Number.isInteger(n) ? String(n) : n.toFixed(2)
   return lang === 'fr' ? text.replace('.', ',') : text
 }
 
-function clock(v: string | number) {
+function clock(v: string | number | boolean) {
   return String(v).match(/\d{1,2}:\d{2}/)?.[0] ?? null
 }
 
@@ -19,8 +19,45 @@ const levels = {
   fr: { cheap: 'pas cher', moderate: 'moyen', expensive: 'chic' },
 }
 
-function level(v: string | number, lang: Lang) {
+function level(v: string | number | boolean, lang: Lang) {
   return levels[lang][v as keyof (typeof levels)['en']] ?? String(v)
+}
+
+const traits = {
+  en: {
+    missing: { terrace: 'No terrace', dancing: 'No dancing', smoking_area: 'No smoking area', food: 'No food' },
+    unknown: {
+      terrace: 'Terrace not confirmed',
+      dancing: 'Dancing not confirmed',
+      smoking_area: 'Smoking area not confirmed',
+      food: 'Food not confirmed',
+    },
+    labels: { vibe: 'Vibe', music: 'Music', crowd: 'Crowd', crowd_age: 'Age', busy_level: 'Crowd level', noise: 'Noise' },
+  },
+  fr: {
+    missing: { terrace: 'Pas de terrasse', dancing: "On n'y danse pas", smoking_area: 'Pas de fumoir', food: 'Pas de cuisine' },
+    unknown: {
+      terrace: 'Terrasse à confirmer',
+      dancing: 'Danse à confirmer',
+      smoking_area: 'Fumoir à confirmer',
+      food: 'Cuisine à confirmer',
+    },
+    labels: { vibe: 'Ambiance', music: 'Musique', crowd: 'Public', crowd_age: 'Âge', busy_level: 'Affluence', noise: 'Bruit' },
+  },
+}
+
+function traitHint(c: ConstraintNotMet, lang: Lang) {
+  const name = c.type.replace('trait:', '')
+  const t = traits[lang]
+  if (name in t.missing) {
+    const key = name as keyof typeof t.missing
+    return c.actual === null ? t.unknown[key] : t.missing[key]
+  }
+  const label = t.labels[name as keyof typeof t.labels] ?? name
+  const asked = String(c.requested).replace(/_/g, ' ')
+  if (c.actual === null) return lang === 'fr' ? `${label} : ${asked} à confirmer` : `${label}: ${asked} not confirmed`
+  const here = String(c.actual).replace(/_/g, ' ')
+  return lang === 'fr' ? `${label} : ${here} (demandé : ${asked})` : `${label}: ${here}, asked ${asked}`
 }
 
 const en = {
@@ -78,6 +115,8 @@ const en = {
       }
       case 'location':
         return `Far from ${c.requested}`
+      default:
+        return traitHint(c, 'en')
     }
   },
 }
@@ -134,6 +173,8 @@ const fr: typeof en = {
       }
       case 'location':
         return `Loin de ${c.requested}`
+      default:
+        return traitHint(c, 'fr')
     }
   },
 }

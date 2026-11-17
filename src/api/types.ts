@@ -6,10 +6,14 @@ export type HappyHour = {
   pintPrice: number | null
 }
 
+export type TraitName =
+  | 'terrace' | 'dancing' | 'smoking_area' | 'food' | 'vibe' | 'music'
+  | 'crowd' | 'crowd_age' | 'busy_level' | 'noise'
+
 export type ConstraintNotMet = {
-  type: 'max_beer_price' | 'price_level' | 'opening' | 'happy_hour_opening' | 'location'
-  requested: string | number
-  actual: string | number | null
+  type: 'max_beer_price' | 'price_level' | 'opening' | 'happy_hour_opening' | 'location' | `trait:${TraitName}`
+  requested: string | number | boolean
+  actual: string | number | boolean | null
 }
 
 export type Facts = {
