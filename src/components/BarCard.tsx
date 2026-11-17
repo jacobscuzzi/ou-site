@@ -51,10 +51,12 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
         </div>
 
         <div className="card-chips">
-          <span className="chip">
-            <span className="chip-icon"><ClockIcon /></span>
-            {bar.openUntil ? (open ? t.openTill(bar.openUntil) : t.till(bar.openUntil)) : t.closedToday}
-          </span>
+          {bar.openUntil && (
+            <span className="chip">
+              <span className="chip-icon"><ClockIcon /></span>
+              {open ? t.openTill(bar.openUntil) : t.till(bar.openUntil)}
+            </span>
+          )}
           {bar.pintPrice !== null && (
             <span className="chip chip-pink">
               <span className="chip-icon"><BeerIcon /></span>
@@ -62,10 +64,7 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
             </span>
           )}
           {tags.map((tag) => (
-            <span key={tag.label} className="chip">
-              <span className="chip-icon chip-emoji">{tag.emoji}</span>
-              {tag.label}
-            </span>
+            <span key={tag.label} className="chip">{tag.label}</span>
           ))}
         </div>
 

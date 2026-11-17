@@ -255,9 +255,8 @@ html.locked body {
   height: 10px;
 }
 
-.chip-emoji {
-  font-size: 10px;
-  line-height: 1;
+:is(.chip, .xrow-chips .chip):not(:has(.chip-icon)) {
+  padding-inline: var(--space-2);
 }
 
 .chip-amount {

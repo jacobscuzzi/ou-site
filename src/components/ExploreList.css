@@ -99,10 +99,6 @@
   font-size: var(--text-chip);
 }
 
-.xrow-chips .chip:not(:has(.chip-icon)) {
-  padding-left: var(--space-2);
-}
-
 .xrow-skeleton {
   height: var(--row-skeleton);
   border-radius: var(--radius-tile);

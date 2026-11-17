@@ -60,7 +60,7 @@ export function barsToGeoJSON(bars: MapBar[]): GeoJSON.FeatureCollection<GeoJSON
       geometry: { type: 'Point', coordinates: [bar.lng, bar.lat] },
       properties: {
         id: bar.id,
-        name: bar.name,
+        name: bar.name.replace(/[\p{Extended_Pictographic}\u200d\ufe0f]/gu, '').trim(),
         quality: bar.quality,
         open: flag(checks.open(bar)),
         terrace: flag(checks.terrace(bar)),

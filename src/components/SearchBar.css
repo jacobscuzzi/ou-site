@@ -63,7 +63,7 @@
   background: none;
   padding: 0;
   outline: none;
-  font-size: var(--text-base);
+  font-size: var(--text-input);
   color: var(--ink);
   text-overflow: ellipsis;
 }
