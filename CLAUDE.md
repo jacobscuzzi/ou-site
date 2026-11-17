@@ -22,4 +22,4 @@ pulls it and the compose `frontend` service builds the Dockerfile here into the 
 
 ## Commits
 Short, lowercase, prefixed by area (`frontend:`), one line. Never mention Claude, Claude Code,
-Anthropic or AI. No trailers or attribution lines. Commit locally; the user pushes.
+Anthropic or AI. No trailers or attribution lines. Push to `main` once the build passes; never force-push.
