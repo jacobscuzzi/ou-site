@@ -22,6 +22,13 @@ Deux états, sur la même carte :
 Sur téléphone, la feuille est une fenêtre en bas d'écran, à trois hauteurs (réduite, mi-hauteur,
 pleine). À partir de 768px, c'est un panneau à gauche.
 
+### Look de la carte
+
+Le fond est CARTO Voyager, recoloré au chargement avec les tokens `--map-*` (`src/map/theme.ts`) ; le métro
+vient de `public/metro.json` (Île-de-France Mobilités, open data), chargé à la première activation par
+`src/map/metro.ts` et coupé par un bouton rond, dont le choix est gardé dans `localStorage`. Les meilleurs bars
+sont des bulles photo qui respirent (`src/map/bubble.ts`) : numérotées en résultats, six au plus en explorer.
+
 ### Repli sans carte
 
 Si le navigateur n'a pas WebGL (la création de la carte échoue), si le style de la carte ne charge pas
