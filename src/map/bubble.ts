@@ -136,6 +136,17 @@ export class BubbleLayer {
       item.el.toggleAttribute('data-selected', spec.id === selectedId)
       fillBadge(item.el, spec.rank)
     }
+    this.stack(specs)
+  }
+
+  private stack(specs: BubbleSpec[]) {
+    const ranked = specs.filter((s) => s.rank !== undefined).sort((a, b) => (b.rank ?? 0) - (a.rank ?? 0))
+    const els = ranked.flatMap((s) => this.items.get(s.id)?.marker.getElement() ?? [])
+    const parent = els[0]?.parentElement
+    if (!parent) return
+    const now = [...parent.children].filter((el) => els.includes(el as HTMLElement))
+    if (now.every((el, i) => el === els[i])) return
+    for (const el of els) parent.appendChild(el)
   }
 
   ids() {
