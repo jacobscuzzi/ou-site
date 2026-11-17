@@ -1,4 +1,5 @@
 import { delay, http, HttpResponse } from 'msw'
+import { mockBar, mockBars } from './bars'
 import { mockMore, mockSearch } from './search'
 
 export const handlers = [
@@ -25,6 +26,20 @@ export const handlers = [
       return HttpResponse.json(mockMore(String(params.id), page))
     } catch {
       return HttpResponse.json({ error: 'search expired' }, { status: 410 })
+    }
+  }),
+
+  http.get('/api/bars', async () => {
+    await delay(400)
+    return HttpResponse.json(mockBars())
+  }),
+
+  http.get('/api/bars/:id', async ({ params }) => {
+    await delay(200)
+    try {
+      return HttpResponse.json(mockBar(String(params.id)))
+    } catch {
+      return HttpResponse.json({ error: 'bar not found' }, { status: 404 })
     }
   }),
 ]

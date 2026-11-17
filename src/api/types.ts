@@ -59,6 +59,26 @@ export type SearchResponse = {
   meta: { parsed: boolean; rankingVersion: number }
 }
 
+export type MapBar = {
+  id: string
+  name: string
+  lat: number
+  lng: number
+  arrondissement: string
+  quality: number
+  pintPrice: number | null
+  openUntil: string | null
+  tags: string[]
+  terrace?: boolean
+  dancing?: boolean
+  cover?: string
+}
+
+export type BarsResponse = {
+  bars: MapBar[]
+  updatedAt: string
+}
+
 export type ApiError = {
   error: string
 }
