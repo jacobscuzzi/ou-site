@@ -105,6 +105,8 @@ const en = {
   emptyText: 'Try describing the evening differently.',
   credit: 'Map data from OpenStreetMap contributors',
   locate: 'Show my location',
+  mapLabel: 'Map of bars in Paris',
+  sheetLabel: 'Bar list',
   sheetHandle: { peek: 'Panel collapsed, raise it', half: 'Panel half open, raise it', full: 'Panel fully open, lower it' },
   switchTo: 'Passer en français',
   hint: (c: ConstraintNotMet) => {
@@ -179,6 +181,8 @@ const fr: typeof en = {
   emptyText: 'Essaie de décrire la soirée autrement.',
   credit: 'Données cartographiques OpenStreetMap',
   locate: 'Me localiser',
+  mapLabel: 'Carte des bars de Paris',
+  sheetLabel: 'Liste des bars',
   sheetHandle: { peek: 'Panneau réduit, le monter', half: 'Panneau à moitié ouvert, le monter', full: 'Panneau ouvert, le descendre' },
   switchTo: 'Switch to English',
   hint: (c: ConstraintNotMet) => {

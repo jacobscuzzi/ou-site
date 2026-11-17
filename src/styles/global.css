@@ -76,10 +76,36 @@ html.locked body {
 }
 
 .stage {
+  --sheet-now: var(--sheet-peek);
+  --map-pad-bottom: calc(var(--sheet-now) + var(--control-size) + var(--space-2) + var(--space-5));
   position: fixed;
   inset: 0;
   overflow: hidden;
   background: var(--map);
+}
+
+.stage[data-sheet='half'] {
+  --sheet-now: var(--sheet-half);
+}
+
+.stage[data-sheet='full'] {
+  --sheet-now: var(--sheet-half);
+}
+
+.stage[data-mode='explore'] {
+  --map-pad-top: calc(var(--top-clear) + var(--control-size) + var(--space-1) + var(--bubble-height) + var(--space-5));
+}
+
+.visually-hidden {
+  position: absolute;
+  width: var(--border-1);
+  height: var(--border-1);
+  margin: calc(-1 * var(--border-1));
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .top {
@@ -120,6 +146,7 @@ html.locked body {
 
 .sheet .credit {
   margin: 0;
+  padding-bottom: var(--space-3);
 }
 
 .back {
@@ -150,6 +177,16 @@ html.locked body {
   .top .search {
     max-width: none;
     margin: 0;
+  }
+
+  .top .chips {
+    align-self: flex-start;
+    max-width: 100%;
+  }
+
+  .stage[data-sheet] {
+    --sheet-now: var(--sheet-peek);
+    --map-pad-bottom: var(--space-7);
   }
 
   .pane,

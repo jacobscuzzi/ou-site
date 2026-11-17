@@ -19,7 +19,13 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
   const lang = useLang()
 
   return (
-    <button type="button" className={selected ? 'xrow xrow-selected' : 'xrow'} aria-current={selected || undefined} onClick={onSelect}>
+    <button
+      type="button"
+      className={selected ? 'xrow xrow-selected' : 'xrow'}
+      data-id={bar.id}
+      aria-current={selected || undefined}
+      onClick={onSelect}
+    >
       <Photo className="xrow-photo" src={bar.cover} />
       <span className="xrow-body">
         <span className="xrow-head">

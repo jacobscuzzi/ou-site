@@ -22,6 +22,7 @@ function MapUnavailable({ onFail }: MapProps) {
 
 const CityMap = lazy<ComponentType<MapProps>>(() => import('./components/CityMap').catch(() => ({ default: MapUnavailable })))
 
+const NO_RESULTS: Bar[] = []
 const BARS_RETRIES = 6
 const BARS_RETRY_DELAY = 5000
 
@@ -48,7 +49,8 @@ export default function App() {
   const [sheet, setSheet] = useState<SheetHeight>('peek')
   const abortRef = useRef<AbortController | null>(null)
   const moreRef = useRef<AbortController | null>(null)
-  const revealRef = useRef<string | null>(null)
+  const [reveal, setReveal] = useState<{ id: string; n: number } | null>(null)
+  const returnFocus = useRef<string | null>(null)
   const t = strings[lang]
 
   useEffect(() => {
@@ -136,15 +138,13 @@ export default function App() {
   }, [query, attempt])
 
   useEffect(() => {
-    const id = revealRef.current
-    revealRef.current = null
-    if (!id) return
-    const card = document.querySelector<HTMLElement>(`.sheet [data-id="${CSS.escape(id)}"]`)
+    if (!reveal) return
+    const card = document.querySelector<HTMLElement>(`.sheet [data-id="${CSS.escape(reveal.id)}"]`)
     const box = card?.closest<HTMLElement>('.sheet-content')
     if (!card || !box) return
     const top = box.scrollTop + card.getBoundingClientRect().top - box.getBoundingClientRect().top
     box.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
-  }, [selectedId])
+  }, [reveal])
 
   function search(q: string) {
     const trimmed = q.trim()
@@ -153,6 +153,7 @@ export default function App() {
     setQuery(trimmed)
     setAttempt((n) => n + 1)
     setSelectedId(null)
+    setReveal(null)
     setSheet('half')
     window.scrollTo({ top: 0 })
   }
@@ -207,6 +208,7 @@ export default function App() {
     setError(null)
     setLoading(false)
     setSelectedId(null)
+    setReveal(null)
     setSheet('peek')
     window.scrollTo({ top: 0 })
   }
@@ -219,16 +221,18 @@ export default function App() {
     })
   }
 
-  const results = !loading && !error ? bars : []
+  const results = !loading && !error ? bars : NO_RESULTS
   const hasResults = results.length > 0
 
   function pickFromMap(id: string) {
-    if (hasResults && results.some((b) => b.id === id)) revealRef.current = id
+    const inResults = hasResults && results.some((b) => b.id === id)
+    setReveal((r) => (inResults ? { id, n: (r?.n ?? 0) + 1 } : null))
     setSelectedId(id)
     setSheet((h) => (h === 'peek' || query === null ? 'half' : h))
   }
 
   function pickFromList(id: string) {
+    setReveal(null)
     setSelectedId(id)
     if (query === null) setSheet('half')
   }
@@ -236,6 +240,23 @@ export default function App() {
   const top = useMemo(() => topInView(mapBars, bounds, chips), [mapBars, bounds, chips])
   const exploreState = barsState !== 'ready' ? barsState : top.length > 0 ? 'ready' : 'empty'
   const previewId = selectedId && (query === null || !results.some((b) => b.id === selectedId)) ? selectedId : null
+
+  useEffect(() => {
+    if (previewId) {
+      document.querySelector<HTMLElement>('.sheet .back')?.focus({ preventScroll: true })
+      return
+    }
+    const id = returnFocus.current
+    returnFocus.current = null
+    if (id) document.querySelector<HTMLElement>(`.sheet [data-id="${CSS.escape(id)}"]`)?.focus({ preventScroll: true })
+  }, [previewId])
+
+  function back() {
+    returnFocus.current = previewId
+    setSelectedId(null)
+  }
+
+  const heading = <h1 className="visually-hidden">où, {t.tagline}</h1>
   const langSwitch = <LangSwitch lang={lang} onChange={setLang} />
   const searchBar = (
     <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={home}>
@@ -261,10 +282,13 @@ export default function App() {
     return (
       <LangContext.Provider value={lang}>
         <main className="app">
+          {heading}
           {searchBar}
           {query === null ? (
             <section className="start">
-              <p className="start-text">{t.tagline}</p>
+              <p className="start-text" aria-hidden="true">
+                {t.tagline}
+              </p>
               <Suggestions onPick={search} />
             </section>
           ) : (
@@ -280,7 +304,13 @@ export default function App() {
 
   return (
     <LangContext.Provider value={lang}>
-      <main className="stage">
+      <main className="stage" data-sheet={sheet} data-mode={query === null ? 'explore' : 'results'}>
+        {heading}
+        <div className="top">
+          {searchBar}
+          <Chips value={chips} onToggle={toggleChip} />
+          {query === null && <Suggestions single onPick={search} />}
+        </div>
         <Suspense fallback={null}>
           <CityMap
             bars={mapBars}
@@ -291,20 +321,16 @@ export default function App() {
             onSelect={pickFromMap}
             onBounds={setBounds}
             onFail={() => setMapFailed(true)}
+            padKey={`${sheet}:${query === null}`}
           />
         </Suspense>
-        <div className="top">
-          {searchBar}
-          <Chips value={chips} onToggle={toggleChip} />
-          {query === null && <Suggestions single onPick={search} />}
-        </div>
         <Sheet
           height={sheet}
           onHeight={setSheet}
           scrollKey={`${query ?? ''}:${attempt}:${previewId ?? ''}`}
           header={
             previewId && (
-              <button type="button" className="back" onClick={() => setSelectedId(null)}>
+              <button type="button" className="back" onClick={back}>
                 <BackIcon />
                 {t.back}
               </button>

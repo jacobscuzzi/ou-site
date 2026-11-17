@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FocusEvent, type PointerEvent, type ReactNode } from 'react'
+import { useLayoutEffect, useRef, useState, type FocusEvent, type PointerEvent, type ReactNode } from 'react'
 import { useT } from '../i18n'
 import './Sheet.css'
 
@@ -37,9 +37,13 @@ export default function Sheet({ height, onHeight, header, scrollKey, children }:
   const swallow = useRef(false)
   const [dragging, setDragging] = useState(false)
   const content = useRef<HTMLDivElement>(null)
+  const scrolled = useRef(new Map<string | undefined, number>())
+  const shownKey = useRef(scrollKey)
 
-  useEffect(() => {
-    content.current?.scrollTo({ top: 0 })
+  useLayoutEffect(() => {
+    if (shownKey.current === scrollKey || !content.current) return
+    shownKey.current = scrollKey
+    content.current.scrollTop = scrolled.current.get(scrollKey) ?? 0
   }, [scrollKey])
 
   const px = (h: SheetHeight) => marks.current[h]?.offsetHeight ?? 0
@@ -107,6 +111,7 @@ export default function Sheet({ height, onHeight, header, scrollKey, children }:
       ref={root}
       className={dragging ? 'sheet sheet-dragging' : 'sheet'}
       data-height={height}
+      aria-label={t.sheetLabel}
       onPointerDown={down}
       onPointerMove={move}
       onPointerUp={up}
@@ -122,7 +127,12 @@ export default function Sheet({ height, onHeight, header, scrollKey, children }:
         <span className="sheet-grip" />
       </button>
       {header && <div className="sheet-header">{header}</div>}
-      <div ref={content} className="sheet-content" onFocusCapture={focusIn}>
+      <div
+        ref={content}
+        className="sheet-content"
+        onFocusCapture={focusIn}
+        onScroll={(e) => scrolled.current.set(shownKey.current, e.currentTarget.scrollTop)}
+      >
         {children}
       </div>
     </section>

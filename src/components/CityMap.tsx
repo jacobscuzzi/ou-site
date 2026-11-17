@@ -37,6 +37,7 @@ type Props = {
   onSelect: (id: string) => void
   onBounds: (b: Bounds) => void
   onFail: () => void
+  padKey?: string
 }
 
 type Tokens = ReturnType<typeof readTokens>
@@ -67,24 +68,24 @@ function readTokens() {
   }
 }
 
-function padding() {
+function padding(map: MaplibreMap) {
   const probe = document.createElement('div')
   probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none'
   probe.style.padding = 'var(--map-pad-top) var(--map-pad-right) var(--map-pad-bottom) var(--map-pad-left)'
-  document.body.appendChild(probe)
+  map.getContainer().appendChild(probe)
   const css = getComputedStyle(probe)
   const pad = {
-    top: parseFloat(css.paddingTop),
-    bottom: parseFloat(css.paddingBottom),
-    left: parseFloat(css.paddingLeft),
-    right: parseFloat(css.paddingRight),
+    top: parseFloat(css.paddingTop) || 0,
+    bottom: parseFloat(css.paddingBottom) || 0,
+    left: parseFloat(css.paddingLeft) || 0,
+    right: parseFloat(css.paddingRight) || 0,
   }
   probe.remove()
   return pad
 }
 
-function centreOffset(): [number, number] {
-  const p = padding()
+function centreOffset(map: MaplibreMap): [number, number] {
+  const p = padding(map)
   return [(p.left - p.right) / 2, (p.top - p.bottom) / 2]
 }
 
@@ -102,7 +103,7 @@ function lngLatBounds(b: Bounds): LngLatBoundsLike {
 function inView(map: MaplibreMap, at: { lat: number; lng: number }) {
   const p = map.project([at.lng, at.lat])
   const box = map.getContainer()
-  const pad = padding()
+  const pad = padding(map)
   return p.x >= pad.left && p.x <= box.clientWidth - pad.right && p.y >= pad.top && p.y <= box.clientHeight - pad.bottom
 }
 
@@ -197,8 +198,22 @@ function nearestDot(map: MaplibreMap, x: number, y: number, r: number) {
   return best
 }
 
+function clearBounds(map: MaplibreMap): Bounds {
+  const pad = padding(map)
+  const box = map.getContainer()
+  const right = box.clientWidth - pad.right
+  const bottom = box.clientHeight - pad.bottom
+  if (right <= pad.left || bottom <= pad.top) {
+    const b = map.getBounds()
+    return { minLng: b.getWest(), minLat: b.getSouth(), maxLng: b.getEast(), maxLat: b.getNorth() }
+  }
+  const nw = map.unproject([pad.left, pad.top])
+  const se = map.unproject([right, bottom])
+  return { minLng: nw.lng, minLat: se.lat, maxLng: se.lng, maxLat: nw.lat }
+}
+
 export default function CityMap(props: Props) {
-  const { bars, results, chips, selectedId, fitKey } = props
+  const { bars, results, chips, selectedId, fitKey, padKey } = props
   const t = useT()
   const el = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MaplibreMap | null>(null)
@@ -243,20 +258,7 @@ export default function CityMap(props: Props) {
       latest.current.onFail()
     }
     const timer = window.setTimeout(fail, STYLE_TIMEOUT)
-    const emitBounds = () => {
-      const pad = padding()
-      const box = map.getContainer()
-      const right = box.clientWidth - pad.right
-      const bottom = box.clientHeight - pad.bottom
-      if (right <= pad.left || bottom <= pad.top) {
-        const b = map.getBounds()
-        latest.current.onBounds({ minLng: b.getWest(), minLat: b.getSouth(), maxLng: b.getEast(), maxLat: b.getNorth() })
-        return
-      }
-      const nw = map.unproject([pad.left, pad.top])
-      const se = map.unproject([right, bottom])
-      latest.current.onBounds({ minLng: nw.lng, minLat: se.lat, maxLng: se.lng, maxLat: nw.lat })
-    }
+    const emitBounds = () => latest.current.onBounds(clearBounds(map))
 
     map.on('error', (e) => {
       const from = e as { sourceId?: unknown; tile?: unknown }
@@ -304,6 +306,11 @@ export default function CityMap(props: Props) {
 
   useEffect(() => {
     const map = mapRef.current
+    if (map && ready.current) latest.current.onBounds(clearBounds(map))
+  }, [padKey])
+
+  useEffect(() => {
+    const map = mapRef.current
     if (map && ready.current) applyFilter(map, chips)
   }, [chips])
 
@@ -338,14 +345,14 @@ export default function CityMap(props: Props) {
     if (!map || !selectedId) return
     const p = latest.current
     const bar = p.results.find((b) => b.id === selectedId) ?? p.bars.find((b) => b.id === selectedId)
-    if (bar && !inView(map, bar)) map.easeTo({ center: [bar.lng, bar.lat], offset: centreOffset(), duration: 500 })
+    if (bar && !inView(map, bar)) map.easeTo({ center: [bar.lng, bar.lat], offset: centreOffset(map), duration: 500 })
   }, [selectedId])
 
   useEffect(() => {
     const map = mapRef.current
     const b = boundsOf(latest.current.results.slice(0, 5))
     if (!map || !b) return
-    map.fitBounds(lngLatBounds(b), { padding: padding(), maxZoom: STREET_ZOOM, duration: 600 })
+    map.fitBounds(lngLatBounds(b), { padding: padding(map), maxZoom: STREET_ZOOM, duration: 600 })
   }, [fitKey])
 
   function locate() {
@@ -363,7 +370,7 @@ export default function CityMap(props: Props) {
           me.current = new Marker({ element: dot })
         }
         me.current.setLngLat(at).addTo(map)
-        map.easeTo({ center: at, offset: centreOffset(), zoom: Math.max(map.getZoom(), STREET_ZOOM), duration: 600 })
+        map.easeTo({ center: at, offset: centreOffset(map), zoom: Math.max(map.getZoom(), STREET_ZOOM), duration: 600 })
       },
       () => setLocating(false),
       { timeout: 10000, maximumAge: 60000 },
@@ -371,7 +378,7 @@ export default function CityMap(props: Props) {
   }
 
   return (
-    <div className="citymap">
+    <div className="citymap" role="region" aria-label={t.mapLabel}>
       <div className="citymap-canvas" ref={el} />
       <button
         className="citymap-locate"

@@ -108,6 +108,7 @@
   --row-skeleton: 80px;
   --text-chip: 11px;
   --search-height: 52px;
+  --bubble-height: 40px;
   --top-clear: calc(env(safe-area-inset-top) + var(--space-4) + var(--search-height) + var(--space-3));
   --card-skeleton: 300px;
   --sheet-peek: 168px;
