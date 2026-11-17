@@ -3,10 +3,21 @@ import bars from './bars.json'
 
 const all = bars as Omit<Bar, 'compliant' | 'constraintsNotMet'>[]
 
+const vibes = ['lively', 'cosy', 'chic', 'party', 'laid_back']
+const musics = ['dj', 'jazz', 'techno', 'rock']
+
 function toMapBar(b: (typeof all)[number], i: number): MapBar {
-  const tags = [b.facts?.vibe?.[0], b.facts?.music?.[0], b.facts?.terrace && 'terrace', b.facts?.dancing && 'dancing']
+  const terrace = i % 3 === 0
+  const dancing = i % 4 === 2
+  const tags = [
+    i % 6 === 5 ? undefined : vibes[i % vibes.length],
+    i % 2 === 0 ? musics[(i >> 1) % musics.length] : undefined,
+    terrace ? 'terrace' : undefined,
+    dancing ? 'dancing' : undefined,
+  ]
     .filter((t): t is string => Boolean(t))
     .slice(0, 3)
+  const cover = i % 20 === 7 ? undefined : b.photos[0]
   return {
     id: b.id,
     name: b.name,
@@ -14,12 +25,12 @@ function toMapBar(b: (typeof all)[number], i: number): MapBar {
     lng: b.lng,
     arrondissement: b.arrondissement,
     quality: Math.round((0.2 + ((i * 7) % 15) * 0.05) * 100) / 100,
-    pintPrice: b.pintPrice,
-    openUntil: b.openUntil,
+    pintPrice: i % 15 === 4 ? null : b.pintPrice,
+    openUntil: i % 2 === 1 ? null : b.openUntil,
     tags,
-    ...(b.facts?.terrace && { terrace: true }),
-    ...(b.facts?.dancing && { dancing: true }),
-    ...(b.photos[0] && { cover: b.photos[0] }),
+    ...(terrace && { terrace: true }),
+    ...(dancing && { dancing: true }),
+    ...(cover && { cover }),
   }
 }
 
