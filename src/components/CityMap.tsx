@@ -23,6 +23,10 @@ const STYLE = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json'
 const LABEL_ZOOM = 13
 const ALL_LABELS_ZOOM = 15
 const STREET_ZOOM = 15
+const START_CENTER: [number, number] = [2.3488, 48.86]
+const START_ZOOM = 12.3
+const PAN_MARGIN = 0.08
+const STYLE_TIMEOUT = 10000
 
 type Props = {
   bars: MapBar[]
@@ -48,6 +52,7 @@ function readTokens() {
     selected: str('--dot-selected'),
     rMin: num('--dot-r-min'),
     rMax: num('--dot-r-max'),
+    rSelected: num('--dot-r-selected'),
     strokeWidth: num('--dot-stroke-width'),
     selectedWidth: num('--dot-selected-width'),
     opacityMin: num('--dot-opacity-min'),
@@ -76,6 +81,10 @@ function padding() {
 function centreOffset(): [number, number] {
   const p = padding()
   return [(p.left - p.right) / 2, (p.top - p.bottom) / 2]
+}
+
+function widen(b: Bounds, m: number): Bounds {
+  return { minLng: b.minLng - m, minLat: b.minLat - m, maxLng: b.maxLng + m, maxLat: b.maxLat + m }
 }
 
 function lngLatBounds(b: Bounds): LngLatBoundsLike {
@@ -111,7 +120,6 @@ function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[]) {
     type: 'circle',
     source: 'bars',
     paint: {
-      'circle-radius': ['interpolate', ['linear'], ['get', 'quality'], 0, tk.rMin, 1, tk.rMax],
       'circle-color': ['case', top, tk.dotTop, tk.dot],
     },
   })
@@ -149,9 +157,16 @@ function applyFilter(map: MaplibreMap, chips: ReadonlySet<ChipKey>) {
 
 function applyLook(map: MaplibreMap, tk: Tokens, dimmed: boolean, selectedId: string | null) {
   const selected: ExpressionSpecification = ['==', ['get', 'id'], selectedId ?? '']
-  const opacity: ExpressionSpecification | number = dimmed
+  const base: ExpressionSpecification | number = dimmed
     ? tk.dim
     : ['interpolate', ['linear'], ['get', 'quality'], 0, tk.opacityMin, 1, tk.opacityMax]
+  const opacity: ExpressionSpecification = ['case', selected, tk.opacityMax, base]
+  map.setPaintProperty('dots', 'circle-radius', [
+    'case',
+    selected,
+    tk.rSelected,
+    ['interpolate', ['linear'], ['get', 'quality'], 0, tk.rMin, 1, tk.rMax],
+  ])
   map.setPaintProperty('dots', 'circle-opacity', opacity)
   map.setPaintProperty('dots', 'circle-stroke-opacity', opacity)
   map.setPaintProperty('dots', 'circle-stroke-color', ['case', selected, tk.selected, tk.stroke])
@@ -204,7 +219,9 @@ export default function CityMap(props: Props) {
       map = new MaplibreMap({
         container: el.current!,
         style: STYLE,
-        bounds: lngLatBounds(PARIS),
+        center: START_CENTER,
+        zoom: START_ZOOM,
+        maxBounds: lngLatBounds(widen(PARIS, PAN_MARGIN)),
         attributionControl: { compact: true },
       })
     } catch {
@@ -212,23 +229,32 @@ export default function CityMap(props: Props) {
       return
     }
     mapRef.current = map
-    let loaded = false
+    let styled = false
     let failed = false
+    let removed = false
+    const fail = () => {
+      if (styled || failed || removed) return
+      failed = true
+      latest.current.onFail()
+    }
+    const timer = window.setTimeout(fail, STYLE_TIMEOUT)
     const emitBounds = () => {
       const b = map.getBounds()
       latest.current.onBounds({ minLng: b.getWest(), minLat: b.getSouth(), maxLng: b.getEast(), maxLat: b.getNorth() })
     }
 
-    map.on('error', () => {
-      if (loaded || failed) return
-      failed = true
-      latest.current.onFail()
+    map.on('error', (e) => {
+      const from = e as { sourceId?: unknown; tile?: unknown }
+      if (from.sourceId === undefined && from.tile === undefined) fail()
+    })
+    map.on('style.load', () => {
+      styled = true
+      window.clearTimeout(timer)
     })
     map.on('load', () => {
-      loaded = true
-      ready.current = true
       const p = latest.current
       addLayers(map, tk, p.bars)
+      ready.current = true
       applyFilter(map, p.chips)
       applyLook(map, tk, p.results.length > 0, p.selectedId)
       emitBounds()
@@ -247,6 +273,8 @@ export default function CityMap(props: Props) {
     })
 
     return () => {
+      removed = true
+      window.clearTimeout(timer)
       ready.current = false
       me.current = null
       mapRef.current = null

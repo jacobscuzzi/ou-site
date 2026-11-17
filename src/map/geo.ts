@@ -51,12 +51,8 @@ export function boundsOf(points: { lat: number; lng: number }[]): Bounds | null 
 const flag = (v: boolean) => (v ? 1 : 0)
 
 export function barsToGeoJSON(bars: MapBar[]): GeoJSON.FeatureCollection<GeoJSON.Point> {
-  const top = new Set(
-    [...bars]
-      .sort(byQuality)
-      .slice(0, Math.ceil(bars.length / 4))
-      .map((bar) => bar.id),
-  )
+  const ranked = bars.map((bar) => bar.quality).sort((a, b) => b - a)
+  const threshold = ranked[Math.ceil(ranked.length / 4) - 1] ?? Infinity
   return {
     type: 'FeatureCollection',
     features: bars.map((bar) => ({
@@ -70,7 +66,7 @@ export function barsToGeoJSON(bars: MapBar[]): GeoJSON.FeatureCollection<GeoJSON
         terrace: flag(checks.terrace(bar)),
         dancing: flag(checks.dancing(bar)),
         cheap: flag(checks.cheap(bar)),
-        top: flag(top.has(bar.id)),
+        top: flag(bar.quality >= threshold),
       },
     })),
   }

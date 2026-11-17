@@ -94,6 +94,7 @@
   --dot-selected: var(--ink);
   --dot-r-min: 3px;
   --dot-r-max: 8px;
+  --dot-r-selected: 11px;
   --dot-stroke-width: 1px;
   --dot-selected-width: 3px;
   --dot-opacity-min: 0.55;
@@ -110,7 +111,7 @@
   --pin-size: 30px;
   --pin-border: 2px;
   --pin-ring: 3px;
-  --control-size: 40px;
+  --control-size: 44px;
   --border-1: 1px;
   --sheet-peek: 168px;
   --map-pad-top: 120px;
