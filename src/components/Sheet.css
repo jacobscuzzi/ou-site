@@ -1,0 +1,138 @@
+.sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  width: min(100%, var(--app-width));
+  height: var(--sheet-full);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background: var(--glass-lite);
+  -webkit-backdrop-filter: var(--blur-3);
+  backdrop-filter: var(--blur-3);
+  border: var(--border-1) solid var(--glass-border-strong);
+  border-bottom: 0;
+  box-shadow: var(--glass-edge), var(--shadow-sheet);
+  padding-bottom: env(safe-area-inset-bottom);
+  overscroll-behavior: none;
+  touch-action: none;
+  transform: translateY(calc(var(--sheet-full) - var(--sheet-peek)));
+  transition: transform 0.35s var(--ease);
+}
+
+.sheet[data-height='half'] {
+  transform: translateY(calc(var(--sheet-full) - var(--sheet-half)));
+}
+
+.sheet[data-height='full'] {
+  transform: none;
+}
+
+.sheet-dragging {
+  transition: none;
+}
+
+.sheet-mark {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.sheet-mark-peek {
+  height: var(--sheet-peek);
+}
+
+.sheet-mark-half {
+  height: var(--sheet-half);
+}
+
+.sheet-mark-full {
+  height: var(--sheet-full);
+}
+
+.sheet-handle {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: var(--control-size);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+}
+
+.sheet-handle:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+
+.sheet-grip {
+  width: var(--handle-width);
+  height: var(--handle-height);
+  border-radius: var(--radius-pill);
+  background: var(--ink-2);
+  opacity: 0.4;
+}
+
+.sheet-header {
+  flex: none;
+  padding: 0 var(--space-4) var(--space-3);
+}
+
+.sheet-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.sheet[data-height='full'] .sheet-content {
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet {
+    transition: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .sheet {
+    top: 0;
+    right: auto;
+    width: var(--panel-width);
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+    border-top: 0;
+    border-left: 0;
+    box-shadow: var(--glass-edge), var(--shadow-2);
+    padding-bottom: 0;
+    touch-action: auto;
+    transform: none !important;
+    transition: none;
+  }
+
+  .sheet-handle,
+  .sheet-mark {
+    display: none;
+  }
+
+  .sheet-header {
+    padding-top: var(--space-4);
+  }
+
+  .sheet .sheet-content {
+    overflow-y: auto;
+    touch-action: auto;
+  }
+}

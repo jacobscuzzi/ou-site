@@ -114,6 +114,12 @@
   --control-size: 44px;
   --border-1: 1px;
   --sheet-peek: 168px;
+  --sheet-half: 54vh;
+  --sheet-full: 92vh;
+  --panel-width: 400px;
+  --handle-width: 36px;
+  --handle-height: 5px;
+  --shadow-sheet: 0 -8px 32px rgba(17, 17, 20, 0.12);
   --map-pad-top: 120px;
   --map-pad-bottom: 200px;
   --map-pad-left: 40px;
@@ -122,6 +128,13 @@
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --app-width: 430px;
   --reading-width: 720px;
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --sheet-half: 54dvh;
+    --sheet-full: 92dvh;
+  }
 }
 
 @media (min-width: 768px) {
