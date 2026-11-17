@@ -93,6 +93,7 @@ const en = {
   showMap: 'Show results on the map',
   closeMap: 'Close map',
   mapTitle: 'Results on the map',
+  locate: 'Show my location',
   switchTo: 'Passer en français',
   hint: (c: ConstraintNotMet) => {
     switch (c.type) {
@@ -154,6 +155,7 @@ const fr: typeof en = {
   showMap: 'Voir les résultats sur la carte',
   closeMap: 'Fermer la carte',
   mapTitle: 'Résultats sur la carte',
+  locate: 'Me localiser',
   switchTo: 'Switch to English',
   hint: (c: ConstraintNotMet) => {
     switch (c.type) {

@@ -54,3 +54,13 @@ export function ArrowUpIcon({ size = 18 }: IconProps) {
     </svg>
   )
 }
+
+export function LocateIcon({ size = 18 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+      <circle cx="12" cy="12" r="6" />
+      <circle cx="12" cy="12" r="2" />
+    </svg>
+  )
+}

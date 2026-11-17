@@ -88,6 +88,36 @@
   --blur-2: blur(24px) saturate(1.7);
   --blur-3: blur(32px) saturate(1.9) brightness(1.04);
 
+  --dot: var(--ink-2);
+  --dot-top: var(--pink);
+  --dot-stroke: var(--surface);
+  --dot-selected: var(--ink);
+  --dot-r-min: 3px;
+  --dot-r-max: 8px;
+  --dot-stroke-width: 1px;
+  --dot-selected-width: 3px;
+  --dot-opacity-min: 0.55;
+  --dot-opacity-max: 1;
+  --dot-dim-opacity: 0.25;
+  --dot-hit: 12px;
+  --label: var(--ink);
+  --label-halo: var(--surface);
+  --label-size: var(--text-xs);
+  --label-halo-width: 1.5px;
+  --label-offset: 0.9;
+  --me: #2f7cf6;
+  --me-size: 14px;
+  --pin-size: 30px;
+  --pin-border: 2px;
+  --pin-ring: 3px;
+  --control-size: 40px;
+  --border-1: 1px;
+  --sheet-peek: 168px;
+  --map-pad-top: 120px;
+  --map-pad-bottom: 200px;
+  --map-pad-left: 40px;
+  --map-pad-right: 40px;
+
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --app-width: 430px;
   --reading-width: 720px;
@@ -96,5 +126,8 @@
 @media (min-width: 768px) {
   :root {
     --app-width: 1120px;
+    --sheet-peek: 0px;
+    --map-pad-bottom: 40px;
+    --map-pad-left: 440px;
   }
 }
