@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import type { Bar } from '../api/types'
 import { useT } from '../i18n'
 import BarCard from './BarCard'
@@ -15,12 +16,38 @@ type Props = {
   onMore: () => void
   selectedId?: string | null
   onSelect?: (id: string) => void
+  onFirst?: (id: string) => void
 }
 
 const FIRST_PAGE = 5
+const MOSTLY = 0.5
 
-export default function BarList({ bars, loading, error, onRetry, hasMore, loadingMore, moreError, onMore, selectedId, onSelect }: Props) {
+export default function BarList({ bars, loading, error, onRetry, hasMore, loadingMore, moreError, onMore, selectedId, onSelect, onFirst }: Props) {
   const t = useT()
+  const list = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const box = list.current
+    const root = box?.closest('.sheet-content')
+    if (!box || !root || !onFirst) return
+    const seen = new Set<string>()
+    const watch = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const id = (e.target as HTMLElement).dataset.id
+          if (!id) continue
+          if (e.intersectionRatio >= MOSTLY) seen.add(id)
+          else seen.delete(id)
+        }
+        const first = bars.find((b) => seen.has(b.id))
+        if (first) onFirst(first.id)
+      },
+      { root, threshold: MOSTLY },
+    )
+    for (const card of box.querySelectorAll('[data-id]')) watch.observe(card)
+    return () => watch.disconnect()
+  }, [bars, onFirst, loading, error])
+
   if (loading) return <Thinking />
 
   if (error) {
@@ -49,7 +76,7 @@ export default function BarList({ bars, loading, error, onRetry, hasMore, loadin
   }
 
   return (
-    <div className="list" aria-busy={loadingMore}>
+    <div className="list" ref={list} aria-busy={loadingMore}>
       <p className="eyebrow list-eyebrow">{t.picks(bars.length)}</p>
       {bars.map((bar, i) => (
         <BarCard

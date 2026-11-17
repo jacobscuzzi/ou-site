@@ -1,7 +1,8 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ComponentProps, type ComponentType, type FocusEvent } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ComponentProps, type ComponentType, type FocusEvent } from 'react'
 import { fetchBars, moreBars, searchBars } from './api/client'
 import type { Bar, MapBar } from './api/types'
 import { initialLang, LangContext, strings, type Lang } from './i18n'
+import { tick } from './haptic'
 import { topInView, type Bounds, type ChipKey } from './map/geo'
 import LangSwitch from './components/LangSwitch'
 import SearchBar from './components/SearchBar'
@@ -26,6 +27,7 @@ const NO_RESULTS: Bar[] = []
 const BARS_RETRIES = 6
 const BARS_RETRY_DELAY = 5000
 const BARS_TIMEOUT = 10000
+const QUIET_MS = 900
 const desktop = '(min-width: 768px)'
 
 export default function App() {
@@ -37,6 +39,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [highlightId, setHighlightId] = useState<string | null>(null)
   const [searchId, setSearchId] = useState<string | null>(null)
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(false)
@@ -54,6 +57,7 @@ export default function App() {
   const moreRef = useRef<AbortController | null>(null)
   const [reveal, setReveal] = useState<{ id: string; n: number } | null>(null)
   const returnFocus = useRef<string | null>(null)
+  const quietUntil = useRef(0)
   const t = strings[lang]
 
   useEffect(() => {
@@ -171,6 +175,7 @@ export default function App() {
     setQuery(trimmed)
     setAttempt((n) => n + 1)
     setSelectedId(null)
+    setHighlightId(null)
     setReveal(null)
     setSheet('half')
     ;(document.activeElement as HTMLElement | null)?.blur()
@@ -227,6 +232,7 @@ export default function App() {
     setError(null)
     setLoading(false)
     setSelectedId(null)
+    setHighlightId(null)
     setReveal(null)
     setSheet('peek')
     window.scrollTo({ top: 0 })
@@ -243,16 +249,27 @@ export default function App() {
   const results = !loading && !error ? bars : NO_RESULTS
   const hasResults = results.length > 0
 
+  const follow = useCallback((id: string) => {
+    if (performance.now() >= quietUntil.current) setHighlightId(id)
+  }, [])
+
+  function choose(id: string) {
+    quietUntil.current = performance.now() + QUIET_MS
+    setHighlightId(null)
+    setSelectedId(id)
+    tick()
+  }
+
   function pickFromMap(id: string) {
     const inResults = hasResults && results.some((b) => b.id === id)
     setReveal((r) => (inResults ? { id, n: (r?.n ?? 0) + 1 } : null))
-    setSelectedId(id)
+    choose(id)
     setSheet((h) => (h === 'peek' || query === null ? 'half' : h))
   }
 
   function pickFromList(id: string) {
     setReveal(null)
-    setSelectedId(id)
+    choose(id)
     if (query === null) setSheet('half')
   }
 
@@ -303,6 +320,7 @@ export default function App() {
       onMore={loadMore}
       selectedId={pick ? selectedId : null}
       onSelect={pick}
+      onFirst={pick && follow}
     />
   )
 
@@ -345,6 +363,7 @@ export default function App() {
             results={results}
             chips={chips}
             selectedId={selectedId}
+            highlightId={highlightId}
             fitKey={hasResults ? String(attempt) : ''}
             onSelect={pickFromMap}
             onBounds={setBounds}

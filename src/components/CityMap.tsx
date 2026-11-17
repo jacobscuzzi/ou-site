@@ -7,7 +7,6 @@ import {
   type ExpressionSpecification,
   type FilterSpecification,
   type GeoJSONSource,
-  type LngLatBoundsLike,
 } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -15,6 +14,7 @@ import type { Bar, MapBar } from '../api/types'
 import { useT } from '../i18n'
 import { barsToGeoJSON, boundsOf, chipFilter, passes, PARIS, type Bounds, type ChipKey } from '../map/geo'
 import { BubbleLayer, exploreSpecs, resultSpecs } from '../map/bubble'
+import { focusOn, fitTo, glideTo, inView, lngLatBounds, padding, type CameraTiming } from '../map/camera'
 import { applyTheme, styleFont } from '../map/theme'
 import { useMetro } from '../map/useMetro'
 import { LocateIcon, MetroIcon } from './icons'
@@ -25,7 +25,6 @@ if (getWorkerUrl() === '') setWorkerUrl(workerUrl)
 const STYLE = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json'
 const LABEL_ZOOM = 13
 const ALL_LABELS_ZOOM = 15
-const STREET_ZOOM = 15
 const START_CENTER: [number, number] = [2.3488, 48.86]
 const START_ZOOM = 12.3
 const PAN_MARGIN = 0.2
@@ -38,6 +37,7 @@ type Props = {
   results: Bar[]
   chips: ReadonlySet<ChipKey>
   selectedId: string | null
+  highlightId: string | null
   fitKey: string
   onSelect: (id: string) => void
   onBounds: (b: Bounds) => void
@@ -68,6 +68,8 @@ function readTokens() {
     bubbleGap: num('--bubble-gap'),
     bubbleOut: num('--bubble-out'),
     bubbleStep: num('--bubble-stagger'),
+    cameraMs: num('--camera-ms'),
+    fitMs: num('--camera-fit-ms'),
     bubbleFit: (num('--bubble-lg') * num('--bubble-selected-scale')) / 2 + num('--space-1'),
     label: str('--label'),
     halo: str('--label-halo'),
@@ -104,47 +106,8 @@ function readTokens() {
   }
 }
 
-function padding(map: MaplibreMap) {
-  const probe = document.createElement('div')
-  probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none'
-  probe.style.padding = 'var(--map-pad-top) var(--map-pad-right) var(--map-pad-bottom) var(--map-pad-left)'
-  map.getContainer().appendChild(probe)
-  const css = getComputedStyle(probe)
-  const pad = {
-    top: parseFloat(css.paddingTop) || 0,
-    bottom: parseFloat(css.paddingBottom) || 0,
-    left: parseFloat(css.paddingLeft) || 0,
-    right: parseFloat(css.paddingRight) || 0,
-  }
-  probe.remove()
-  return pad
-}
-
-function fitPadding(map: MaplibreMap, extra: number) {
-  const p = padding(map)
-  return { top: p.top + extra, bottom: p.bottom + extra, left: p.left + extra, right: p.right + extra }
-}
-
-function centreOffset(map: MaplibreMap): [number, number] {
-  const p = padding(map)
-  return [(p.left - p.right) / 2, (p.top - p.bottom) / 2]
-}
-
 function widen(b: Bounds, m: number): Bounds {
   return { minLng: b.minLng - m, minLat: b.minLat - m, maxLng: b.maxLng + m, maxLat: b.maxLat + m }
-}
-
-function lngLatBounds(b: Bounds): LngLatBoundsLike {
-  return [
-    [b.minLng, b.minLat],
-    [b.maxLng, b.maxLat],
-  ]
-}
-
-function inView(map: MaplibreMap, at: { lat: number; lng: number }, pad = padding(map)) {
-  const p = map.project([at.lng, at.lat])
-  const box = map.getContainer()
-  return p.x >= pad.left && p.x <= box.clientWidth - pad.right && p.y >= pad.top && p.y <= box.clientHeight - pad.bottom
 }
 
 function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[]) {
@@ -216,6 +179,10 @@ function applyLook(map: MaplibreMap, tk: Tokens, dimmed: boolean, selectedId: st
   map.setPaintProperty('labels', 'text-opacity', dimmed ? tk.dim : 1)
 }
 
+function lookOf(p: Pick<Props, 'highlightId' | 'selectedId'>) {
+  return p.highlightId ?? p.selectedId
+}
+
 function nearestDot(map: MaplibreMap, x: number, y: number, r: number) {
   let best: string | null = null
   let bestDist = Infinity
@@ -248,7 +215,7 @@ function clearBounds(map: MaplibreMap): Bounds {
 }
 
 export default function CityMap(props: Props) {
-  const { bars, results, chips, selectedId, fitKey, padKey } = props
+  const { bars, results, chips, selectedId, highlightId, fitKey, padKey } = props
   const t = useT()
   const el = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MaplibreMap | null>(null)
@@ -263,12 +230,13 @@ export default function CityMap(props: Props) {
   const me = useRef<Marker | null>(null)
   const [locating, setLocating] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const timing = useRef<CameraTiming | null>(null)
   const [metro, toggleMetro] = useMetro(mapRef, tokens, loaded, results.length > 0)
 
   function restyle() {
     const map = mapRef.current
     if (!map || !ready.current || !tokens.current) return
-    applyLook(map, tokens.current, latest.current.results.length > 0, latest.current.selectedId)
+    applyLook(map, tokens.current, latest.current.results.length > 0, lookOf(latest.current))
   }
 
   function refreshBubbles() {
@@ -278,16 +246,16 @@ export default function CityMap(props: Props) {
     const p = latest.current
     if (p.results.length > 0) {
       exploreIds.current = []
-      layer.sync(resultSpecs(p.results), p.selectedId)
+      layer.sync(resultSpecs(p.results), lookOf(p))
       return applyFilter(map, p.chips, layer.ids())
     }
     if (map.isMoving() || pressed.current.size > 0) {
       waiting.current = true
-      return layer.mark(p.selectedId)
+      return layer.mark(lookOf(p))
     }
     const pad = padding(map)
     const visible = p.bars.filter((bar) => passes(bar, p.chips) && inView(map, bar, pad))
-    layer.sync(exploreSpecs(map, visible, exploreIds.current, tokens.current.bubbleGap), p.selectedId)
+    layer.sync(exploreSpecs(map, visible, exploreIds.current, tokens.current.bubbleGap), lookOf(p))
     exploreIds.current = layer.ids()
     applyFilter(map, p.chips, layer.ids())
   }
@@ -295,6 +263,7 @@ export default function CityMap(props: Props) {
   useEffect(() => {
     const tk = readTokens()
     tokens.current = tk
+    timing.current = { move: tk.cameraMs, fit: tk.fitMs, comfort: tk.bubbleFit }
     let map: MaplibreMap
     try {
       map = new MaplibreMap({
@@ -303,12 +272,16 @@ export default function CityMap(props: Props) {
         center: START_CENTER,
         zoom: START_ZOOM,
         maxBounds: lngLatBounds(widen(PARIS, PAN_MARGIN)),
+        dragRotate: false,
+        pitchWithRotate: false,
+        touchPitch: false,
         attributionControl: { compact: window.matchMedia(PHONE).matches },
       })
     } catch {
       latest.current.onFail()
       return
     }
+    map.touchZoomRotate.disableRotation()
     mapRef.current = map
     let styled = false
     let failed = false
@@ -362,7 +335,7 @@ export default function CityMap(props: Props) {
       setLoaded(true)
       applyFilter(map, p.chips)
       if (window.matchMedia(PHONE).matches) collapseAttribution(map)
-      applyLook(map, tk, p.results.length > 0, p.selectedId)
+      applyLook(map, tk, p.results.length > 0, lookOf(p))
       emitBounds()
     })
     const names = () => map.getContainer().classList.toggle('citymap-names', map.getZoom() >= LABEL_ZOOM)
@@ -422,18 +395,27 @@ export default function CityMap(props: Props) {
   useEffect(() => {
     refreshBubbles()
     restyle()
+  }, [highlightId])
+
+  useEffect(() => {
     const map = mapRef.current
-    if (!map || !selectedId) return
+    const tm = timing.current
+    if (!selectedId || !map || !tm) return
     const p = latest.current
     const bar = p.results.find((b) => b.id === selectedId) ?? p.bars.find((b) => b.id === selectedId)
-    if (bar && !inView(map, bar)) map.easeTo({ center: [bar.lng, bar.lat], offset: centreOffset(map), duration: 500 })
+    if (bar) focusOn(map, bar, tm)
+  }, [selectedId])
+
+  useEffect(() => {
+    refreshBubbles()
+    restyle()
   }, [selectedId])
 
   useEffect(() => {
     const map = mapRef.current
+    const tm = timing.current
     const b = boundsOf(latest.current.results.slice(0, 5))
-    if (!map || !b) return
-    map.fitBounds(lngLatBounds(b), { padding: fitPadding(map, tokens.current?.bubbleFit ?? 0), maxZoom: STREET_ZOOM, duration: 600 })
+    if (map && tm && b) fitTo(map, b, tm)
   }, [fitKey])
 
   function locate() {
@@ -451,7 +433,7 @@ export default function CityMap(props: Props) {
           me.current = new Marker({ element: dot })
         }
         me.current.setLngLat(at).addTo(map)
-        map.easeTo({ center: at, offset: centreOffset(map), zoom: Math.max(map.getZoom(), STREET_ZOOM), duration: 600 })
+        if (timing.current) glideTo(map, at, timing.current)
       },
       () => setLocating(false),
       { timeout: 10000, maximumAge: 60000 },

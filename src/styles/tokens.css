@@ -171,6 +171,8 @@
   --map-pad-left: 40px;
   --map-pad-right: 40px;
 
+  --camera-ms: 450ms;
+  --camera-fit-ms: 700ms;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --app-width: 430px;
   --reading-width: 720px;
