@@ -12,7 +12,7 @@ function stored() {
   }
 }
 
-export function useMetro(mapRef: RefObject<MaplibreMap | null>, tokens: RefObject<MetroTokens | null>, loaded: boolean) {
+export function useMetro(mapRef: RefObject<MaplibreMap | null>, tokens: RefObject<MetroTokens | null>, loaded: boolean, dimmed: boolean) {
   const [on, setOn] = useState(stored)
 
   useEffect(() => {
@@ -20,13 +20,13 @@ export function useMetro(mapRef: RefObject<MaplibreMap | null>, tokens: RefObjec
     const tk = tokens.current
     if (!loaded || !map || !tk) return
     let current = true
-    void setMetroVisible(map, on, tk).then((ok) => {
+    void setMetroVisible(map, on, tk, dimmed).then((ok) => {
       if (!ok && current) setOn(false)
     })
     return () => {
       current = false
     }
-  }, [on, loaded, mapRef, tokens])
+  }, [on, loaded, dimmed, mapRef, tokens])
 
   function toggle() {
     const next = !on

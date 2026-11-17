@@ -4,7 +4,9 @@ import { styleFont } from './theme'
 
 export type MetroTokens = {
   casing: string
-  opacity: number
+  metroOpacityMin: number
+  metroOpacityMax: number
+  metroDim: number
   widthMin: number
   widthMax: number
   casingExtra: number
@@ -21,8 +23,10 @@ export type MetroTokens = {
 const SOURCE = 'metro'
 const IDS = ['metro-casing', 'metro-lines', 'metro-stations', 'metro-names']
 const BELOW = 'dots'
-const LINE_ZOOM = [10, 17]
+const LINE_ZOOM = [12.5, 14]
 const STATION_ZOOM = 12.5
+const STATION_FULL = 15
+const SMALL = 0.5
 const NAME_ZOOM = 14
 const ATTRIBUTION = 'Île-de-France Mobilités'
 
@@ -44,15 +48,21 @@ function width(tk: MetroTokens, extra: number): unknown {
   return ['interpolate', ['linear'], ['zoom'], lo, tk.widthMin + extra, hi, tk.widthMax + extra]
 }
 
-function addMetro(map: MaplibreMap, tk: MetroTokens, data: GeoJSON.FeatureCollection) {
+function opacity(tk: MetroTokens, dimmed: boolean): unknown {
+  const [lo, hi] = LINE_ZOOM
+  const k = dimmed ? tk.metroDim : 1
+  return ['interpolate', ['linear'], ['zoom'], lo, tk.metroOpacityMin * k, hi, tk.metroOpacityMax * k]
+}
+
+function addMetro(map: MaplibreMap, tk: MetroTokens, data: GeoJSON.FeatureCollection, dimmed: boolean) {
   const font = styleFont(map)
   const lines = ['==', ['geometry-type'], 'LineString'] as never
   const stations = ['==', ['geometry-type'], 'Point'] as never
   const before = map.getLayer(BELOW) ? BELOW : undefined
   const round = { 'line-cap': 'round', 'line-join': 'round' } as const
   map.addSource(SOURCE, { type: 'geojson', data, attribution: ATTRIBUTION })
-  map.addLayer({ id: IDS[0], type: 'line', source: SOURCE, filter: lines, layout: round, paint: { 'line-color': tk.casing, 'line-width': width(tk, tk.casingExtra) as never } }, before)
-  map.addLayer({ id: IDS[1], type: 'line', source: SOURCE, filter: lines, layout: round, paint: { 'line-color': ['get', 'color'], 'line-opacity': tk.opacity, 'line-width': width(tk, 0) as never } }, before)
+  map.addLayer({ id: IDS[0], type: 'line', source: SOURCE, filter: lines, layout: round, paint: { 'line-color': tk.casing, 'line-opacity': opacity(tk, dimmed) as never, 'line-width': width(tk, tk.casingExtra) as never } }, before)
+  map.addLayer({ id: IDS[1], type: 'line', source: SOURCE, filter: lines, layout: round, paint: { 'line-color': ['get', 'color'], 'line-opacity': opacity(tk, dimmed) as never, 'line-width': width(tk, 0) as never } }, before)
   map.addLayer(
     {
       id: IDS[2],
@@ -64,7 +74,9 @@ function addMetro(map: MaplibreMap, tk: MetroTokens, data: GeoJSON.FeatureCollec
         'circle-color': tk.stationFill,
         'circle-stroke-color': tk.stationInk,
         'circle-stroke-width': tk.stationWidth,
-        'circle-radius': ['case', ['>', ['get', 'n'], 1], tk.stationRHub, tk.stationR],
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], STATION_ZOOM, ['case', ['>', ['get', 'n'], 1], tk.stationRHub * SMALL, tk.stationR * SMALL], STATION_FULL, ['case', ['>', ['get', 'n'], 1], tk.stationRHub, tk.stationR]],
+        'circle-opacity': opacity(tk, dimmed) as never,
+        'circle-stroke-opacity': opacity(tk, dimmed) as never,
       },
     },
     before,
@@ -90,15 +102,17 @@ function addMetro(map: MaplibreMap, tk: MetroTokens, data: GeoJSON.FeatureCollec
   )
 }
 
-export async function setMetroVisible(map: MaplibreMap, on: boolean, tk: MetroTokens): Promise<boolean> {
+export async function setMetroVisible(map: MaplibreMap, on: boolean, tk: MetroTokens, dimmed: boolean): Promise<boolean> {
   try {
     if (!map.getSource(SOURCE)) {
       if (!on) return true
       const data = await load()
       if (!data) return false
-      if (!map.getSource(SOURCE)) addMetro(map, tk, data)
+      if (!map.getSource(SOURCE)) addMetro(map, tk, data, dimmed)
     }
     for (const id of IDS) map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none')
+    for (const id of IDS.slice(0, 2)) map.setPaintProperty(id, 'line-opacity', opacity(tk, dimmed) as never)
+    for (const prop of ['circle-opacity', 'circle-stroke-opacity'] as const) map.setPaintProperty(IDS[2], prop, opacity(tk, dimmed) as never)
     return true
   } catch {
     return false

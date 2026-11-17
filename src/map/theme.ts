@@ -18,6 +18,9 @@ export type ThemeTokens = {
   halo: string
 }
 
+const BRIDGE_ZOOM = 15
+const MAX_ZOOM = 24
+
 type Rule = { match: RegExp; type: string; paint?: [string, string | number][]; hide?: boolean }
 
 function rules(tk: ThemeTokens): Rule[] {
@@ -55,6 +58,7 @@ export function applyTheme(map: MaplibreMap, tk: ThemeTokens) {
   for (const layer of map.getStyle().layers) {
     const rule = set.find((r) => r.type === layer.type && r.match.test(layer.id))
     if (!rule) continue
+    if (/^bridge_/.test(layer.id)) quietly(() => map.setLayerZoomRange(layer.id, Math.max(layer.minzoom ?? 0, BRIDGE_ZOOM), layer.maxzoom ?? MAX_ZOOM))
     if (rule.hide) quietly(() => map.setLayoutProperty(layer.id, 'visibility', 'none'))
     for (const [prop, value] of rule.paint ?? []) {
       if (prop in (layer.paint ?? {})) quietly(() => map.setPaintProperty(layer.id, prop as 'fill-color', value as string))

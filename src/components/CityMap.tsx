@@ -29,6 +29,7 @@ const STREET_ZOOM = 15
 const START_CENTER: [number, number] = [2.3488, 48.86]
 const START_ZOOM = 12.3
 const PAN_MARGIN = 0.2
+const PHONE = '(max-width: 767px)'
 const STYLE_TIMEOUT = 10000
 
 type Props = {
@@ -64,6 +65,7 @@ function readTokens() {
     dim: num('--dot-dim-opacity'),
     hit: num('--dot-hit'),
     bubbleGap: num('--bubble-gap'),
+    bubbleFit: (num('--bubble-lg') * num('--bubble-selected-scale')) / 2 + num('--space-1'),
     label: str('--label'),
     halo: str('--label-halo'),
     labelSize: num('--label-size'),
@@ -84,7 +86,9 @@ function readTokens() {
     path: str('--map-path'),
     ink: str('--map-ink'),
     casing: str('--metro-casing'),
-    opacity: num('--metro-opacity'),
+    metroOpacityMin: num('--metro-opacity-min'),
+    metroOpacityMax: num('--metro-opacity-max'),
+    metroDim: num('--metro-dim'),
     widthMin: num('--metro-width-min'),
     widthMax: num('--metro-width-max'),
     casingExtra: num('--metro-casing-extra'),
@@ -111,6 +115,11 @@ function padding(map: MaplibreMap) {
   }
   probe.remove()
   return pad
+}
+
+function fitPadding(map: MaplibreMap, extra: number) {
+  const p = padding(map)
+  return { top: p.top + extra, bottom: p.bottom + extra, left: p.left + extra, right: p.right + extra }
 }
 
 function centreOffset(map: MaplibreMap): [number, number] {
@@ -173,10 +182,15 @@ function applyData(map: MaplibreMap, bars: MapBar[]) {
   map.getSource<GeoJSONSource>('bars')?.setData(barsToGeoJSON(bars))
 }
 
-function applyFilter(map: MaplibreMap, chips: ReadonlySet<ChipKey>) {
-  const filter = chipFilter(chips) as FilterSpecification | null
-  map.setFilter('dots', filter)
-  map.setFilter('labels', filter)
+function applyFilter(map: MaplibreMap, chips: ReadonlySet<ChipKey>, bubbled: string[] = []) {
+  const chip = chipFilter(chips)
+  const unbubbled = ['!', ['in', ['get', 'id'], ['literal', bubbled]]]
+  map.setFilter('dots', chip as FilterSpecification | null)
+  map.setFilter('labels', (chip ? ['all', chip, unbubbled] : unbubbled) as FilterSpecification)
+}
+
+function collapseAttribution(map: MaplibreMap) {
+  map.getContainer().querySelector<HTMLElement>('.maplibregl-compact-show > .maplibregl-ctrl-attrib-button')?.click()
 }
 
 function applyLook(map: MaplibreMap, tk: Tokens, dimmed: boolean, selectedId: string | null) {
@@ -243,7 +257,7 @@ export default function CityMap(props: Props) {
   const me = useRef<Marker | null>(null)
   const [locating, setLocating] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  const [metro, toggleMetro] = useMetro(mapRef, tokens, loaded)
+  const [metro, toggleMetro] = useMetro(mapRef, tokens, loaded, results.length > 0)
 
   function restyle() {
     const map = mapRef.current
@@ -256,10 +270,14 @@ export default function CityMap(props: Props) {
     const layer = bubbles.current
     if (!map || !layer || !ready.current || !tokens.current) return
     const p = latest.current
-    if (p.results.length > 0) return layer.sync(resultSpecs(p.results), p.selectedId)
+    if (p.results.length > 0) {
+      layer.sync(resultSpecs(p.results), p.selectedId)
+      return applyFilter(map, p.chips, layer.ids())
+    }
     const pad = padding(map)
     const visible = p.bars.filter((bar) => passes(bar, p.chips) && inView(map, bar, pad))
     layer.sync(exploreSpecs(map, visible, tokens.current.bubbleGap), p.selectedId)
+    applyFilter(map, p.chips, layer.ids())
   }
 
   useEffect(() => {
@@ -273,7 +291,7 @@ export default function CityMap(props: Props) {
         center: START_CENTER,
         zoom: START_ZOOM,
         maxBounds: lngLatBounds(widen(PARIS, PAN_MARGIN)),
-        attributionControl: { compact: true },
+        attributionControl: { compact: window.matchMedia(PHONE).matches },
       })
     } catch {
       latest.current.onFail()
@@ -308,11 +326,15 @@ export default function CityMap(props: Props) {
       applyTheme(map, tk)
       addLayers(map, tk, p.bars)
       ready.current = true
+      names()
       setLoaded(true)
       applyFilter(map, p.chips)
+      if (window.matchMedia(PHONE).matches) collapseAttribution(map)
       applyLook(map, tk, p.results.length > 0, p.selectedId)
       emitBounds()
     })
+    const names = () => map.getContainer().classList.toggle('citymap-names', map.getZoom() >= LABEL_ZOOM)
+    map.on('zoom', names)
     map.on('moveend', emitBounds)
     map.on('click', (e) => {
       if (!ready.current) return
@@ -351,8 +373,6 @@ export default function CityMap(props: Props) {
   }, [padKey])
 
   useEffect(() => {
-    const map = mapRef.current
-    if (map && ready.current) applyFilter(map, chips)
     refreshBubbles()
   }, [chips])
 
@@ -375,7 +395,7 @@ export default function CityMap(props: Props) {
     const map = mapRef.current
     const b = boundsOf(latest.current.results.slice(0, 5))
     if (!map || !b) return
-    map.fitBounds(lngLatBounds(b), { padding: padding(map), maxZoom: STREET_ZOOM, duration: 600 })
+    map.fitBounds(lngLatBounds(b), { padding: fitPadding(map, tokens.current?.bubbleFit ?? 0), maxZoom: STREET_ZOOM, duration: 600 })
   }, [fitKey])
 
   function locate() {

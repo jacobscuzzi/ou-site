@@ -14,7 +14,7 @@ export type BubbleSpec = {
   size: BubbleSize
 }
 
-type Item = { marker: Marker; el: HTMLButtonElement; photo: HTMLSpanElement }
+type Item = { marker: Marker; el: HTMLButtonElement; photo: HTMLSpanElement; name: HTMLSpanElement }
 
 const TOP_RANKS = 5
 const EXPLORE_MAX = 6
@@ -85,19 +85,21 @@ function createItem(spec: BubbleSpec, onSelect: (id: string) => void): Item {
   const el = document.createElement('button')
   const body = document.createElement('span')
   const photo = document.createElement('span')
+  const name = document.createElement('span')
   el.type = 'button'
   el.className = 'spot'
   body.className = 'spot-body'
   photo.className = 'spot-photo'
+  name.className = 'spot-name'
   el.style.setProperty('--bubble-phase', String(phase(spec.id)))
   body.appendChild(photo)
-  el.appendChild(body)
+  el.append(body, name)
   anchor.appendChild(el)
   el.addEventListener('click', (e) => {
     e.stopPropagation()
     onSelect(spec.id)
   })
-  return { marker: new Marker({ element: anchor }).setLngLat([spec.lng, spec.lat]), el, photo }
+  return { marker: new Marker({ element: anchor }).setLngLat([spec.lng, spec.lat]), el, photo, name }
 }
 
 export class BubbleLayer {
@@ -128,11 +130,16 @@ export class BubbleLayer {
         fillPhoto(item.photo, spec)
         this.photos.set(spec.id, spec.photo)
       }
+      item.name.textContent = cleanName(spec.name)
       item.el.dataset.size = spec.size
       item.el.setAttribute('aria-label', spec.rank === undefined ? spec.name : `${spec.rank}. ${spec.name}`)
       item.el.toggleAttribute('data-selected', spec.id === selectedId)
       fillBadge(item.el, spec.rank)
     }
+  }
+
+  ids() {
+    return [...this.items.keys()]
   }
 
   destroy() {

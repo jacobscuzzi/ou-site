@@ -72,6 +72,31 @@
   object-fit: cover;
 }
 
+.spot-name {
+  position: absolute;
+  top: calc(100% + var(--bubble-name-gap));
+  left: 50%;
+  translate: -50% 0;
+  display: none;
+  max-width: var(--bubble-name-max);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--glass-bubble);
+  box-shadow: var(--shadow-bubble);
+  color: var(--map-ink);
+  font-size: var(--text-chip);
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.citymap-names .spot-name {
+  display: block;
+}
+
 .spot-badge {
   position: absolute;
   top: calc(-1 * var(--space-1));
@@ -154,7 +179,10 @@
 }
 
 .citymap-control[aria-pressed='true'] {
-  color: var(--pink);
+  background: var(--pink);
+  border-color: var(--pink);
+  box-shadow: var(--shadow-pink);
+  color: var(--on-pink);
 }
 
 .citymap-locate[aria-busy='true'] {
