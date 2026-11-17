@@ -16,7 +16,7 @@
   --bg-desktop: #ecebe8;
   --surface: #ffffff;
   --fill: #f2f1ef;
-  --map: #e9ecea;
+  --map: var(--map-land);
   --map-grid: rgba(17, 17, 20, 0.07);
   --skeleton: repeating-linear-gradient(135deg, #ecebe8 0 6px, #e2e1dd 6px 12px);
 
@@ -79,7 +79,23 @@
   --blur-2: blur(24px) saturate(1.7);
   --blur-3: blur(32px) saturate(1.9) brightness(1.04);
 
-  --dot: var(--ink-2);
+  --violet: #7a3cff;
+  --map-land: #f8eff3;
+  --map-water: #7b93ff;
+  --map-water-edge: #6a82f0;
+  --map-water-ink: #1b2a86;
+  --map-water-halo: #aebcff;
+  --map-park: #a9ecc8;
+  --map-building: #e5d9f6;
+  --map-building-edge: #d8c9f0;
+  --map-road: #ffffff;
+  --map-road-case: #e9d9e6;
+  --map-road-main: #fff1e0;
+  --map-road-main-case: #f3cfb0;
+  --map-path: #f1c9de;
+  --map-ink: #2b1a52;
+  --map-halo: var(--map-land);
+  --dot: var(--violet);
   --dot-top: var(--pink);
   --dot-stroke: var(--surface);
   --dot-selected: var(--ink);
@@ -92,8 +108,8 @@
   --dot-opacity-max: 1;
   --dot-dim-opacity: 0.25;
   --dot-hit: 12px;
-  --label: var(--ink);
-  --label-halo: var(--surface);
+  --label: var(--map-ink);
+  --label-halo: var(--map-land);
   --label-size: var(--text-xs);
   --label-halo-width: 1.5px;
   --label-offset: 0.9;

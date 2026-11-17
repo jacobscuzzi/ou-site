@@ -14,12 +14,13 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Bar, MapBar } from '../api/types'
 import { useT } from '../i18n'
 import { barsToGeoJSON, boundsOf, chipFilter, PARIS, type Bounds, type ChipKey } from '../map/geo'
+import { applyTheme } from '../map/theme'
 import { LocateIcon } from './icons'
 import './CityMap.css'
 
 if (getWorkerUrl() === '') setWorkerUrl(workerUrl)
 
-const STYLE = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json'
+const STYLE = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json'
 const LABEL_ZOOM = 13
 const ALL_LABELS_ZOOM = 15
 const STREET_ZOOM = 15
@@ -65,6 +66,20 @@ function readTokens() {
     labelSize: num('--label-size'),
     haloWidth: num('--label-halo-width'),
     labelOffset: num('--label-offset'),
+    land: str('--map-land'),
+    water: str('--map-water'),
+    waterEdge: str('--map-water-edge'),
+    waterInk: str('--map-water-ink'),
+    waterHalo: str('--map-water-halo'),
+    park: str('--map-park'),
+    building: str('--map-building'),
+    buildingEdge: str('--map-building-edge'),
+    road: str('--map-road'),
+    roadCase: str('--map-road-case'),
+    roadMain: str('--map-road-main'),
+    roadMainCase: str('--map-road-main-case'),
+    path: str('--map-path'),
+    ink: str('--map-ink'),
   }
 }
 
@@ -270,6 +285,7 @@ export default function CityMap(props: Props) {
     })
     map.on('load', () => {
       const p = latest.current
+      applyTheme(map, tk)
       addLayers(map, tk, p.bars)
       ready.current = true
       applyFilter(map, p.chips)
