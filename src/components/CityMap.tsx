@@ -31,6 +31,7 @@ const START_ZOOM = 12.3
 const PAN_MARGIN = 0.2
 const PHONE = '(max-width: 767px)'
 const STYLE_TIMEOUT = 10000
+const SETTLE_MS = 250
 
 type Props = {
   bars: MapBar[]
@@ -65,6 +66,8 @@ function readTokens() {
     dim: num('--dot-dim-opacity'),
     hit: num('--dot-hit'),
     bubbleGap: num('--bubble-gap'),
+    bubbleOut: num('--bubble-out'),
+    bubbleStep: num('--bubble-stagger'),
     bubbleFit: (num('--bubble-lg') * num('--bubble-selected-scale')) / 2 + num('--space-1'),
     label: str('--label'),
     halo: str('--label-halo'),
@@ -254,6 +257,9 @@ export default function CityMap(props: Props) {
   const latest = useRef(props)
   latest.current = props
   const bubbles = useRef<BubbleLayer | null>(null)
+  const exploreIds = useRef<string[]>([])
+  const pressed = useRef(new Set<number>())
+  const waiting = useRef(false)
   const me = useRef<Marker | null>(null)
   const [locating, setLocating] = useState(false)
   const [loaded, setLoaded] = useState(false)
@@ -271,12 +277,18 @@ export default function CityMap(props: Props) {
     if (!map || !layer || !ready.current || !tokens.current) return
     const p = latest.current
     if (p.results.length > 0) {
+      exploreIds.current = []
       layer.sync(resultSpecs(p.results), p.selectedId)
       return applyFilter(map, p.chips, layer.ids())
     }
+    if (map.isMoving() || pressed.current.size > 0) {
+      waiting.current = true
+      return layer.mark(p.selectedId)
+    }
     const pad = padding(map)
     const visible = p.bars.filter((bar) => passes(bar, p.chips) && inView(map, bar, pad))
-    layer.sync(exploreSpecs(map, visible, tokens.current.bubbleGap), p.selectedId)
+    layer.sync(exploreSpecs(map, visible, exploreIds.current, tokens.current.bubbleGap), p.selectedId)
+    exploreIds.current = layer.ids()
     applyFilter(map, p.chips, layer.ids())
   }
 
@@ -307,11 +319,31 @@ export default function CityMap(props: Props) {
       latest.current.onFail()
     }
     const timer = window.setTimeout(fail, STYLE_TIMEOUT)
-    bubbles.current = new BubbleLayer(map, (id) => latest.current.onSelect(id))
+    bubbles.current = new BubbleLayer(map, (id) => latest.current.onSelect(id), { out: tk.bubbleOut, step: tk.bubbleStep })
     const emitBounds = () => {
       latest.current.onBounds(clearBounds(map))
       refreshBubbles()
     }
+    let settleTimer = 0
+    const queue = () => {
+      window.clearTimeout(settleTimer)
+      settleTimer = window.setTimeout(() => {
+        if (map.isMoving() || pressed.current.size > 0) waiting.current = true
+        else emitBounds()
+      }, SETTLE_MS)
+    }
+    const box = map.getContainer()
+    const press = (e: PointerEvent) => pressed.current.add(e.pointerId)
+    const release = (e: PointerEvent) => {
+      pressed.current.delete(e.pointerId)
+      if (pressed.current.size === 0 && waiting.current) {
+        waiting.current = false
+        queue()
+      }
+    }
+    box.addEventListener('pointerdown', press)
+    window.addEventListener('pointerup', release)
+    window.addEventListener('pointercancel', release)
 
     map.on('error', (e) => {
       const from = e as { sourceId?: unknown; tile?: unknown }
@@ -335,7 +367,8 @@ export default function CityMap(props: Props) {
     })
     const names = () => map.getContainer().classList.toggle('citymap-names', map.getZoom() >= LABEL_ZOOM)
     map.on('zoom', names)
-    map.on('moveend', emitBounds)
+    map.on('movestart', () => window.clearTimeout(settleTimer))
+    map.on('moveend', queue)
     map.on('click', (e) => {
       if (!ready.current) return
       const id = nearestDot(map, e.point.x, e.point.y, tk.hit)
@@ -351,6 +384,11 @@ export default function CityMap(props: Props) {
     return () => {
       removed = true
       window.clearTimeout(timer)
+      window.clearTimeout(settleTimer)
+      box.removeEventListener('pointerdown', press)
+      window.removeEventListener('pointerup', release)
+      window.removeEventListener('pointercancel', release)
+      pressed.current.clear()
       ready.current = false
       bubbles.current?.destroy()
       bubbles.current = null

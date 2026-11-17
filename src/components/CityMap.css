@@ -25,6 +25,21 @@
   width: var(--bubble-size);
   height: var(--bubble-size);
   cursor: pointer;
+  transition:
+    opacity var(--bubble-in) var(--ease) var(--spot-delay, 0ms),
+    scale var(--bubble-in) var(--ease) var(--spot-delay, 0ms);
+}
+
+.spot[data-enter],
+.spot[data-leave] {
+  opacity: 0;
+  scale: var(--bubble-enter-scale);
+}
+
+.spot[data-leave] {
+  pointer-events: none;
+  transition-duration: var(--bubble-out);
+  transition-delay: 0ms;
 }
 
 .spot[data-size='lg'] {
@@ -136,10 +151,18 @@
   .spot-body {
     animation: none;
   }
+
+  .spot {
+    transition: none;
+  }
 }
 
 [data-lite] .spot-body {
   animation: none;
+}
+
+[data-lite] .spot {
+  transition: none;
 }
 
 .city-me {

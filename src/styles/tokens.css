@@ -146,6 +146,10 @@
   --bubble-name-max: 120px;
   --bubble-name-gap: var(--space-2);
   --bubble-delay-step: 0.56s;
+  --bubble-in: 220ms;
+  --bubble-out: 160ms;
+  --bubble-stagger: 40ms;
+  --bubble-enter-scale: 0.6;
   --control-size: 44px;
   --border-1: 1px;
   --row-photo: 64px;

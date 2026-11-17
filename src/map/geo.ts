@@ -45,8 +45,9 @@ export function spreadPick<T extends { quality: number; name: string }>(
   at: (item: T) => { x: number; y: number },
   n: number,
   gap: number,
+  seed: T[] = [],
 ): T[] {
-  const chosen: T[] = []
+  const chosen = [...seed]
   for (const item of [...items].sort(byQuality)) {
     if (chosen.length >= n) break
     const p = at(item)
@@ -57,6 +58,18 @@ export function spreadPick<T extends { quality: number; name: string }>(
     if (clear) chosen.push(item)
   }
   return chosen
+}
+
+export function stablePick<T extends { id: string; quality: number; name: string }>(
+  candidates: T[],
+  previous: readonly string[],
+  at: (item: T) => { x: number; y: number },
+  n: number,
+  gap: number,
+): string[] {
+  const had = new Set(previous)
+  const kept = spreadPick(candidates.filter((c) => had.has(c.id)), at, n, gap)
+  return spreadPick(candidates.filter((c) => !had.has(c.id)), at, n, gap, kept).map((c) => c.id)
 }
 
 export function boundsOf(points: { lat: number; lng: number }[]): Bounds | null {

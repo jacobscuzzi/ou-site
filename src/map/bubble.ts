@@ -1,6 +1,6 @@
 import { Marker, type Map as MaplibreMap } from 'maplibre-gl'
 import type { Bar, MapBar } from '../api/types'
-import { cleanName, spreadPick } from './geo'
+import { cleanName, stablePick } from './geo'
 
 export type BubbleSize = 'lg' | 'md' | 'sm'
 
@@ -19,6 +19,14 @@ type Item = { marker: Marker; el: HTMLButtonElement; photo: HTMLSpanElement; nam
 const TOP_RANKS = 5
 const EXPLORE_MAX = 6
 const PHASES = 5
+const STAGGER_MAX = 8
+const LEAVE_SLACK = 30
+
+export type BubbleTiming = { out: number; step: number }
+
+function still() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches || 'lite' in document.documentElement.dataset
+}
 
 export function resultSpecs(results: Bar[]): BubbleSpec[] {
   return results.map((bar) => ({
@@ -32,16 +40,14 @@ export function resultSpecs(results: Bar[]): BubbleSpec[] {
   }))
 }
 
-export function exploreSpecs(map: MaplibreMap, visible: MapBar[], gap: number): BubbleSpec[] {
+export function exploreSpecs(map: MaplibreMap, visible: MapBar[], previous: readonly string[], gap: number): BubbleSpec[] {
   const at = (bar: MapBar) => map.project([bar.lng, bar.lat])
-  return spreadPick(visible, at, EXPLORE_MAX, gap).map((bar) => ({
-    id: bar.id,
-    name: bar.name,
-    lat: bar.lat,
-    lng: bar.lng,
-    photo: bar.cover,
-    size: 'md',
-  }))
+  const byId = new Map(visible.map((bar) => [bar.id, bar]))
+  return stablePick(visible, previous, at, EXPLORE_MAX, gap).flatMap((id) => {
+    const bar = byId.get(id)
+    if (!bar) return []
+    return { id, name: bar.name, lat: bar.lat, lng: bar.lng, photo: bar.cover, size: 'md' as const }
+  })
 }
 
 function phase(id: string) {
@@ -104,28 +110,22 @@ function createItem(spec: BubbleSpec, onSelect: (id: string) => void): Item {
 
 export class BubbleLayer {
   private items = new Map<string, Item>()
+  private leaving = new Map<string, { item: Item; timer: number }>()
   private photos = new Map<string, string | undefined>()
 
   constructor(
     private map: MaplibreMap,
     private onSelect: (id: string) => void,
+    private timing: BubbleTiming,
   ) {}
 
   sync(specs: BubbleSpec[], selectedId: string | null) {
     const keep = new Set(specs.map((s) => s.id))
-    for (const [id, item] of this.items) {
-      if (keep.has(id)) continue
-      item.marker.remove()
-      this.items.delete(id)
-      this.photos.delete(id)
-    }
+    for (const [id, item] of this.items) if (!keep.has(id)) this.retire(id, item)
+    let fresh = 0
     for (const spec of specs) {
-      let item = this.items.get(spec.id)
-      if (!item) {
-        item = createItem(spec, this.onSelect)
-        item.marker.addTo(this.map)
-        this.items.set(spec.id, item)
-      }
+      let item = this.items.get(spec.id) ?? this.revive(spec.id)
+      if (!item) item = this.enter(spec, fresh++)
       if (!this.photos.has(spec.id) || this.photos.get(spec.id) !== spec.photo) {
         fillPhoto(item.photo, spec)
         this.photos.set(spec.id, spec.photo)
@@ -133,10 +133,55 @@ export class BubbleLayer {
       item.name.textContent = cleanName(spec.name)
       item.el.dataset.size = spec.size
       item.el.setAttribute('aria-label', spec.rank === undefined ? spec.name : `${spec.rank}. ${spec.name}`)
-      item.el.toggleAttribute('data-selected', spec.id === selectedId)
       fillBadge(item.el, spec.rank)
     }
+    this.mark(selectedId)
     this.stack(specs)
+  }
+
+  mark(selectedId: string | null) {
+    for (const [id, item] of this.items) item.el.toggleAttribute('data-selected', id === selectedId)
+  }
+
+  private enter(spec: BubbleSpec, order: number) {
+    const item = createItem(spec, this.onSelect)
+    this.items.set(spec.id, item)
+    if (still()) {
+      item.marker.addTo(this.map)
+      return item
+    }
+    item.el.dataset.enter = ''
+    item.el.style.setProperty('--spot-delay', `${Math.min(order, STAGGER_MAX) * this.timing.step}ms`)
+    item.marker.addTo(this.map)
+    requestAnimationFrame(() => requestAnimationFrame(() => item.el.removeAttribute('data-enter')))
+    return item
+  }
+
+  private retire(id: string, item: Item) {
+    this.items.delete(id)
+    if (still()) {
+      item.marker.remove()
+      this.photos.delete(id)
+      return
+    }
+    item.el.dataset.leave = ''
+    const timer = window.setTimeout(() => {
+      item.marker.remove()
+      this.leaving.delete(id)
+      this.photos.delete(id)
+    }, this.timing.out + LEAVE_SLACK)
+    this.leaving.set(id, { item, timer })
+  }
+
+  private revive(id: string) {
+    const gone = this.leaving.get(id)
+    if (!gone) return undefined
+    window.clearTimeout(gone.timer)
+    this.leaving.delete(id)
+    gone.item.el.removeAttribute('data-leave')
+    gone.item.el.style.setProperty('--spot-delay', '0ms')
+    this.items.set(id, gone.item)
+    return gone.item
   }
 
   private stack(specs: BubbleSpec[]) {
@@ -155,7 +200,12 @@ export class BubbleLayer {
 
   destroy() {
     for (const item of this.items.values()) item.marker.remove()
+    for (const { item, timer } of this.leaving.values()) {
+      window.clearTimeout(timer)
+      item.marker.remove()
+    }
     this.items.clear()
+    this.leaving.clear()
     this.photos.clear()
   }
 }
