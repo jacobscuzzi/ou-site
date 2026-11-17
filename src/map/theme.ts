@@ -61,3 +61,13 @@ export function applyTheme(map: MaplibreMap, tk: ThemeTokens) {
     }
   }
 }
+
+export function styleFont(map: MaplibreMap) {
+  const fonts: string[][] = []
+  for (const layer of map.getStyle().layers) {
+    if (layer.type !== 'symbol') continue
+    const font: unknown = layer.layout?.['text-font']
+    if (Array.isArray(font) && font.length > 0 && font.every((f) => typeof f === 'string')) fonts.push(font)
+  }
+  return fonts.find((font) => !/italic/i.test(font[0])) ?? fonts[0]
+}

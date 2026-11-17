@@ -65,6 +65,15 @@ export function LocateIcon({ size = 18 }: IconProps) {
   )
 }
 
+export function MetroIcon({ size = 18 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M7.5 16V8l4.5 5.5L16.5 8v8" />
+    </svg>
+  )
+}
+
 export function BackIcon({ size = 18 }: IconProps) {
   return (
     <svg {...base} width={size} height={size}>

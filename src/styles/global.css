@@ -71,7 +71,7 @@ html.locked body {
 [data-lite] .thinking-panel,
 [data-lite] .lang,
 [data-lite] .sheet,
-[data-lite] .citymap-locate {
+[data-lite] .citymap-control {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   background-color: var(--glass-lite);

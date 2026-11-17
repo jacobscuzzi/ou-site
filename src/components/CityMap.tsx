@@ -14,8 +14,9 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Bar, MapBar } from '../api/types'
 import { useT } from '../i18n'
 import { barsToGeoJSON, boundsOf, chipFilter, PARIS, type Bounds, type ChipKey } from '../map/geo'
-import { applyTheme } from '../map/theme'
-import { LocateIcon } from './icons'
+import { applyTheme, styleFont } from '../map/theme'
+import { useMetro } from '../map/useMetro'
+import { LocateIcon, MetroIcon } from './icons'
 import './CityMap.css'
 
 if (getWorkerUrl() === '') setWorkerUrl(workerUrl)
@@ -80,6 +81,16 @@ function readTokens() {
     roadMainCase: str('--map-road-main-case'),
     path: str('--map-path'),
     ink: str('--map-ink'),
+    casing: str('--metro-casing'),
+    widthMin: num('--metro-width-min'),
+    widthMax: num('--metro-width-max'),
+    casingExtra: num('--metro-casing-extra'),
+    stationFill: str('--metro-station-fill'),
+    stationInk: str('--metro-station-ink'),
+    stationR: num('--metro-station-r'),
+    stationRHub: num('--metro-station-r-hub'),
+    stationWidth: num('--metro-station-width'),
+    metroLabelSize: num('--metro-label-size'),
   }
 }
 
@@ -120,16 +131,6 @@ function inView(map: MaplibreMap, at: { lat: number; lng: number }) {
   const box = map.getContainer()
   const pad = padding(map)
   return p.x >= pad.left && p.x <= box.clientWidth - pad.right && p.y >= pad.top && p.y <= box.clientHeight - pad.bottom
-}
-
-function styleFont(map: MaplibreMap) {
-  const fonts: string[][] = []
-  for (const layer of map.getStyle().layers) {
-    if (layer.type !== 'symbol') continue
-    const font: unknown = layer.layout?.['text-font']
-    if (Array.isArray(font) && font.length > 0 && font.every((f) => typeof f === 'string')) fonts.push(font)
-  }
-  return fonts.find((font) => !/italic/i.test(font[0])) ?? fonts[0]
 }
 
 function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[]) {
@@ -239,6 +240,8 @@ export default function CityMap(props: Props) {
   const pins = useRef(new Map<string, HTMLDivElement>())
   const me = useRef<Marker | null>(null)
   const [locating, setLocating] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+  const [metro, toggleMetro] = useMetro(mapRef, tokens, loaded)
 
   function restyle() {
     const map = mapRef.current
@@ -288,6 +291,7 @@ export default function CityMap(props: Props) {
       applyTheme(map, tk)
       addLayers(map, tk, p.bars)
       ready.current = true
+      setLoaded(true)
       applyFilter(map, p.chips)
       applyLook(map, tk, p.results.length > 0, p.selectedId)
       emitBounds()
@@ -396,15 +400,26 @@ export default function CityMap(props: Props) {
   return (
     <div className="citymap" role="region" aria-label={t.mapLabel}>
       <div className="citymap-canvas" ref={el} />
-      <button
-        className="citymap-locate"
-        type="button"
-        onClick={locate}
-        aria-label={t.locate}
-        aria-busy={locating}
-      >
-        <LocateIcon />
-      </button>
+      <div className="citymap-controls">
+        <button
+          className="citymap-control"
+          type="button"
+          onClick={toggleMetro}
+          aria-pressed={metro}
+          aria-label={metro ? t.metroHide : t.metroShow}
+        >
+          <MetroIcon />
+        </button>
+        <button
+          className="citymap-control citymap-locate"
+          type="button"
+          onClick={locate}
+          aria-label={t.locate}
+          aria-busy={locating}
+        >
+          <LocateIcon />
+        </button>
+      </div>
     </div>
   )
 }
