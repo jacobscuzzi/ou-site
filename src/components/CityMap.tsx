@@ -13,7 +13,8 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Bar, MapBar } from '../api/types'
 import { useT } from '../i18n'
-import { barsToGeoJSON, boundsOf, chipFilter, PARIS, type Bounds, type ChipKey } from '../map/geo'
+import { barsToGeoJSON, boundsOf, chipFilter, passes, PARIS, type Bounds, type ChipKey } from '../map/geo'
+import { BubbleLayer, exploreSpecs, resultSpecs } from '../map/bubble'
 import { applyTheme, styleFont } from '../map/theme'
 import { useMetro } from '../map/useMetro'
 import { LocateIcon, MetroIcon } from './icons'
@@ -62,6 +63,7 @@ function readTokens() {
     opacityMax: num('--dot-opacity-max'),
     dim: num('--dot-dim-opacity'),
     hit: num('--dot-hit'),
+    bubbleGap: num('--bubble-gap'),
     label: str('--label'),
     halo: str('--label-halo'),
     labelSize: num('--label-size'),
@@ -82,6 +84,7 @@ function readTokens() {
     path: str('--map-path'),
     ink: str('--map-ink'),
     casing: str('--metro-casing'),
+    opacity: num('--metro-opacity'),
     widthMin: num('--metro-width-min'),
     widthMax: num('--metro-width-max'),
     casingExtra: num('--metro-casing-extra'),
@@ -126,10 +129,9 @@ function lngLatBounds(b: Bounds): LngLatBoundsLike {
   ]
 }
 
-function inView(map: MaplibreMap, at: { lat: number; lng: number }) {
+function inView(map: MaplibreMap, at: { lat: number; lng: number }, pad = padding(map)) {
   const p = map.project([at.lng, at.lat])
   const box = map.getContainer()
-  const pad = padding(map)
   return p.x >= pad.left && p.x <= box.clientWidth - pad.right && p.y >= pad.top && p.y <= box.clientHeight - pad.bottom
 }
 
@@ -237,7 +239,7 @@ export default function CityMap(props: Props) {
   const ready = useRef(false)
   const latest = useRef(props)
   latest.current = props
-  const pins = useRef(new Map<string, HTMLDivElement>())
+  const bubbles = useRef<BubbleLayer | null>(null)
   const me = useRef<Marker | null>(null)
   const [locating, setLocating] = useState(false)
   const [loaded, setLoaded] = useState(false)
@@ -247,6 +249,17 @@ export default function CityMap(props: Props) {
     const map = mapRef.current
     if (!map || !ready.current || !tokens.current) return
     applyLook(map, tokens.current, latest.current.results.length > 0, latest.current.selectedId)
+  }
+
+  function refreshBubbles() {
+    const map = mapRef.current
+    const layer = bubbles.current
+    if (!map || !layer || !ready.current || !tokens.current) return
+    const p = latest.current
+    if (p.results.length > 0) return layer.sync(resultSpecs(p.results), p.selectedId)
+    const pad = padding(map)
+    const visible = p.bars.filter((bar) => passes(bar, p.chips) && inView(map, bar, pad))
+    layer.sync(exploreSpecs(map, visible, tokens.current.bubbleGap), p.selectedId)
   }
 
   useEffect(() => {
@@ -276,7 +289,11 @@ export default function CityMap(props: Props) {
       latest.current.onFail()
     }
     const timer = window.setTimeout(fail, STYLE_TIMEOUT)
-    const emitBounds = () => latest.current.onBounds(clearBounds(map))
+    bubbles.current = new BubbleLayer(map, (id) => latest.current.onSelect(id))
+    const emitBounds = () => {
+      latest.current.onBounds(clearBounds(map))
+      refreshBubbles()
+    }
 
     map.on('error', (e) => {
       const from = e as { sourceId?: unknown; tile?: unknown }
@@ -313,6 +330,8 @@ export default function CityMap(props: Props) {
       removed = true
       window.clearTimeout(timer)
       ready.current = false
+      bubbles.current?.destroy()
+      bubbles.current = null
       me.current = null
       mapRef.current = null
       map.remove()
@@ -322,44 +341,28 @@ export default function CityMap(props: Props) {
   useEffect(() => {
     const map = mapRef.current
     if (map && ready.current) applyData(map, bars)
+    refreshBubbles()
   }, [bars])
 
   useEffect(() => {
     const map = mapRef.current
     if (map && ready.current) latest.current.onBounds(clearBounds(map))
+    refreshBubbles()
   }, [padKey])
 
   useEffect(() => {
     const map = mapRef.current
     if (map && ready.current) applyFilter(map, chips)
+    refreshBubbles()
   }, [chips])
 
   useEffect(() => {
-    const map = mapRef.current
-    if (!map) return
-    const made = results.map((bar) => {
-      const anchor = document.createElement('div')
-      const pin = document.createElement('div')
-      pin.className = 'city-pin'
-      pin.classList.toggle('city-pin-selected', bar.id === latest.current.selectedId)
-      pin.textContent = String(bar.rank)
-      pin.addEventListener('click', (e) => {
-        e.stopPropagation()
-        latest.current.onSelect(bar.id)
-      })
-      anchor.appendChild(pin)
-      pins.current.set(bar.id, pin)
-      return new Marker({ element: anchor }).setLngLat([bar.lng, bar.lat]).addTo(map)
-    })
+    refreshBubbles()
     restyle()
-    return () => {
-      for (const marker of made) marker.remove()
-      pins.current.clear()
-    }
   }, [results])
 
   useEffect(() => {
-    for (const [id, pin] of pins.current) pin.classList.toggle('city-pin-selected', id === selectedId)
+    refreshBubbles()
     restyle()
     const map = mapRef.current
     if (!map || !selectedId) return

@@ -25,7 +25,11 @@ export function inBounds(bar: { lat: number; lng: number }, b: Bounds): boolean 
   return bar.lng >= b.minLng && bar.lng <= b.maxLng && bar.lat >= b.minLat && bar.lat <= b.maxLat
 }
 
-function byQuality(a: MapBar, b: MapBar) {
+export function cleanName(name: string): string {
+  return name.replace(/[\p{Extended_Pictographic}\u200d\ufe0f]/gu, '').trim()
+}
+
+function byQuality(a: { quality: number; name: string }, b: { quality: number; name: string }) {
   return b.quality - a.quality || a.name.localeCompare(b.name)
 }
 
@@ -34,6 +38,25 @@ export function topInView(bars: MapBar[], b: Bounds | null, chips: ReadonlySet<C
     .filter((bar) => passes(bar, chips) && (b === null || inBounds(bar, b)))
     .sort(byQuality)
     .slice(0, n)
+}
+
+export function spreadPick<T extends { quality: number; name: string }>(
+  items: T[],
+  at: (item: T) => { x: number; y: number },
+  n: number,
+  gap: number,
+): T[] {
+  const chosen: T[] = []
+  for (const item of [...items].sort(byQuality)) {
+    if (chosen.length >= n) break
+    const p = at(item)
+    const clear = chosen.every((c) => {
+      const q = at(c)
+      return Math.hypot(p.x - q.x, p.y - q.y) >= gap
+    })
+    if (clear) chosen.push(item)
+  }
+  return chosen
 }
 
 export function boundsOf(points: { lat: number; lng: number }[]): Bounds | null {
@@ -60,7 +83,7 @@ export function barsToGeoJSON(bars: MapBar[]): GeoJSON.FeatureCollection<GeoJSON
       geometry: { type: 'Point', coordinates: [bar.lng, bar.lat] },
       properties: {
         id: bar.id,
-        name: bar.name.replace(/[\p{Extended_Pictographic}\u200d\ufe0f]/gu, '').trim(),
+        name: cleanName(bar.name),
         quality: bar.quality,
         open: flag(checks.open(bar)),
         terrace: flag(checks.terrace(bar)),

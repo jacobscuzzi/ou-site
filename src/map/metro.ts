@@ -4,6 +4,7 @@ import { styleFont } from './theme'
 
 export type MetroTokens = {
   casing: string
+  opacity: number
   widthMin: number
   widthMax: number
   casingExtra: number
@@ -51,7 +52,7 @@ function addMetro(map: MaplibreMap, tk: MetroTokens, data: GeoJSON.FeatureCollec
   const round = { 'line-cap': 'round', 'line-join': 'round' } as const
   map.addSource(SOURCE, { type: 'geojson', data, attribution: ATTRIBUTION })
   map.addLayer({ id: IDS[0], type: 'line', source: SOURCE, filter: lines, layout: round, paint: { 'line-color': tk.casing, 'line-width': width(tk, tk.casingExtra) as never } }, before)
-  map.addLayer({ id: IDS[1], type: 'line', source: SOURCE, filter: lines, layout: round, paint: { 'line-color': ['get', 'color'], 'line-width': width(tk, 0) as never } }, before)
+  map.addLayer({ id: IDS[1], type: 'line', source: SOURCE, filter: lines, layout: round, paint: { 'line-color': ['get', 'color'], 'line-opacity': tk.opacity, 'line-width': width(tk, 0) as never } }, before)
   map.addLayer(
     {
       id: IDS[2],
