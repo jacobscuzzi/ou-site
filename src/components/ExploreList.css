@@ -1,0 +1,124 @@
+.explore {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.explore-title {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.explore-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.xrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2);
+  border: var(--border-1) solid var(--glass-border);
+  border-radius: var(--radius-tile);
+  background: var(--glass-lite);
+  box-shadow: var(--hairline);
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.xrow-selected {
+  border-color: var(--pink);
+  box-shadow: var(--hairline), var(--shadow-pin-selected);
+}
+
+.xrow:focus-visible {
+  outline: none;
+  box-shadow: var(--hairline), var(--focus-ring);
+}
+
+.xrow-photo {
+  flex: none;
+  width: var(--row-photo);
+  height: var(--row-photo);
+  border-radius: var(--radius-photo);
+}
+
+.xrow-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.xrow-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.xrow-name {
+  overflow: hidden;
+  font-size: var(--text-base);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.xrow-arr {
+  flex: none;
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+}
+
+.xrow-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.xrow-chips .chip {
+  height: var(--space-6);
+  padding: 0 var(--space-2) 0 var(--space-1);
+  font-size: var(--text-chip);
+}
+
+.xrow-chips .chip:not(:has(.chip-icon)) {
+  padding-left: var(--space-2);
+}
+
+.xrow-skeleton {
+  height: var(--row-skeleton);
+  border-radius: var(--radius-tile);
+  background: var(--skeleton);
+}
+
+.explore-note {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.explore-note p {
+  margin: 0;
+}
+
+.explore-note-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+
+.explore-note-hint {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}

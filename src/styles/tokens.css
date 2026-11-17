@@ -113,6 +113,10 @@
   --pin-ring: 3px;
   --control-size: 44px;
   --border-1: 1px;
+  --chip-height: 36px;
+  --row-photo: 64px;
+  --row-skeleton: 80px;
+  --text-chip: 11px;
   --sheet-peek: 168px;
   --sheet-half: 54vh;
   --sheet-full: 92vh;

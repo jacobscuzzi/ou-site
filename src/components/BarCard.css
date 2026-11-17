@@ -52,15 +52,9 @@
   box-shadow: var(--hairline);
 }
 
-.card-photo img {
-  display: block;
+.card-photo-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-}
-
-.card-photo-empty {
-  background: linear-gradient(135deg, var(--pink-tint), var(--surface));
 }
 
 .card-photo::after {

@@ -4,6 +4,7 @@ import { hintFor, useLang, useT } from '../i18n'
 import { tagsFor } from '../tags'
 import BarDetail, { price } from './BarDetail'
 import { BeerIcon, ClockIcon } from './icons'
+import Photo from './Photo'
 import './BarCard.css'
 
 export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
@@ -30,8 +31,8 @@ export default function BarCard({ bar, index }: { bar: Bar; index: number }) {
       onKeyDown={onKey}
     >
       <span className="card-glare" />
-      <div className={bar.photos.length > 0 ? 'card-photo' : 'card-photo card-photo-empty'}>
-        {bar.photos.length > 0 && <img src={bar.photos[0]} alt="" loading="lazy" />}
+      <div className="card-photo">
+        <Photo className="card-photo-img" src={bar.photos[0]} />
         <span className="card-rank">{bar.rank}</span>
       </div>
 
