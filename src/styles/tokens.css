@@ -153,6 +153,8 @@
   --bubble-stagger: 40ms;
   --bubble-enter-scale: 0.6;
   --control-size: 44px;
+  --fab-size: 56px;
+  --fab-icon: 24px;
   --border-1: 1px;
   --row-photo: 64px;
   --photo-icon: 24px;

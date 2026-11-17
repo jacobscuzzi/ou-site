@@ -13,6 +13,7 @@ type Props = {
   selectedId: string | null
   onSelect: (id: string) => void
   onRetry: () => void
+  title?: string
 }
 
 function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSelect: () => void }) {
@@ -55,12 +56,12 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
   )
 }
 
-export default function ExploreList({ bars, state, warming, selectedId, onSelect, onRetry }: Props) {
+export default function ExploreList({ bars, state, warming, selectedId, onSelect, onRetry, title }: Props) {
   const t = useT()
 
   return (
     <section className="explore">
-      <h2 className="explore-title">{t.exploreTitle}</h2>
+      <h2 className="explore-title">{title ?? t.exploreTitle}</h2>
       {state === 'loading' && (
         <div className="explore-status" role="status">
           <span className="visually-hidden">{t.exploreLoading}</span>

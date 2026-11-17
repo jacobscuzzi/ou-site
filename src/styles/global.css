@@ -301,3 +301,31 @@ html.locked body {
   outline: none;
   box-shadow: var(--focus-ring), var(--shadow-send);
 }
+
+.app-fab {
+  padding-bottom: calc(var(--fab-size) + var(--space-7) + env(safe-area-inset-bottom));
+}
+
+.map-fab {
+  position: fixed;
+  right: max(var(--space-5), env(safe-area-inset-right));
+  bottom: calc(var(--space-5) + env(safe-area-inset-bottom));
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  width: var(--fab-size);
+  height: var(--fab-size);
+  border-radius: var(--radius-pill);
+  background: var(--pink-gradient);
+  box-shadow: var(--shadow-send);
+  color: var(--on-pink);
+}
+
+.map-fab:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), var(--shadow-send);
+}
+
+.visually-hidden:focus {
+  outline: none;
+}

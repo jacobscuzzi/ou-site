@@ -81,3 +81,12 @@ export function BackIcon({ size = 18 }: IconProps) {
     </svg>
   )
 }
+
+export function MapIcon({ size = 24 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M9 4L3 6.5v13L9 17l6 3 6-2.5v-13L15 7z" />
+      <path d="M9 4v13M15 7v13" />
+    </svg>
+  )
+}

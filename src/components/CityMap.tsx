@@ -38,6 +38,7 @@ type Props = {
   chips: ReadonlySet<ChipKey>
   selectedId: string | null
   highlightId: string | null
+  active: boolean
   fitKey: string
   onSelect: (id: string) => void
   onBounds: (b: Bounds) => void
@@ -215,7 +216,7 @@ function clearBounds(map: MaplibreMap): Bounds {
 }
 
 export default function CityMap(props: Props) {
-  const { bars, results, chips, selectedId, highlightId, fitKey, padKey } = props
+  const { bars, results, chips, selectedId, highlightId, active, fitKey, padKey } = props
   const t = useT()
   const el = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MaplibreMap | null>(null)
@@ -242,7 +243,7 @@ export default function CityMap(props: Props) {
   function refreshBubbles() {
     const map = mapRef.current
     const layer = bubbles.current
-    if (!map || !layer || !ready.current || !tokens.current) return
+    if (!map || !layer || !ready.current || !tokens.current || !latest.current.active) return
     const p = latest.current
     if (p.results.length > 0) {
       exploreIds.current = []
@@ -294,6 +295,7 @@ export default function CityMap(props: Props) {
     const timer = window.setTimeout(fail, STYLE_TIMEOUT)
     bubbles.current = new BubbleLayer(map, (id) => latest.current.onSelect(id), { out: tk.bubbleOut, step: tk.bubbleStep })
     const emitBounds = () => {
+      if (!latest.current.active) return
       latest.current.onBounds(clearBounds(map))
       refreshBubbles()
     }
@@ -413,7 +415,16 @@ export default function CityMap(props: Props) {
 
   useEffect(() => {
     const map = mapRef.current
+    if (!active || !map || !ready.current) return
+    map.resize()
+    latest.current.onBounds(clearBounds(map))
+    refreshBubbles()
+  }, [active])
+
+  useEffect(() => {
+    const map = mapRef.current
     const tm = timing.current
+    if (!latest.current.active) return
     const b = boundsOf(latest.current.results.slice(0, 5))
     if (map && tm && b) fitTo(map, b, tm)
   }, [fitKey])

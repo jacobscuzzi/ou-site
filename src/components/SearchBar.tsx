@@ -11,10 +11,11 @@ type Props = {
   onChange: (q: string) => void
   onSubmit: (q: string) => void
   onHome: () => void
+  homeLabel: string
   children?: ReactNode
 }
 
-export default function SearchBar({ value, submitted, loading, onChange, onSubmit, onHome, children }: Props) {
+export default function SearchBar({ value, submitted, loading, onChange, onSubmit, onHome, homeLabel, children }: Props) {
   const t = useT()
 
   function submit(e: FormEvent) {
@@ -34,7 +35,7 @@ export default function SearchBar({ value, submitted, loading, onChange, onSubmi
     <header className="search">
       <form className="search-pill" onSubmit={submit}>
         <span className="search-glare" />
-        <button className="search-brand" type="button" onClick={onHome} aria-label={t.startOver}>
+        <button className="search-brand" type="button" onClick={onHome} aria-label={homeLabel}>
           <Logo size="var(--text-md)" />
         </button>
         <input

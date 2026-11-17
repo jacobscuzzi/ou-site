@@ -12,7 +12,7 @@ import BarPreview from './components/BarPreview'
 import Sheet, { type SheetHeight } from './components/Sheet'
 import Chips from './components/Chips'
 import ExploreList from './components/ExploreList'
-import { BackIcon } from './components/icons'
+import { BackIcon, MapIcon } from './components/icons'
 
 type MapProps = ComponentProps<typeof import('./components/CityMap').default>
 
@@ -23,12 +23,24 @@ function MapUnavailable({ onFail }: MapProps) {
 
 const CityMap = lazy<ComponentType<MapProps>>(() => import('./components/CityMap').catch(() => ({ default: MapUnavailable })))
 
+type View = 'map' | 'search'
+
 const NO_RESULTS: Bar[] = []
+const NO_CHIPS: ReadonlySet<ChipKey> = new Set()
+const VIEW_KEY = 'ou-view'
 const BARS_RETRIES = 6
 const BARS_RETRY_DELAY = 5000
 const BARS_TIMEOUT = 10000
 const QUIET_MS = 900
 const desktop = '(min-width: 768px)'
+
+function initialView(): View {
+  try {
+    return localStorage.getItem(VIEW_KEY) === 'search' ? 'search' : 'map'
+  } catch {
+    return 'map'
+  }
+}
 
 export default function App() {
   const [lang, setLang] = useState<Lang>(initialLang)
@@ -45,6 +57,9 @@ export default function App() {
   const [hasMore, setHasMore] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
   const [moreError, setMoreError] = useState<string | null>(null)
+  const [view, setView] = useState<View>(initialView)
+  const [mapUsed, setMapUsed] = useState(() => initialView() === 'map')
+  const [mapEntries, setMapEntries] = useState(0)
   const [mapFailed, setMapFailed] = useState(false)
   const [mapBars, setMapBars] = useState<MapBar[]>([])
   const [barsState, setBarsState] = useState<'loading' | 'ready' | 'error'>('loading')
@@ -59,6 +74,8 @@ export default function App() {
   const returnFocus = useRef<string | null>(null)
   const quietUntil = useRef(0)
   const t = strings[lang]
+  const mode: View = mapFailed ? 'search' : view
+  const shownMode = useRef(mode)
 
   useEffect(() => {
     document.documentElement.lang = lang
@@ -70,11 +87,22 @@ export default function App() {
   }, [lang])
 
   useEffect(() => {
-    document.documentElement.classList.toggle('locked', !mapFailed)
-  }, [mapFailed])
+    try {
+      localStorage.setItem(VIEW_KEY, view)
+    } catch {
+      // storage unavailable, the choice just lasts for this visit
+    }
+  }, [view])
 
   useEffect(() => {
-    if (mapFailed) return
+    document.documentElement.classList.toggle('locked', mode === 'map')
+    if (shownMode.current === mode) return
+    shownMode.current = mode
+    window.scrollTo({ top: 0 })
+    document.querySelector<HTMLElement>(`[data-view="${mode}"] h1`)?.focus({ preventScroll: true })
+  }, [mode])
+
+  useEffect(() => {
     const ctrl = new AbortController()
     let tries = 0
     let timer = 0
@@ -118,7 +146,7 @@ export default function App() {
       window.clearTimeout(timer)
       ctrl.abort()
     }
-  }, [barsAttempt, mapFailed])
+  }, [barsAttempt])
 
   useEffect(() => {
     if (query === null) return
@@ -273,6 +301,8 @@ export default function App() {
     if (query === null) setSheet('half')
   }
 
+  const best = useMemo(() => topInView(mapBars, null, NO_CHIPS), [mapBars])
+  const bestState = barsState !== 'ready' ? barsState : best.length > 0 ? 'ready' : 'empty'
   const top = useMemo(() => topInView(mapBars, bounds, chips), [mapBars, bounds, chips])
   const exploreState = barsState !== 'ready' ? barsState : top.length > 0 ? 'ready' : 'empty'
   const previewId = selectedId && (query === null || !results.some((b) => b.id === selectedId)) ? selectedId : null
@@ -301,10 +331,27 @@ export default function App() {
     setSelectedId(null)
   }
 
-  const heading = <h1 className="visually-hidden">où, {t.tagline}</h1>
+  function showSearch() {
+    setView('search')
+  }
+
+  function showMap() {
+    setView('map')
+    setMapUsed(true)
+    if (hasResults) setMapEntries((n) => n + 1)
+  }
+
+  function showOnMap(id: string) {
+    setSelectedId(id)
+    setHighlightId(null)
+    setSheet('half')
+    showMap()
+  }
+
+  const heading = <h1 className="visually-hidden" tabIndex={-1}>où, {t.tagline}</h1>
   const langSwitch = <LangSwitch lang={lang} onChange={setLang} />
-  const searchBar = (
-    <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={home}>
+  const searchBar = (onHome: () => void, homeLabel: string) => (
+    <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={onHome} homeLabel={homeLabel}>
       {langSwitch}
     </SearchBar>
   )
@@ -324,87 +371,103 @@ export default function App() {
     />
   )
 
-  if (mapFailed) {
-    return (
-      <LangContext.Provider value={lang}>
-        <main className="app">
-          {heading}
-          {searchBar}
-          {query === null ? (
-            <section className="start">
-              <p className="start-text" aria-hidden="true">
-                {t.tagline}
-              </p>
-              <Suggestions onPick={search} />
-            </section>
-          ) : (
-            <>
-              {barList()}
-              <p className="credit">{t.credit}</p>
-            </>
-          )}
-        </main>
-      </LangContext.Provider>
-    )
-  }
+  const stage = mapUsed && !mapFailed && (
+    <main className="stage" data-view="map" hidden={mode !== 'map'} data-sheet={sheet} data-mode={query === null ? 'explore' : 'results'}>
+      {heading}
+      <div className="top" onFocusCapture={topFocus}>
+        {searchBar(showSearch, t.classicSearch)}
+        <Chips value={chips} onToggle={toggleChip} />
+        {query === null && <Suggestions single onPick={search} />}
+      </div>
+      <Suspense fallback={null}>
+        <CityMap
+          bars={mapBars}
+          results={results}
+          chips={chips}
+          selectedId={selectedId}
+          highlightId={highlightId}
+          active={mode === 'map'}
+          fitKey={hasResults ? `${attempt}:${mapEntries}` : ''}
+          onSelect={pickFromMap}
+          onBounds={setBounds}
+          onFail={() => setMapFailed(true)}
+          padKey={`${sheet}:${query === null}`}
+        />
+      </Suspense>
+      <Sheet
+        height={sheet}
+        onHeight={setSheet}
+        scrollKey={`${query ?? ''}:${attempt}:${previewId ?? ''}`}
+        header={
+          previewId && (
+            <button type="button" className="back" onClick={back}>
+              <BackIcon />
+              {t.back}
+            </button>
+          )
+        }
+      >
+        {previewId ? (
+          <div className="pane">
+            <BarPreview key={previewId} id={previewId} />
+          </div>
+        ) : query === null ? (
+          <div className="pane">
+            <ExploreList
+              bars={top}
+              state={exploreState}
+              warming={barsWarming}
+              selectedId={selectedId}
+              onSelect={pickFromList}
+              onRetry={() => setBarsAttempt((n) => n + 1)}
+            />
+          </div>
+        ) : (
+          barList(pickFromList)
+        )}
+        <p className="credit">{t.credit}</p>
+      </Sheet>
+    </main>
+  )
+
+  const classic = mode === 'search' && (
+    <main className={mapFailed ? 'app' : 'app app-fab'} data-view="search">
+      {heading}
+      {searchBar(home, t.startOver)}
+      {query === null ? (
+        <section className="start">
+          <p className="start-text" aria-hidden="true">
+            {t.tagline}
+          </p>
+          <Suggestions onPick={search} />
+          <ExploreList
+            title={t.bestTitle}
+            bars={best}
+            state={bestState}
+            warming={barsWarming}
+            selectedId={null}
+            onSelect={showOnMap}
+            onRetry={() => setBarsAttempt((n) => n + 1)}
+          />
+        </section>
+      ) : (
+        <>
+          {barList()}
+          <p className="credit">{t.credit}</p>
+        </>
+      )}
+      {!mapFailed && (
+        <button type="button" className="map-fab" onClick={showMap} aria-label={t.showMap}>
+          <MapIcon />
+        </button>
+      )}
+    </main>
+  )
 
   return (
     <LangContext.Provider value={lang}>
-      <main className="stage" data-sheet={sheet} data-mode={query === null ? 'explore' : 'results'}>
-        {heading}
-        <div className="top" onFocusCapture={topFocus}>
-          {searchBar}
-          <Chips value={chips} onToggle={toggleChip} />
-          {query === null && <Suggestions single onPick={search} />}
-        </div>
-        <Suspense fallback={null}>
-          <CityMap
-            bars={mapBars}
-            results={results}
-            chips={chips}
-            selectedId={selectedId}
-            highlightId={highlightId}
-            fitKey={hasResults ? String(attempt) : ''}
-            onSelect={pickFromMap}
-            onBounds={setBounds}
-            onFail={() => setMapFailed(true)}
-            padKey={`${sheet}:${query === null}`}
-          />
-        </Suspense>
-        <Sheet
-          height={sheet}
-          onHeight={setSheet}
-          scrollKey={`${query ?? ''}:${attempt}:${previewId ?? ''}`}
-          header={
-            previewId && (
-              <button type="button" className="back" onClick={back}>
-                <BackIcon />
-                {t.back}
-              </button>
-            )
-          }
-        >
-          {previewId ? (
-            <div className="pane">
-              <BarPreview key={previewId} id={previewId} />
-            </div>
-          ) : query === null ? (
-            <div className="pane">
-              <ExploreList
-                bars={top}
-                state={exploreState}
-                warming={barsWarming}
-                selectedId={selectedId}
-                onSelect={pickFromList}
-                onRetry={() => setBarsAttempt((n) => n + 1)}
-              />
-            </div>
-          ) : (
-            barList(pickFromList)
-          )}
-          <p className="credit">{t.credit}</p>
-        </Sheet>
-      </main>
+      {stage}
+      {classic}
     </LangContext.Provider>
   )
 }
