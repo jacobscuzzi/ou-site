@@ -255,7 +255,9 @@ export default function CityMap(props: Props) {
       return layer.mark(lookOf(p))
     }
     const pad = padding(map)
-    const visible = p.bars.filter((bar) => passes(bar, p.chips) && inView(map, bar, pad))
+    const loose = { ...pad, left: 0, right: 0 }
+    const kept = new Set(exploreIds.current)
+    const visible = p.bars.filter((bar) => passes(bar, p.chips) && inView(map, bar, kept.has(bar.id) ? loose : pad))
     layer.sync(exploreSpecs(map, visible, exploreIds.current, tokens.current.bubbleGap), lookOf(p))
     exploreIds.current = layer.ids()
     applyFilter(map, p.chips, layer.ids())
