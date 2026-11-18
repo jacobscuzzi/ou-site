@@ -22,18 +22,27 @@ Deux états, sur la même carte :
 Sur téléphone, la feuille est une fenêtre en bas d'écran, à trois hauteurs (réduite, mi-hauteur,
 pleine). À partir de 768px, c'est un panneau à gauche.
 
+### Deux modes : carte et recherche classique
+
+L'application a deux modes, choisis par `view` dans `App.tsx` et gardés dans `localStorage` (`ou-view`, carte par
+défaut). Dans le mode carte, un appui sur le logo « où » ouvre la recherche classique : la page sans carte, avec le
+même champ, les suggestions et la liste des résultats en cartes qui défilent (sans requête, les meilleurs bars). La
+requête et les résultats sont gardés. Dans ce mode, le logo remet la recherche à zéro et un bouton rond en bas à
+droite, toujours visible, ramène à la carte, ajustée sur les résultats s'il y en a. Au chargement dans le mode
+recherche, le code de la carte n'est pas demandé ; une carte déjà créée reste en vie, cachée, quand on passe à la
+recherche. Sans carte (voir plus bas), seul ce mode existe.
+
 ### Look de la carte
 
 Le fond est CARTO Voyager, recoloré au chargement avec les tokens `--map-*` (`src/map/theme.ts`) ; le métro
 vient de `public/metro.json` (Île-de-France Mobilités, open data), chargé à la première activation par
 `src/map/metro.ts` et coupé par un bouton rond, dont le choix est gardé dans `localStorage`. Les meilleurs bars
-sont des bulles photo qui respirent (`src/map/bubble.ts`) : numérotées en résultats, six au plus en explorer.
+sont des bulles photo qui respirent (`src/map/bubble.ts`) : numérotées en résultats, six au plus en explorer. En explorer, une bulle reste tant que son bar passe les filtres et reste dans la zone visible ; seules les places libres sont remplies, après un déplacement terminé (`stablePick` dans `src/map/geo.ts`). Les points sont roses, le rose de la marque pour les meilleurs bars.
 
 ### Repli sans carte
 
 Si le navigateur n'a pas WebGL (la création de la carte échoue), si le style de la carte ne charge pas
-dans les 10 secondes, ou si le code de la carte ne se charge pas, l'application passe en mode sans carte : page d'accueil avec des suggestions de recherche et
-liste de résultats. La recherche reste disponible, les bars ne sont pas chargés pour la carte.
+dans les 10 secondes, ou si le code de la carte ne se charge pas, l'application passe en mode recherche seul, sans bouton vers la carte. La recherche reste disponible.
 
 Les bars de la carte sont chargés au démarrage. En cas d'échec (réponse vide ou erreur), l'appli
 réessaie jusqu'à six fois, toutes les 5 secondes, puis propose un bouton « réessayer » dans la feuille.
