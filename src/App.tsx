@@ -4,6 +4,7 @@ import type { Bar, MapBar } from './api/types'
 import { initialLang, LangContext, strings, type Lang } from './i18n'
 import { tick } from './haptic'
 import { topInView, type Bounds, type ChipKey } from './map/geo'
+import Logo from './components/Logo'
 import LangSwitch from './components/LangSwitch'
 import SearchBar from './components/SearchBar'
 import Suggestions from './components/Suggestions'
@@ -424,22 +425,40 @@ export default function App() {
   )
 
   const classic = mode === 'search' && (
-    <main className={mapFailed ? 'app' : 'app app-fab'} data-view="search">
-      {heading}
-      {searchBar(home, t.startOver)}
-      {query === null ? (
-        <section className="start">
-          <p className="start-text" aria-hidden="true">
-            {t.tagline}
-          </p>
-          <Suggestions onPick={search} />
-        </section>
-      ) : (
-        <>
-          {barList()}
-          <p className="credit">{t.credit}</p>
-        </>
-      )}
+    <main className="app" data-view="search">
+      <div className={query === null ? 'backdrop' : 'backdrop backdrop-map-on'} aria-hidden="true">
+        <div className="backdrop-column">
+          <img className="backdrop-map" src="/map-paris.jpg" alt="" />
+          <span className="backdrop-veil" />
+          <span className="glow" />
+          <span className="glow" />
+          <span className="glow" />
+          <span className="glow" />
+        </div>
+      </div>
+      <div className={mapFailed ? 'content' : 'content app-fab'}>
+        {query === null ? (
+          <section className="start">
+            <div className="start-corner">{langSwitch}</div>
+            <div className="start-hero">
+              <p className="eyebrow">{t.eyebrow}</p>
+              <h1 className="start-title" tabIndex={-1}>
+                <Logo size="var(--text-hero)" /> ?
+              </h1>
+              <p className="start-text">{t.tagline}</p>
+              <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={home} homeLabel={t.startOver} />
+            </div>
+            <Suggestions onPick={search} />
+          </section>
+        ) : (
+          <>
+            {heading}
+            {searchBar(home, t.startOver)}
+            {barList()}
+            <p className="credit">{t.credit}</p>
+          </>
+        )}
+      </div>
       {!mapFailed && (
         <button type="button" className="map-fab" onClick={showMap} aria-label={t.showMap}>
           <MapIcon />

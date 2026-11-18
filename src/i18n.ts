@@ -61,6 +61,7 @@ function traitHint(c: ConstraintNotMet, lang: Lang) {
 }
 
 const en = {
+  eyebrow: 'Paris, tonight',
   tagline: "Let's find the best bar for you.",
   placeholder: 'Describe your night',
   search: 'Search',
@@ -141,6 +142,7 @@ const en = {
 }
 
 const fr: typeof en = {
+  eyebrow: 'Paris, ce soir',
   tagline: 'Trouvons le meilleur bar pour toi.',
   placeholder: 'Décris ta soirée',
   search: 'Rechercher',

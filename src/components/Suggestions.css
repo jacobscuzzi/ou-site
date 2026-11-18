@@ -1,19 +1,51 @@
 .start {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  padding: var(--space-6) var(--space-5) calc(var(--space-5) + env(safe-area-inset-bottom));
+  min-height: 100dvh;
+  padding: calc(var(--space-7) + env(safe-area-inset-top)) var(--space-5) calc(var(--space-5) + env(safe-area-inset-bottom));
+}
+
+.start-corner {
+  position: absolute;
+  top: calc(var(--space-4) + env(safe-area-inset-top));
+  right: var(--space-5);
   animation: fade-up 0.7s var(--ease) both;
 }
 
-.start-text {
+.start-hero {
+  width: 100%;
+  max-width: var(--reading-width);
+  margin: auto;
+  padding-bottom: var(--space-7);
+  text-align: center;
+  animation: fade-up 0.7s var(--ease) both;
+}
+
+.start .eyebrow {
+  margin-bottom: var(--space-3);
+}
+
+.start-title {
   margin: 0;
+  font-size: var(--text-hero);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.start-text {
+  margin: var(--space-4) 0 0;
   font-size: var(--text-md);
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--ink-3);
-  text-align: center;
   text-wrap: balance;
+}
+
+.start .search {
+  position: static;
+  padding: var(--space-7) 0 0;
 }
 
 .rows {
