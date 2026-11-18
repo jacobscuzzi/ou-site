@@ -1,7 +1,7 @@
 import type { MapBar } from '../api/types'
 import { useLang, useT } from '../i18n'
+import { price } from '../price'
 import { labelFor } from '../tags'
-import { price } from './BarDetail'
 import { BeerIcon, ClockIcon } from './icons'
 import Photo from './Photo'
 import './ExploreList.css'

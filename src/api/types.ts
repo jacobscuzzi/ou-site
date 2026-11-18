@@ -30,6 +30,15 @@ export type Description = {
   en: string
 }
 
+export type MenuCategory = 'beer' | 'wine' | 'cocktail' | 'spirit' | 'cider' | 'other'
+
+export type MenuItem = {
+  item: string
+  category: MenuCategory
+  price: number | null
+  happyHourPrice: number | null
+}
+
 export type Bar = {
   id: string
   rank: number
@@ -49,6 +58,7 @@ export type Bar = {
   constraintsNotMet: ConstraintNotMet[]
   facts?: Facts
   description?: Description
+  menu: MenuItem[]
 }
 
 export type SearchResponse = {

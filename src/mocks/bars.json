@@ -24,6 +24,224 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/bars/red-factory-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6.5,
+        "happyHourPrice": 4.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 3.8,
+        "happyHourPrice": 3
+      },
+      {
+        "item": "kronenbourg 25cl",
+        "category": "beer",
+        "price": 3.8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "biere 25cl",
+        "category": "beer",
+        "price": 3.9,
+        "happyHourPrice": 3.2
+      },
+      {
+        "item": "goudale 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.8,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "delirium 33cl",
+        "category": "beer",
+        "price": 6.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "duvel 33cl",
+        "category": "beer",
+        "price": 6.8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ipa 33cl",
+        "category": "beer",
+        "price": 7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "guinness 50cl",
+        "category": "beer",
+        "price": 8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin 14cl",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": 4.5
+      },
+      {
+        "item": "champagne",
+        "category": "wine",
+        "price": 11,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": 7
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 6.5
+      },
+      {
+        "item": "margarita",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": null
+      },
+      {
+        "item": "moscow mule",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": null
+      },
+      {
+        "item": "negroni",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": null
+      },
+      {
+        "item": "espresso martini",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "get27",
+        "category": "spirit",
+        "price": 5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "rhum",
+        "category": "spirit",
+        "price": 8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4.2,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cafe",
+        "category": "other",
+        "price": 2.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "eau 50cl",
+        "category": "other",
+        "price": 3,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4.2,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -50,6 +268,62 @@
       {
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/bars/rockstar-cafe-paris"
+      }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 2.8,
+        "happyHourPrice": 2.3
+      },
+      {
+        "item": "biere 25cl",
+        "category": "beer",
+        "price": 2.9,
+        "happyHourPrice": 2.5
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": 3
       }
     ]
   },
@@ -78,6 +352,74 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/bars/bon-ami-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 2.8,
+        "happyHourPrice": 2.3
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 7
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -105,7 +447,8 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/bars/au-mathurin-burger-pizza-music-grand-ecran-paris"
       }
-    ]
+    ],
+    "menu": []
   },
   {
     "id": "le-five-bar-paris",
@@ -131,6 +474,62 @@
       {
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/bars/le-five-bar-paris"
+      }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 4.3,
+        "happyHourPrice": 2.3
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.7,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 10.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 7,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": 4.5
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 8,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
       }
     ]
   },
@@ -159,6 +558,62 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/bars/solluna-faidherbe-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 4,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 2.3,
+        "happyHourPrice": 2.3
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -185,6 +640,62 @@
       {
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/bars/le-gentilly-paris"
+      }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 4.3,
+        "happyHourPrice": 2.3
+      },
+      {
+        "item": "biere 25cl",
+        "category": "beer",
+        "price": 2.9,
+        "happyHourPrice": 2.5
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": 3
       }
     ]
   },
@@ -213,6 +724,74 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/bars/workshow-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6.9,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 5.2,
+        "happyHourPrice": 2.3
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 7
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -231,7 +810,63 @@
     "happyHour": null,
     "openUntil": "02:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Le%20Perchoir%20M%C3%A9nilmontant%2014%20Rue%20Crespin%20du%20Gast%2C%2075011%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 4.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "le-toit-de-la-bellevilloise",
@@ -254,6 +889,62 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/la-bellevilloise-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 5.3,
+        "happyHourPrice": null
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 10.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -272,7 +963,51 @@
     "happyHour": null,
     "openUntil": "00:30",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Terrass%20Rooftop%20Bar%2012-14%20Rue%20Joseph%20de%20Maistre%2C%2075018%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "khayma-rooftop-generator",
@@ -290,7 +1025,57 @@
     "happyHour": null,
     "openUntil": "22:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Khayma%20Rooftop%209-11%20Place%20du%20Colonel%20Fabien%2C%2075010%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 11,
+        "happyHourPrice": null
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 9.3,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "dame-des-arts-rooftop",
@@ -308,7 +1093,63 @@
     "happyHour": null,
     "openUntil": "00:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Le%20Rooftop%20de%20l'H%C3%B4tel%20Dame%20des%20Arts%204%20Rue%20Danton%2C%2075006%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": null
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "sequoia-rooftop-bar",
@@ -326,7 +1167,63 @@
     "happyHour": null,
     "openUntil": "00:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Sequoia%20Rooftop%20Bar%2027-29%20Boulevard%20des%20Capucines%2C%2075002%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 4.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "lobo",
@@ -353,6 +1250,62 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/lobo-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 4.3,
+        "happyHourPrice": 2.8
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.7,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 10.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 7,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": 4.5
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 8,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -371,7 +1324,63 @@
     "happyHour": null,
     "openUntil": "02:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Pause%20Caf%C3%A9%2041%20Rue%20de%20Charonne%2C%2075011%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 4.8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "la-place-verte",
@@ -398,6 +1407,62 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/la-place-verte-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 8.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 6.8,
+        "happyHourPrice": 4.3
+      },
+      {
+        "item": "biere 25cl",
+        "category": "beer",
+        "price": 2.9,
+        "happyHourPrice": 2.5
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": 3
+      }
     ]
   },
   {
@@ -420,7 +1485,75 @@
     },
     "openUntil": "05:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Caf%C3%A9%20Charbon%20109%20Rue%20Oberkampf%2C%2075011%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 7.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 5.8,
+        "happyHourPrice": 2.8
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 7
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "la-mutinerie",
@@ -442,7 +1575,69 @@
     },
     "openUntil": "01:30",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=La%20Mutinerie%20176-178%20Rue%20Saint-Martin%2C%2075003%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 4.3,
+        "happyHourPrice": 2.3
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10.5,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 4.1,
+        "happyHourPrice": 3
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "le-cox",
@@ -460,7 +1655,51 @@
     "happyHour": null,
     "openUntil": "02:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=COX%2015%20Rue%20des%20Archives%2C%2075004%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 10.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "raidd-bar",
@@ -482,7 +1721,63 @@
     },
     "openUntil": "05:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Le%20Raidd%2023%20Rue%20du%20Temple%2C%2075004%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 8.6,
+        "happyHourPrice": 4.3
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 6.9,
+        "happyHourPrice": 3.1
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "bonjour-madame",
@@ -509,6 +1804,62 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/bonjour-madame-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 4.3,
+        "happyHourPrice": 3.8
+      },
+      {
+        "item": "biere 25cl",
+        "category": "beer",
+        "price": 2.9,
+        "happyHourPrice": 2.5
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": 3
+      }
     ]
   },
   {
@@ -527,7 +1878,63 @@
     "happyHour": null,
     "openUntil": "00:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rosa%20Bonheur%20Buttes%20Chaumont%202%20All%C3%A9e%20de%20la%20Cascade%2C%2075019%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": null
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "sister-midnight",
@@ -545,7 +1952,63 @@
     "happyHour": null,
     "openUntil": "02:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Sister%20Midnight%204%20Rue%20Viollet-le-Duc%2C%2075009%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 4.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "cabaret-des-merveilles",
@@ -563,7 +2026,51 @@
     "happyHour": null,
     "openUntil": "02:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Cabaret%20des%20Merveilles%2025%20Rue%20de%20l'Hirondelle%2C%2075006%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 10.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "dirty-lemon",
@@ -581,7 +2088,51 @@
     "happyHour": null,
     "openUntil": "03:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Dirty%20Lemon%2024%20Rue%20de%20la%20Folie%20M%C3%A9ricourt%2C%2075011%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "le-social-bar",
@@ -603,7 +2154,63 @@
     },
     "openUntil": "01:30",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Social%20Bar%20Paris%2025%20Rue%20Villiot%2C%2075012%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 7,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 5.3,
+        "happyHourPrice": 3.8
+      },
+      {
+        "item": "biere 25cl",
+        "category": "beer",
+        "price": 2.9,
+        "happyHourPrice": 2.5
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": 3
+      }
+    ]
   },
   {
     "id": "dernier-bar-avant-la-fin-du-monde",
@@ -630,6 +2237,74 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/dernier-bar-avant-la-fin-du-monde-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6.5,
+        "happyHourPrice": 4.9
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 4.8,
+        "happyHourPrice": 3.7
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 7
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -648,7 +2323,63 @@
     "happyHour": null,
     "openUntil": "00:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=The%20Good%20Game%2078%20Rue%20de%20Cl%C3%A9ry%2C%2075002%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 4.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "loufoque-paris-5",
@@ -666,7 +2397,51 @@
     "happyHour": null,
     "openUntil": "01:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Loufoque%2057%20Rue%20Galande%2C%2075005%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 10.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "l-exode",
@@ -692,6 +2467,62 @@
       {
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/lexode-paris"
+      }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 4.3,
+        "happyHourPrice": 3.8
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
       }
     ]
   },
@@ -720,6 +2551,62 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/belushis-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 7,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 5.3,
+        "happyHourPrice": 4.3
+      },
+      {
+        "item": "biere 25cl",
+        "category": "beer",
+        "price": 2.9,
+        "happyHourPrice": 2.5
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": 3
+      }
     ]
   },
   {
@@ -746,6 +2633,74 @@
       {
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/cafe-oz-grands-boulevards-paris-1-2"
+      }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 8.5,
+        "happyHourPrice": 6.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 6.8,
+        "happyHourPrice": 5.3
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 7
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
       }
     ]
   },
@@ -774,6 +2729,68 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/halls-beer-tavern-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 7,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 5.3,
+        "happyHourPrice": 3.8
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10.5,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 4.1,
+        "happyHourPrice": 3
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -801,6 +2818,62 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/the-long-hop-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 7,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 5.3,
+        "happyHourPrice": 4.8
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.7,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 10.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 7,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": 4.5
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 8,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -819,7 +2892,51 @@
     "happyHour": null,
     "openUntil": "02:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=La%20Victoire%2011%20Rue%20de%20Lappe%2C%2075011%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "the-cork-and-cavan",
@@ -845,6 +2962,62 @@
       {
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/cork-and-cavan-paris"
+      }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 7,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 5.3,
+        "happyHourPrice": 3.8
+      },
+      {
+        "item": "biere 25cl",
+        "category": "beer",
+        "price": 2.9,
+        "happyHourPrice": 2.5
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": 3
       }
     ]
   },
@@ -873,6 +3046,74 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/highlander-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 4.3,
+        "happyHourPrice": 3.8
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": 7
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -900,6 +3141,68 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/bars/the-bombardier-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 6.9,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 5.2,
+        "happyHourPrice": 4.3
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10.5,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 4.1,
+        "happyHourPrice": 3
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -918,7 +3221,51 @@
     "happyHour": null,
     "openUntil": "01:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=The%20Pub%204%20Rue%20Caron%2C%2075004%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 10.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "mcbrides-irish-pub",
@@ -936,7 +3283,51 @@
     "happyHour": null,
     "openUntil": "05:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=McBride's%20Irish%20Pub%2054%20Rue%20Saint-Denis%2C%2075001%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "frequence",
@@ -954,7 +3345,51 @@
     "happyHour": null,
     "openUntil": "04:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Fr%C3%A9quence%2020%20Rue%20Keller%2C%2075011%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "prescription-cocktail-club",
@@ -972,7 +3407,63 @@
     "happyHour": null,
     "openUntil": "04:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Prescription%20Cocktail%20Club%2023%20Rue%20Mazarine%2C%2075006%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": null
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "experimental-cocktail-club",
@@ -990,7 +3481,63 @@
     "happyHour": null,
     "openUntil": "04:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Experimental%20Cocktail%20Club%2037%20Rue%20Saint-Sauveur%2C%2075002%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 4.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "pigalle-country-club",
@@ -1008,7 +3555,51 @@
     "happyHour": null,
     "openUntil": "05:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Pigalle%20Country%20Club%2059%20Rue%20Jean-Baptiste%20Pigalle%2C%2075009%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 10.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "harmony-bar-de-nuit",
@@ -1026,7 +3617,51 @@
     "happyHour": null,
     "openUntil": "06:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Harmony%2C%20bar%20de%20nuit%2061%20Rue%20Rodier%2C%2075009%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "le-syndicat",
@@ -1044,7 +3679,51 @@
     "happyHour": null,
     "openUntil": "02:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Le%20Syndicat%2051%20Rue%20du%20Faubourg%20Saint-Denis%2C%2075010%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "the-cambridge-public-house",
@@ -1062,7 +3741,63 @@
     "happyHour": null,
     "openUntil": "01:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=The%20Cambridge%20Public%20House%208%20Rue%20de%20Poitou%2C%2075003%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": null
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "le-calbar",
@@ -1080,7 +3815,63 @@
     "happyHour": null,
     "openUntil": "01:30",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Le%20Calbar%2082%20Rue%20de%20Charenton%2C%2075012%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 4.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "le-barav",
@@ -1098,7 +3889,51 @@
     "happyHour": null,
     "openUntil": "00:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Le%20Barav%206%20Rue%20Charles-Fran%C3%A7ois%20Dupuis%2C%2075003%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 10.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 7,
+        "happyHourPrice": null
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "le-garde-robe",
@@ -1116,7 +3951,51 @@
     "happyHour": null,
     "openUntil": "00:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Le%20Garde%20Robe%2041%20Rue%20de%20l'Arbre%20Sec%2C%2075001%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "la-cave-du-paul-bert",
@@ -1134,7 +4013,51 @@
     "happyHour": null,
     "openUntil": "00:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=La%20Cave%20du%20Paul%20Bert%2016%20Rue%20Paul%20Bert%2C%2075011%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "pratz",
@@ -1152,7 +4075,63 @@
     "happyHour": null,
     "openUntil": "00:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Pratz%2059%20Rue%20Jean-Baptiste%20Pigalle%2C%2075009%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": null
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "chez-nous",
@@ -1170,7 +4149,63 @@
     "happyHour": null,
     "openUntil": "00:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Chez%20Nous%2010%20Rue%20Dauphine%2C%2075006%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 4.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "le-baiser-sale",
@@ -1197,6 +4232,62 @@
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/le-baiser-sale-paris"
       }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 8.5,
+        "happyHourPrice": 4.8
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 6.8,
+        "happyHourPrice": 3.6
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.7,
+        "happyHourPrice": 3.5
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 10.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 7,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "prosecco",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": 4.5
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 8,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "ginger beer 33cl",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
+      }
     ]
   },
   {
@@ -1215,7 +4306,51 @@
     "happyHour": null,
     "openUntil": null,
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=38Riv%2038%20Rue%20de%20Rivoli%2C%2075004%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 8.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 9,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "caveau-de-la-huchette",
@@ -1233,7 +4368,51 @@
     "happyHour": null,
     "openUntil": "04:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Caveau%20de%20la%20Huchette%205%20Rue%20de%20la%20Huchette%2C%2075005%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 8.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 3.7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "chez-papa-jazz-club",
@@ -1251,7 +4430,63 @@
     "happyHour": null,
     "openUntil": "00:00",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Chez%20Papa%20Jazz%20Club%203%20Rue%20Saint-Beno%C3%AEt%2C%2075006%20Paris",
-    "sources": []
+    "sources": [],
+    "menu": [
+      {
+        "item": "leffe 25cl",
+        "category": "beer",
+        "price": 4.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "heineken 33cl",
+        "category": "beer",
+        "price": 5.1,
+        "happyHourPrice": null
+      },
+      {
+        "item": "chouffe 50cl",
+        "category": "beer",
+        "price": 9.0,
+        "happyHourPrice": null
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6,
+        "happyHourPrice": null
+      },
+      {
+        "item": "rosé",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "vin rouge",
+        "category": "wine",
+        "price": 5.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 11,
+        "happyHourPrice": null
+      },
+      {
+        "item": "gin tonic",
+        "category": "cocktail",
+        "price": 10,
+        "happyHourPrice": null
+      },
+      {
+        "item": "whisky",
+        "category": "spirit",
+        "price": 7,
+        "happyHourPrice": null
+      }
+    ]
   },
   {
     "id": "la-gare-le-gore",
@@ -1277,6 +4512,68 @@
       {
         "type": "mistergoodbeer",
         "url": "https://www.mistergoodbeer.com/en/bars/gare-jazz-du-pont-de-flandres-paris"
+      }
+    ],
+    "menu": [
+      {
+        "item": "pinte",
+        "category": "beer",
+        "price": 8,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "demi",
+        "category": "beer",
+        "price": 6.3,
+        "happyHourPrice": 4.8
+      },
+      {
+        "item": "verre de vin",
+        "category": "wine",
+        "price": 6.5,
+        "happyHourPrice": 4
+      },
+      {
+        "item": "cocktail",
+        "category": "cocktail",
+        "price": 12,
+        "happyHourPrice": 5
+      },
+      {
+        "item": "spritz",
+        "category": "cocktail",
+        "price": 9.5,
+        "happyHourPrice": 5.5
+      },
+      {
+        "item": "mojito",
+        "category": "cocktail",
+        "price": 10.5,
+        "happyHourPrice": 6
+      },
+      {
+        "item": "pastis",
+        "category": "spirit",
+        "price": 3.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "ricard",
+        "category": "spirit",
+        "price": 4.1,
+        "happyHourPrice": 3
+      },
+      {
+        "item": "cidre 25cl",
+        "category": "cider",
+        "price": 4,
+        "happyHourPrice": null
+      },
+      {
+        "item": "coca 33cl",
+        "category": "other",
+        "price": 3.5,
+        "happyHourPrice": null
       }
     ]
   }
