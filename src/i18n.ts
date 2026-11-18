@@ -67,7 +67,6 @@ const en = {
   startOver: 'Start over',
   classicSearch: 'Classic search',
   showMap: 'Show the map',
-  bestTitle: 'Best bars',
   suggestions: [
     ['A bar to watch the PSG game', 'A bar close by that is fun to go to alone', 'A bar for LGBTQ people', 'A bar that feels super safe'],
     ['A fancy bar with espresso martinis', 'A student bar with cheap beer and great atmosphere', 'A quiet wine bar for a first date', 'Somewhere with live jazz tonight'],
@@ -148,7 +147,6 @@ const fr: typeof en = {
   startOver: 'Recommencer',
   classicSearch: 'Recherche classique',
   showMap: 'Afficher la carte',
-  bestTitle: 'Les meilleurs bars',
   suggestions: [
     ['Un bar pour regarder le match du PSG', 'Un bar sympa tout près pour y aller seul', 'Un bar pour les personnes LGBTQ', 'Un bar où on se sent en sécurité'],
     ['Un bar chic avec des espresso martinis', 'Un bar étudiant, bière pas chère et bonne ambiance', 'Un bar à vin calme pour un premier rendez-vous', 'Du jazz en live ce soir'],

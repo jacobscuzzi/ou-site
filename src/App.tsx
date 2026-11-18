@@ -26,7 +26,6 @@ const CityMap = lazy<ComponentType<MapProps>>(() => import('./components/CityMap
 type View = 'map' | 'search'
 
 const NO_RESULTS: Bar[] = []
-const NO_CHIPS: ReadonlySet<ChipKey> = new Set()
 const VIEW_KEY = 'ou-view'
 const BARS_RETRIES = 6
 const BARS_RETRY_DELAY = 5000
@@ -61,6 +60,7 @@ export default function App() {
   const [mapUsed, setMapUsed] = useState(() => initialView() === 'map')
   const [mapEntries, setMapEntries] = useState(0)
   const [mapFailed, setMapFailed] = useState(false)
+  const [suggesting, setSuggesting] = useState(false)
   const [mapBars, setMapBars] = useState<MapBar[]>([])
   const [barsState, setBarsState] = useState<'loading' | 'ready' | 'error'>('loading')
   const [barsAttempt, setBarsAttempt] = useState(0)
@@ -201,6 +201,7 @@ export default function App() {
     if (!trimmed) return
     setValue(trimmed)
     setQuery(trimmed)
+    setSuggesting(false)
     setAttempt((n) => n + 1)
     setSelectedId(null)
     setHighlightId(null)
@@ -301,8 +302,6 @@ export default function App() {
     if (query === null) setSheet('half')
   }
 
-  const best = useMemo(() => topInView(mapBars, null, NO_CHIPS), [mapBars])
-  const bestState = barsState !== 'ready' ? barsState : best.length > 0 ? 'ready' : 'empty'
   const top = useMemo(() => topInView(mapBars, bounds, chips), [mapBars, bounds, chips])
   const exploreState = barsState !== 'ready' ? barsState : top.length > 0 ? 'ready' : 'empty'
   const previewId = selectedId && (query === null || !results.some((b) => b.id === selectedId)) ? selectedId : null
@@ -320,6 +319,7 @@ export default function App() {
   }, [previewId])
 
   function topFocus(e: FocusEvent<HTMLElement>) {
+    if ((e.target as HTMLElement).matches('.search-input')) setSuggesting(true)
     if (sheet !== 'full' || window.matchMedia(desktop).matches) return
     if (!(e.target as HTMLElement).matches(':focus-visible')) return
     if ((e.target as HTMLElement).closest('.search')) return
@@ -339,13 +339,6 @@ export default function App() {
     setView('map')
     setMapUsed(true)
     if (hasResults) setMapEntries((n) => n + 1)
-  }
-
-  function showOnMap(id: string) {
-    setSelectedId(id)
-    setHighlightId(null)
-    setSheet('half')
-    showMap()
   }
 
   const heading = <h1 className="visually-hidden" tabIndex={-1}>où, {t.tagline}</h1>
@@ -372,12 +365,12 @@ export default function App() {
   )
 
   const stage = mapUsed && !mapFailed && (
-    <main className="stage" data-view="map" hidden={mode !== 'map'} data-sheet={sheet} data-mode={query === null ? 'explore' : 'results'}>
+    <main className="stage" data-view="map" hidden={mode !== 'map'} onPointerDown={() => setSuggesting(false)} data-sheet={sheet} data-mode={query === null ? 'explore' : 'results'}>
       {heading}
-      <div className="top" onFocusCapture={topFocus}>
+      <div className="top" onFocusCapture={topFocus} onPointerDown={(e) => e.stopPropagation()}>
         {searchBar(showSearch, t.classicSearch)}
         <Chips value={chips} onToggle={toggleChip} />
-        {query === null && <Suggestions single onPick={search} />}
+        {query === null && suggesting && <Suggestions single onPick={search} />}
       </div>
       <Suspense fallback={null}>
         <CityMap
@@ -440,15 +433,6 @@ export default function App() {
             {t.tagline}
           </p>
           <Suggestions onPick={search} />
-          <ExploreList
-            title={t.bestTitle}
-            bars={best}
-            state={bestState}
-            warming={barsWarming}
-            selectedId={null}
-            onSelect={showOnMap}
-            onRetry={() => setBarsAttempt((n) => n + 1)}
-          />
         </section>
       ) : (
         <>
