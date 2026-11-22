@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react'
 import type { ConstraintNotMet } from './api/types'
+import { foodMode } from './mode'
 
 export type Lang = 'en' | 'fr'
 
@@ -103,6 +104,10 @@ const en = {
   menuShowLess: 'Show less',
   menuNote: 'Prices reported by the community, may have changed.',
   menuCategories: { beer: 'Beer', wine: 'Wine', cocktail: 'Cocktails', spirit: 'Spirits', cider: 'Cider', other: 'Other' },
+  perPerson: (p: string) => `${p} per person`,
+  dishesShowAll: (n: number) => `Show all dishes (${n})`,
+  dishesNote: 'Menu from Google Maps, prices may have changed.',
+  foodBeta: 'Food beta',
   openMaps: 'Open in Google Maps',
   errorTitle: 'Something went wrong',
   timeout: 'The search took too long, please try again.',
@@ -190,6 +195,10 @@ const fr: typeof en = {
   menuShowLess: 'Réduire',
   menuNote: 'Prix signalés par la communauté, ils ont pu changer.',
   menuCategories: { beer: 'Bière', wine: 'Vin', cocktail: 'Cocktails', spirit: 'Spiritueux', cider: 'Cidre', other: 'Autres' },
+  perPerson: (p: string) => `${p} par personne`,
+  dishesShowAll: (n: number) => `Voir tous les plats (${n})`,
+  dishesNote: 'Carte issue de Google Maps, les prix ont pu changer.',
+  foodBeta: 'Food bêta',
   openMaps: 'Ouvrir dans Google Maps',
   errorTitle: 'Un problème est survenu',
   timeout: 'La recherche a pris trop de temps, réessaie.',
@@ -231,7 +240,71 @@ const fr: typeof en = {
   },
 }
 
-export const strings: Record<Lang, typeof en> = { en, fr }
+const drinkStrings: Record<Lang, typeof en> = { en, fr }
+
+const foodStrings: Record<Lang, typeof en> = {
+  en: {
+    ...en,
+    tagline: "Let's find the best restaurant for you.",
+    placeholder: 'What do you feel like eating?',
+    suggestions: [
+      ['A cheap Lebanese place in the 10e', 'Good ramen near Bastille', 'A romantic dinner with a view', 'Brunch on Sunday'],
+      ['A Neapolitan pizza in the 11e', 'Dinner for under 20 EUR', 'A bistro for a group of friends', 'A vegetarian restaurant'],
+      ['Dim sum in the 13e', 'A French bistro with a terrace', 'A place for a quick lunch', 'The best burger in Paris'],
+    ],
+    picks: (n: number) => `${n} restaurants for you`,
+    exploreTitle: 'Top restaurants in view',
+    exploreEmpty: 'No restaurant matches here',
+    exploreLoading: 'Loading restaurants',
+    exploreWarming: 'The restaurants are warming up, retrying.',
+    exploreError: "Couldn't load the restaurants",
+    barLoading: 'Loading the restaurant',
+    barError: "Couldn't load this restaurant",
+    barMissing: 'This restaurant is no longer listed.',
+    more: 'Show more restaurants',
+    moreError: "Couldn't load more restaurants",
+    mapLabel: 'Map of restaurants in Paris',
+    sheetLabel: 'Restaurant list',
+  },
+  fr: {
+    ...fr,
+    tagline: 'Trouvons le meilleur restaurant pour toi.',
+    placeholder: 'Tu as envie de manger quoi ?',
+    suggestions: [
+      ['Un libanais pas cher dans le 10e', 'De bons ramen vers Bastille', 'Un dîner romantique avec vue', 'Un brunch le dimanche'],
+      ['Une pizza napolitaine dans le 11e', 'Dîner pour moins de 20 €', 'Un bistrot pour un groupe d’amis', 'Un restaurant végétarien'],
+      ['Des dim sum dans le 13e', 'Un bistrot français avec terrasse', 'Un endroit pour déjeuner vite', 'Le meilleur burger de Paris'],
+    ],
+    picks: (n: number) => `${n} restaurants pour toi`,
+    exploreTitle: 'Les meilleurs restaurants ici',
+    exploreEmpty: 'Aucun restaurant ne correspond ici',
+    exploreLoading: 'Chargement des restaurants',
+    exploreWarming: 'Les restaurants se réveillent, nouvelle tentative.',
+    exploreError: 'Impossible de charger les restaurants',
+    barLoading: 'Chargement du restaurant',
+    barError: 'Impossible de charger ce restaurant',
+    barMissing: "Ce restaurant n'est plus référencé.",
+    more: "Voir plus d'adresses",
+    moreError: "Impossible de charger plus d'adresses",
+    mapLabel: 'Carte des restaurants à Paris',
+    sheetLabel: 'Liste des restaurants',
+  },
+}
+
+export const strings = foodMode ? foodStrings : drinkStrings
+
+const cuisinesFr: Record<string, string> = {
+  french: 'Français', italian: 'Italien', japanese: 'Japonais', chinese: 'Chinois', middle_eastern: 'Moyen-Orient',
+  korean: 'Coréen', indian: 'Indien', vietnamese: 'Vietnamien', african: 'Africain', thai: 'Thaï', lebanese: 'Libanais',
+  mexican: 'Mexicain', greek: 'Grec', spanish: 'Espagnol', peruvian: 'Péruvien', american: 'Américain', turkish: 'Turc',
+  moroccan: 'Marocain', georgian: 'Géorgien', ethiopian: 'Éthiopien', israeli: 'Israélien', portuguese: 'Portugais',
+}
+
+export function cuisineLabel(c: string, lang: Lang) {
+  if (lang === 'fr' && cuisinesFr[c]) return cuisinesFr[c]
+  const words = c.replace(/_/g, ' ')
+  return words.charAt(0).toUpperCase() + words.slice(1)
+}
 
 export function hintFor(list: ConstraintNotMet[], t: typeof en) {
   return list.slice(0, 2).map(t.hint).join(' · ')
