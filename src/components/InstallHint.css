@@ -1,0 +1,102 @@
+.install {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom) + var(--space-4));
+  z-index: 40;
+  display: flex;
+  gap: var(--space-3);
+  width: calc(100% - 2 * var(--space-4));
+  max-width: calc(var(--panel-width) - 2 * var(--space-4));
+  padding: var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--glass-lite);
+  -webkit-backdrop-filter: var(--blur-3);
+  backdrop-filter: var(--blur-3);
+  border: var(--border-1) solid var(--glass-border);
+  box-shadow: var(--glass-edge), var(--hairline), var(--shadow-3);
+  transform: translateX(-50%);
+  animation: install-in 0.32s var(--ease);
+}
+
+.install-icon {
+  flex: none;
+  width: var(--control-size);
+  height: var(--control-size);
+  border-radius: var(--radius-photo);
+  box-shadow: var(--shadow-1);
+}
+
+.install-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.install-title {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.install-text,
+.install-steps {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+
+.install-steps {
+  padding-left: var(--space-5);
+}
+
+.install-steps li + li {
+  margin-top: var(--space-1);
+}
+
+.install-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.install-primary,
+.install-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-size);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+
+.install-primary {
+  background: var(--pink-gradient);
+  color: var(--on-pink);
+  box-shadow: var(--shadow-send);
+}
+
+.install-close {
+  color: var(--ink-2);
+}
+
+.install-primary:focus-visible,
+.install-close:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+@keyframes install-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, var(--space-4));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .install {
+    animation: none;
+  }
+}

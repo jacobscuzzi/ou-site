@@ -14,6 +14,7 @@ import BarPreview from './components/BarPreview'
 import Sheet, { type SheetHeight } from './components/Sheet'
 import Chips from './components/Chips'
 import ExploreList from './components/ExploreList'
+import InstallHint from './components/InstallHint'
 import { BackIcon, MapIcon } from './components/icons'
 
 type MapProps = ComponentProps<typeof import('./components/CityMap').default>
@@ -70,6 +71,7 @@ export default function App() {
   const [bounds, setBounds] = useState<Bounds | null>(null)
   const [chips, setChips] = useState<ReadonlySet<ChipKey>>(() => new Set())
   const [sheet, setSheet] = useState<SheetHeight>('peek')
+  const [placeOpened, setPlaceOpened] = useState(false)
   const abortRef = useRef<AbortController | null>(null)
   const moreRef = useRef<AbortController | null>(null)
   const [reveal, setReveal] = useState<{ id: string; n: number } | null>(null)
@@ -288,6 +290,7 @@ export default function App() {
     quietUntil.current = performance.now() + QUIET_MS
     setHighlightId(null)
     setSelectedId(id)
+    setPlaceOpened(true)
     tick()
   }
 
@@ -475,6 +478,7 @@ export default function App() {
     <LangContext.Provider value={lang}>
       {stage}
       {classic}
+      <InstallHint placeOpened={placeOpened} />
     </LangContext.Provider>
   )
 }

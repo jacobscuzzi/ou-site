@@ -125,6 +125,15 @@ const en = {
   sheetLabel: 'Bar list',
   sheetHandle: { peek: 'Panel collapsed, raise it', half: 'Panel half open, raise it', full: 'Panel fully open, lower it' },
   switchTo: 'Passer en français',
+  installTitle: 'Add où to your home screen',
+  installText: 'It opens like an app, straight on the map.',
+  installAction: 'Install',
+  installClose: 'Not now',
+  installIosSteps: ['Tap the three-dot button next to the address bar', 'Tap Share', 'Tap Add to Home Screen'],
+  installInAppTitle: 'Open où in your browser',
+  installInAppIos: "You can't install it from this app. Open the page in Safari, then add it to your home screen.",
+  installInAppAndroid: "You can't install it from this app. Open the page in Chrome, then add it to your home screen.",
+  installOpenChrome: 'Open in Chrome',
   hint: (c: ConstraintNotMet) => {
     switch (c.type) {
       case 'max_beer_price':
@@ -216,6 +225,15 @@ const fr: typeof en = {
   sheetLabel: 'Liste des bars',
   sheetHandle: { peek: 'Panneau réduit, le monter', half: 'Panneau à moitié ouvert, le monter', full: 'Panneau ouvert, le descendre' },
   switchTo: 'Switch to English',
+  installTitle: "Ajoute où à ton écran d'accueil",
+  installText: "Il s'ouvre comme une app, directement sur la carte.",
+  installAction: 'Installer',
+  installClose: 'Plus tard',
+  installIosSteps: ["Touche le bouton à trois points à côté de la barre d'adresse", 'Touche Partager', "Touche Sur l'écran d'accueil"],
+  installInAppTitle: 'Ouvre où dans ton navigateur',
+  installInAppIos: "Impossible de l'installer depuis cette app. Ouvre la page dans Safari, puis ajoute-la à ton écran d'accueil.",
+  installInAppAndroid: "Impossible de l'installer depuis cette app. Ouvre la page dans Chrome, puis ajoute-la à ton écran d'accueil.",
+  installOpenChrome: 'Ouvrir dans Chrome',
   hint: (c: ConstraintNotMet) => {
     switch (c.type) {
       case 'max_beer_price':
