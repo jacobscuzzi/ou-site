@@ -7,6 +7,7 @@ import {
   type ExpressionSpecification,
   type FilterSpecification,
   type GeoJSONSource,
+  type LngLat,
 } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -40,6 +41,8 @@ type Props = {
   highlightId: string | null
   active: boolean
   fitKey: string
+  anchorKey: string
+  onStray: (stray: boolean) => void
   onSelect: (id: string) => void
   onBounds: (b: Bounds) => void
   onFail: () => void
@@ -216,7 +219,7 @@ function clearBounds(map: MaplibreMap): Bounds {
 }
 
 export default function CityMap(props: Props) {
-  const { bars, results, chips, selectedId, highlightId, active, fitKey, padKey } = props
+  const { bars, results, chips, selectedId, highlightId, active, fitKey, anchorKey, padKey } = props
   const t = useT()
   const el = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MaplibreMap | null>(null)
@@ -232,6 +235,24 @@ export default function CityMap(props: Props) {
   const [locating, setLocating] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const timing = useRef<CameraTiming | null>(null)
+  const anchor = useRef<{ center: LngLat; zoom: number } | null>(null)
+
+  function capture() {
+    const map = mapRef.current
+    if (!map) return
+    anchor.current = { center: map.getCenter(), zoom: map.getZoom() }
+    latest.current.onStray(false)
+  }
+
+  function checkStray() {
+    const map = mapRef.current
+    const a = anchor.current
+    if (!map || !a || latest.current.results.length === 0) return
+    const box = map.getContainer()
+    const p = map.project(a.center)
+    const panned = Math.abs(p.x - box.clientWidth / 2) > box.clientWidth / 3 || Math.abs(p.y - box.clientHeight / 2) > box.clientHeight / 3
+    latest.current.onStray(panned || Math.abs(map.getZoom() - a.zoom) >= 1)
+  }
   const [metro, toggleMetro] = useMetro(mapRef, tokens, loaded, results.length > 0)
 
   function restyle() {
@@ -346,6 +367,7 @@ export default function CityMap(props: Props) {
     map.on('zoom', names)
     map.on('movestart', () => window.clearTimeout(settleTimer))
     map.on('moveend', queue)
+    map.on('moveend', checkStray)
     map.on('click', (e) => {
       if (!ready.current) return
       const id = nearestDot(map, e.point.x, e.point.y, tk.hit)
@@ -428,8 +450,15 @@ export default function CityMap(props: Props) {
     const tm = timing.current
     if (!latest.current.active) return
     const b = boundsOf(latest.current.results.slice(0, 5))
-    if (map && tm && b) fitTo(map, b, tm)
+    if (!fitKey || !map || !tm || !b) return
+    fitTo(map, b, tm)
+    map.once('moveend', capture)
   }, [fitKey])
+
+  useEffect(() => {
+    if (anchorKey) capture()
+    else anchor.current = null
+  }, [anchorKey])
 
   function locate() {
     if (locating || !navigator.geolocation) return

@@ -98,3 +98,12 @@ export function DownIcon({ size = 20 }: IconProps) {
     </svg>
   )
 }
+
+export function SearchIcon({ size = 16 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size} strokeWidth={2.4}>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="M16 16l4 4" />
+    </svg>
+  )
+}

@@ -15,7 +15,7 @@ import Sheet, { type SheetHeight } from './components/Sheet'
 import Chips from './components/Chips'
 import ExploreList from './components/ExploreList'
 import InstallHint from './components/InstallHint'
-import { BackIcon, DownIcon, MapIcon } from './components/icons'
+import { BackIcon, DownIcon, MapIcon, SearchIcon } from './components/icons'
 import { useSheetHistory } from './sheetHistory'
 
 type MapProps = ComponentProps<typeof import('./components/CityMap').default>
@@ -77,6 +77,8 @@ export default function App() {
   const [chips, setChips] = useState<ReadonlySet<ChipKey>>(() => new Set())
   const [sheet, setSheet] = useState<SheetHeight>('peek')
   const [placeOpened, setPlaceOpened] = useState(false)
+  const [stray, setStray] = useState(false)
+  const [area, setArea] = useState<Bounds | null>(null)
   const abortRef = useRef<AbortController | null>(null)
   const moreRef = useRef<AbortController | null>(null)
   const [reveal, setReveal] = useState<{ id: string; n: number } | null>(null)
@@ -85,6 +87,8 @@ export default function App() {
   const t = strings[layer][lang]
   const layerRef = useRef(layer)
   layerRef.current = layer
+  const areaRef = useRef(area)
+  areaRef.current = area
   const mode: View = mapFailed ? 'search' : view
   const shownMode = useRef(mode)
 
@@ -199,7 +203,7 @@ export default function App() {
     setLoadingMore(false)
     setMoreError(null)
 
-    searchBars(query, layerRef.current, null, ctrl.signal)
+    searchBars(query, layerRef.current, areaRef.current, ctrl.signal)
       .then((res) => {
         if (res.meta.layerSwitched && res.layer) {
           setLayer(res.layer)
@@ -237,6 +241,7 @@ export default function App() {
     if (!trimmed) return
     setValue(trimmed)
     setQuery(trimmed)
+    setArea(null)
     setSuggesting(false)
     setAttempt((n) => n + 1)
     setSelectedId(null)
@@ -264,7 +269,7 @@ export default function App() {
         res = await moreBars(searchId, next, ctrl.signal)
       } catch (err) {
         if ((err as Error).name !== 'SearchExpired') throw err
-        const fresh = await searchBars(query, layer, null, ctrl.signal)
+        const fresh = await searchBars(query, layer, area, ctrl.signal)
         setSearchId(fresh.searchId)
         res = await moreBars(fresh.searchId, next, ctrl.signal)
       }
@@ -292,6 +297,8 @@ export default function App() {
     setLoadingMore(false)
     setMoreError(null)
     setQuery(null)
+    setArea(null)
+    setStray(false)
     setValue('')
     setBars([])
     setError(null)
@@ -301,6 +308,16 @@ export default function App() {
     setReveal(null)
     setSheet('peek')
     window.scrollTo({ top: 0 })
+  }
+
+  function searchHere() {
+    if (!bounds || query === null) return
+    setArea(bounds)
+    setStray(false)
+    setSelectedId(null)
+    setHighlightId(null)
+    setReveal(null)
+    setAttempt((n) => n + 1)
   }
 
   function chooseLayer(next: Layer) {
@@ -420,6 +437,12 @@ export default function App() {
         {searchBar(showSearch, t.classicSearch)}
         <Chips value={chips} onToggle={toggleChip} />
         {query === null && suggesting && <Suggestions single onPick={search} />}
+        {query !== null && stray && !loading && (
+          <button type="button" className="search-here" onClick={searchHere}>
+            <SearchIcon />
+            {t.searchHere}
+          </button>
+        )}
       </div>
       <Suspense fallback={null}>
         <CityMap
@@ -429,7 +452,9 @@ export default function App() {
           selectedId={selectedId}
           highlightId={highlightId}
           active={mode === 'map'}
-          fitKey={hasResults ? `${attempt}:${mapEntries}` : ''}
+          fitKey={hasResults && !area ? `${attempt}:${mapEntries}` : ''}
+          anchorKey={query !== null && !loading ? `${attempt}` : ''}
+          onStray={setStray}
           onSelect={pickFromMap}
           onBounds={setBounds}
           onFail={() => setMapFailed(true)}

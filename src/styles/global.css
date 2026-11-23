@@ -66,7 +66,8 @@ html.locked body {
 [data-lite] .layer-dot,
 [data-lite] .sheet,
 [data-lite] .citymap-control,
-[data-lite] .sheet-down {
+[data-lite] .sheet-down,
+[data-lite] .search-here {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   background-color: var(--glass-lite);
@@ -238,7 +239,7 @@ html.locked body {
   touch-action: none;
 }
 
-.top :is(.search-pill, .layer, .chips, .bubble) {
+.top :is(.search-pill, .layer, .chips, .bubble, .search-here) {
   pointer-events: auto;
 }
 
@@ -254,6 +255,37 @@ html.locked body {
 
 .top .rows {
   margin: var(--space-1) 0 0;
+}
+
+.search-here {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: center;
+  min-height: var(--control-size);
+  margin-top: var(--space-1);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--glass-bubble);
+  -webkit-backdrop-filter: var(--blur-3);
+  backdrop-filter: var(--blur-3);
+  border: var(--border-1) solid var(--glass-border);
+  box-shadow: var(--glass-edge), var(--shadow-2);
+  color: var(--pink-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  animation: sheet-down-in var(--bubble-in) var(--ease);
+}
+
+.search-here:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), var(--shadow-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-here {
+    animation: none;
+  }
 }
 
 .pane {
