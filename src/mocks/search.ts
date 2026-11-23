@@ -33,7 +33,8 @@ function pickTheme(q: string): Theme {
   return best
 }
 
-const all: Bar[] = (bars as Omit<Bar, 'compliant' | 'constraintsNotMet'>[]).map((b) => ({
+const all: Bar[] = (bars as Omit<Bar, 'compliant' | 'constraintsNotMet' | 'dishes'>[]).map((b) => ({
+  dishes: [],
   ...b,
   compliant: true,
   constraintsNotMet: [],

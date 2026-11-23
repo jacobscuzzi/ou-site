@@ -1,7 +1,7 @@
 import type { Bar, BarsResponse, MapBar } from '../api/types'
 import bars from './bars.json'
 
-const all = bars as Omit<Bar, 'compliant' | 'constraintsNotMet'>[]
+const all = bars as Omit<Bar, 'compliant' | 'constraintsNotMet' | 'dishes'>[]
 
 const vibes = ['lively', 'cosy', 'chic', 'party', 'laid_back']
 const musics = ['dj', 'jazz', 'techno', 'rock']
@@ -45,5 +45,5 @@ export function mockBar(id: string): Bar {
     err.name = 'BarNotFound'
     throw err
   }
-  return { ...bar, rank: 0, compliant: true, constraintsNotMet: [] }
+  return { dishes: [], ...bar, rank: 0, compliant: true, constraintsNotMet: [] }
 }

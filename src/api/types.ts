@@ -23,6 +23,18 @@ export type Facts = {
   vibe?: string[]
   busyLevel?: string
   crowdAge?: string
+  cuisine?: string[]
+  pricePerPerson?: number
+  signatureDishes?: string[]
+  dietary?: string[]
+  goodFor?: string[]
+}
+
+export type Dish = {
+  section: string
+  item: string
+  description: string | null
+  price: number | null
 }
 
 export type Description = {
@@ -59,6 +71,7 @@ export type Bar = {
   facts?: Facts
   description?: Description
   menu: MenuItem[]
+  dishes: Dish[]
 }
 
 export type SearchResponse = {
@@ -82,6 +95,8 @@ export type MapBar = {
   terrace?: boolean
   dancing?: boolean
   cover?: string
+  cuisine?: string
+  pricePerPerson?: number
 }
 
 export type BarsResponse = {

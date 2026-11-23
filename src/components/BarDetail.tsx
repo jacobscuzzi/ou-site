@@ -1,7 +1,9 @@
 import type { Bar } from '../api/types'
 import { useLang, useT } from '../i18n'
+import { foodMode } from '../mode'
 import { price } from '../price'
 import { CocktailIcon, PinIcon } from './icons'
+import Dishes from './Dishes'
 import Menu from './Menu'
 import './BarDetail.css'
 
@@ -30,7 +32,7 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
             </span>
           </div>
         )}
-        <Menu items={bar.menu} focusable={open} />
+        {foodMode ? <Dishes dishes={bar.dishes ?? []} focusable={open} /> : <Menu items={bar.menu} focusable={open} />}
         <div className="detail-foot">
           <span className="detail-address">
             <PinIcon />

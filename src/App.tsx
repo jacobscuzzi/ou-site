@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type
 import { fetchBars, moreBars, searchBars } from './api/client'
 import type { Bar, MapBar } from './api/types'
 import { initialLang, LangContext, strings, type Lang } from './i18n'
+import { foodMode } from './mode'
 import { tick } from './haptic'
 import { topInView, type Bounds, type ChipKey } from './map/geo'
 import Logo from './components/Logo'
@@ -441,7 +442,10 @@ export default function App() {
           <section className="start">
             <div className="start-corner">{langSwitch}</div>
             <div className="start-hero">
-              <p className="eyebrow">{t.eyebrow}</p>
+              <p className="eyebrow">
+                {t.eyebrow}
+                {foodMode && ` · ${t.foodBeta}`}
+              </p>
               <h1 className="start-title" tabIndex={-1}>
                 <Logo size="var(--text-hero)" /> ?
               </h1>
