@@ -206,7 +206,7 @@ export default function App() {
     searchBars(query, layerRef.current, areaRef.current, ctrl.signal)
       .then((res) => {
         if (res.meta.layerSwitched && res.layer) {
-          setLayer(res.layer)
+          applyLayer(res.layer)
           setMoved((n) => n + 1)
         }
         setBars(res.results)
@@ -320,11 +320,15 @@ export default function App() {
     setAttempt((n) => n + 1)
   }
 
+  function applyLayer(next: Layer) {
+    setLayer(next)
+    setChips((prev) => new Set([...prev].filter((c) => layerChips[next].includes(c))))
+  }
+
   function chooseLayer(next: Layer) {
     if (next === layer) return
     rememberLayer(next)
-    setLayer(next)
-    setChips((prev) => new Set([...prev].filter((c) => layerChips[next].includes(c))))
+    applyLayer(next)
     setSelectedId(null)
     setHighlightId(null)
     setReveal(null)
