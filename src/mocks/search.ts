@@ -42,7 +42,7 @@ const PAGE = 10
 
 function rank(q: string, layer: Layer | null): Bar[] {
   const pool = inLayer(layer).map(toBar)
-  if (layer !== null && layer !== 'drink') return pool
+  if (layer !== null && layer !== 'drink') return [...pool].sort((a, b) => Number(Boolean(b.facts)) - Number(Boolean(a.facts)))
   const theme = pickTheme(q)
   const ids = themes[theme].length ? themes[theme] : themes.student
   const picked = ids.map((id) => pool.find((b) => b.id === id)).filter((b): b is Bar => Boolean(b))

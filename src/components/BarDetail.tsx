@@ -16,7 +16,7 @@ function hour(t: string) {
 export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
   const t = useT()
   const lang = useLang()
-  const foodMode = useLayer() === 'eat'
+  const eat = useLayer() === 'eat'
 
   return (
     <div className={open ? 'detail-wrap detail-open' : 'detail-wrap'} aria-hidden={!open}>
@@ -25,7 +25,7 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
           <strong>{t.whyHere} </strong>
           {bar.description?.[lang] ?? bar.whyHere}
         </p>
-        {foodMode && bar.photos.length > 1 && (
+        {eat && bar.photos.length > 1 && (
           <div className="detail-photos">
             {bar.photos.slice(1).map((src) => (
               <Photo key={src} className="detail-photo" src={src} />
@@ -41,7 +41,7 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
             </span>
           </div>
         )}
-        {foodMode ? <Dishes dishes={bar.dishes ?? []} focusable={open} /> : <Menu items={bar.menu} focusable={open} />}
+        {eat ? <Dishes dishes={bar.dishes ?? []} focusable={open} /> : <Menu items={bar.menu} focusable={open} />}
         <div className="detail-foot">
           <span className="detail-address">
             <PinIcon />

@@ -56,7 +56,7 @@ export function inLayer(layer: Layer | null) {
 }
 
 export function available(layer: Layer) {
-  return layer !== 'coffee'
+  return layer !== 'coffee' || new URLSearchParams(location.search).has('mock-coffee')
 }
 
 export function toBar({ layers: _, ...p }: MockPlace): Bar {

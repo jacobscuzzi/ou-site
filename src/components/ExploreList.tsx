@@ -20,7 +20,8 @@ type Props = {
 function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSelect: () => void }) {
   const t = useT()
   const lang = useLang()
-  const foodMode = useLayer() === 'eat'
+  const layer = useLayer()
+  const eat = layer === 'eat'
 
   return (
     <button
@@ -43,9 +44,9 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
               {t.openUntil(bar.openUntil)}
             </span>
           )}
-          {foodMode && bar.cuisine && <span className="chip">{cuisineLabel(bar.cuisine, lang)}</span>}
-          {foodMode && bar.pricePerPerson !== undefined && <span className="chip chip-pink">{t.perPerson(price(bar.pricePerPerson))}</span>}
-          {!foodMode && bar.pintPrice !== null && (
+          {eat && bar.cuisine && <span className="chip">{cuisineLabel(bar.cuisine, lang)}</span>}
+          {eat && bar.pricePerPerson !== undefined && <span className="chip chip-pink">{t.perPerson(price(bar.pricePerPerson))}</span>}
+          {(layer === 'drink' || layer === 'dance') && bar.pintPrice !== null && (
             <span className="chip chip-pink">
               <span className="chip-icon"><BeerIcon /></span>
               {price(bar.pintPrice)}
