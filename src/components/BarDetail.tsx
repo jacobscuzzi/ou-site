@@ -6,6 +6,7 @@ import { CocktailIcon, PinIcon } from './icons'
 import Dishes from './Dishes'
 import Menu from './Menu'
 import Photo from './Photo'
+import Posts from './Posts'
 import './BarDetail.css'
 
 function hour(t: string) {
@@ -32,6 +33,7 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
             ))}
           </div>
         )}
+        <Posts posts={bar.posts ?? []} focusable={open} />
         {bar.happyHour && (
           <div className="detail-chips">
             <span className="chip">

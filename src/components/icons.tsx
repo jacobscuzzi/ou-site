@@ -107,3 +107,36 @@ export function SearchIcon({ size = 16 }: IconProps) {
     </svg>
   )
 }
+
+export function PlayIcon({ size = 14 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size} fill="currentColor" stroke="none">
+      <path d="M8 5.5v13l10.5-6.5z" />
+    </svg>
+  )
+}
+
+export function ImagesIcon({ size = 14 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <rect x="3" y="6" width="14" height="14" rx="2" />
+      <path d="M7 3h12a2 2 0 0 1 2 2v12" />
+    </svg>
+  )
+}
+
+export function HeartIcon({ size = 10 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />
+    </svg>
+  )
+}
+
+export function CloseIcon({ size = 18 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  )
+}

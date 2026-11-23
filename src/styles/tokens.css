@@ -162,6 +162,11 @@
   --bubble-enter-scale: 0.6;
   --control-size: 44px;
   --layer-emoji: 22px;
+  --post-tile: 84px;
+  --post-play: 28px;
+  --player-height: min(62dvh, 620px);
+  --player-scrim: rgba(17, 17, 20, 0.45);
+  --app-width-phone: 430px;
   --layer-pop-ms: 600ms;
   --layer-pop-scale: 1.18;
   --fab-size: 56px;
