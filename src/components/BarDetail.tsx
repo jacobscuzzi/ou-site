@@ -5,6 +5,7 @@ import { price } from '../price'
 import { CocktailIcon, PinIcon } from './icons'
 import Dishes from './Dishes'
 import Menu from './Menu'
+import Photo from './Photo'
 import './BarDetail.css'
 
 function hour(t: string) {
@@ -23,6 +24,13 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
           <strong>{t.whyHere} </strong>
           {bar.description?.[lang] ?? bar.whyHere}
         </p>
+        {foodMode && bar.photos.length > 1 && (
+          <div className="detail-photos">
+            {bar.photos.slice(1).map((src) => (
+              <Photo key={src} className="detail-photo" src={src} />
+            ))}
+          </div>
+        )}
         {bar.happyHour && (
           <div className="detail-chips">
             <span className="chip">
