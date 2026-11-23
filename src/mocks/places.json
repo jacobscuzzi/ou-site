@@ -1,0 +1,635 @@
+[
+  {
+    "id": "bouillon-chartier",
+    "rank": 0,
+    "name": "Bouillon Chartier",
+    "address": "7 Rue du Faubourg Montmartre, 75009 Paris",
+    "arrondissement": "9e",
+    "lat": 48.872,
+    "lng": 2.3436,
+    "photos": [],
+    "whyHere": "Belle Époque canteen where the waiters write the bill on the paper tablecloth and a full meal stays under 20 EUR.",
+    "pintPrice": null,
+    "happyHour": null,
+    "openUntil": "00:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Bouillon%20Chartier%20Paris",
+    "sources": [],
+    "facts": {
+      "cuisine": [
+        "french"
+      ],
+      "pricePerPerson": 18,
+      "signatureDishes": [
+        "oeufs mayonnaise",
+        "pot-au-feu"
+      ],
+      "goodFor": [
+        "group",
+        "quick_lunch"
+      ],
+      "vibe": [
+        "lively"
+      ]
+    },
+    "menu": [],
+    "dishes": [
+      {
+        "section": "Entrées",
+        "item": "Oeufs mayonnaise",
+        "description": null,
+        "price": 2.2
+      },
+      {
+        "section": "Entrées",
+        "item": "Poireaux vinaigrette",
+        "description": null,
+        "price": 3.5
+      },
+      {
+        "section": "Plats",
+        "item": "Pot-au-feu",
+        "description": "Boeuf, légumes du bouillon",
+        "price": 12.5
+      },
+      {
+        "section": "Plats",
+        "item": "Confit de canard",
+        "description": "Pommes sautées",
+        "price": 13.8
+      },
+      {
+        "section": "Desserts",
+        "item": "Profiteroles",
+        "description": null,
+        "price": 5.5
+      }
+    ],
+    "posts": [],
+    "layers": [
+      "eat"
+    ]
+  },
+  {
+    "id": "kodawari-ramen",
+    "rank": 0,
+    "name": "Kodawari Ramen Yokocho",
+    "address": "29 Rue Mazarine, 75006 Paris",
+    "arrondissement": "6e",
+    "lat": 48.8547,
+    "lng": 2.3378,
+    "photos": [],
+    "whyHere": "Tokyo alley decor and a rich tonkotsu, queue at the door from 19:00.",
+    "pintPrice": null,
+    "happyHour": null,
+    "openUntil": "23:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Kodawari%20Ramen%20Yokocho%20Paris",
+    "sources": [],
+    "facts": {
+      "cuisine": [
+        "japanese"
+      ],
+      "pricePerPerson": 19,
+      "signatureDishes": [
+        "tonkotsu ramen"
+      ],
+      "goodFor": [
+        "quick_lunch"
+      ]
+    },
+    "menu": [],
+    "dishes": [
+      {
+        "section": "Ramen",
+        "item": "Tonkotsu",
+        "description": "Bouillon de porc, chashu, oeuf",
+        "price": 16.5
+      },
+      {
+        "section": "Ramen",
+        "item": "Shio",
+        "description": null,
+        "price": 15.5
+      },
+      {
+        "section": "À côté",
+        "item": "Gyoza",
+        "description": "5 pièces",
+        "price": 7
+      }
+    ],
+    "posts": [],
+    "layers": [
+      "eat"
+    ]
+  },
+  {
+    "id": "le-servan",
+    "rank": 0,
+    "name": "Le Servan",
+    "address": "32 Rue Saint-Maur, 75011 Paris",
+    "arrondissement": "11e",
+    "lat": 48.8611,
+    "lng": 2.38,
+    "photos": [],
+    "whyHere": "Bistro run by two sisters, small plates with Asian notes and a short natural wine list.",
+    "pintPrice": null,
+    "happyHour": null,
+    "openUntil": "23:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Le%20Servan%20Paris",
+    "sources": [],
+    "facts": {
+      "cuisine": [
+        "french"
+      ],
+      "pricePerPerson": 45,
+      "goodFor": [
+        "date"
+      ],
+      "vibe": [
+        "cosy"
+      ]
+    },
+    "menu": [],
+    "dishes": [
+      {
+        "section": "",
+        "item": "Coques, piment, citronnelle",
+        "description": null,
+        "price": 16
+      },
+      {
+        "section": "",
+        "item": "Pigeon rôti",
+        "description": null,
+        "price": 32
+      }
+    ],
+    "posts": [],
+    "layers": [
+      "eat"
+    ]
+  },
+  {
+    "id": "east-mamma",
+    "rank": 0,
+    "name": "East Mamma",
+    "address": "133 Rue du Faubourg Saint-Antoine, 75011 Paris",
+    "arrondissement": "11e",
+    "lat": 48.8507,
+    "lng": 2.3792,
+    "photos": [],
+    "whyHere": "Loud Italian trattoria with wood-fired pizza and truffle pasta, no bookings so come early.",
+    "pintPrice": null,
+    "happyHour": null,
+    "openUntil": "23:45",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=East%20Mamma%20Paris",
+    "sources": [],
+    "facts": {
+      "cuisine": [
+        "italian"
+      ],
+      "pricePerPerson": 25,
+      "goodFor": [
+        "group"
+      ],
+      "vibe": [
+        "lively"
+      ],
+      "terrace": true
+    },
+    "menu": [],
+    "dishes": [
+      {
+        "section": "Pizze",
+        "item": "Margherita",
+        "description": "Fior di latte, basilic",
+        "price": 12
+      },
+      {
+        "section": "Pasta",
+        "item": "Mafalde al tartufo",
+        "description": null,
+        "price": 19
+      }
+    ],
+    "posts": [],
+    "layers": [
+      "eat"
+    ]
+  },
+  {
+    "id": "breizh-cafe-marais",
+    "rank": 0,
+    "name": "Breizh Café",
+    "address": "109 Rue Vieille du Temple, 75003 Paris",
+    "arrondissement": "3e",
+    "lat": 48.8607,
+    "lng": 2.3626,
+    "photos": [],
+    "whyHere": "Buckwheat galettes with Bordier butter and a long cider list in the Marais.",
+    "pintPrice": null,
+    "happyHour": null,
+    "openUntil": "23:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Breizh%20Caf%C3%A9%20Paris",
+    "sources": [],
+    "facts": {
+      "cuisine": [
+        "french"
+      ],
+      "pricePerPerson": 22,
+      "dietary": [
+        "vegetarian_options"
+      ]
+    },
+    "menu": [],
+    "dishes": [
+      {
+        "section": "Galettes",
+        "item": "Complète",
+        "description": "Jambon, oeuf, emmental",
+        "price": 12.8
+      },
+      {
+        "section": "Crêpes",
+        "item": "Beurre sucre",
+        "description": null,
+        "price": 5.5
+      }
+    ],
+    "posts": [],
+    "layers": [
+      "eat"
+    ]
+  },
+  {
+    "id": "rex-club",
+    "rank": 0,
+    "name": "Rex Club",
+    "address": "5 Boulevard Poissonnière, 75002 Paris",
+    "arrondissement": "2e",
+    "lat": 48.8707,
+    "lng": 2.3475,
+    "photos": [],
+    "whyHere": "Techno institution under the Grand Rex, a sharp sound system and a crowd that dances until the lights come on.",
+    "pintPrice": 9,
+    "happyHour": null,
+    "openUntil": "06:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rex%20Club%20Paris",
+    "sources": [],
+    "facts": {
+      "dancing": true,
+      "music": [
+        "techno",
+        "electro"
+      ],
+      "crowdAge": "25-35",
+      "busyLevel": "packed",
+      "vibe": [
+        "party"
+      ]
+    },
+    "menu": [],
+    "dishes": [],
+    "posts": [],
+    "layers": [
+      "dance"
+    ]
+  },
+  {
+    "id": "la-machine-du-moulin-rouge",
+    "rank": 0,
+    "name": "La Machine du Moulin Rouge",
+    "address": "90 Boulevard de Clichy, 75018 Paris",
+    "arrondissement": "18e",
+    "lat": 48.8842,
+    "lng": 2.3323,
+    "photos": [],
+    "whyHere": "Three rooms next to the Moulin Rouge, hip-hop upstairs and house in the cellar, busy after 1:00.",
+    "pintPrice": 8,
+    "happyHour": null,
+    "openUntil": "06:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=La%20Machine%20du%20Moulin%20Rouge%20Paris",
+    "sources": [],
+    "facts": {
+      "dancing": true,
+      "music": [
+        "hip_hop",
+        "electro"
+      ],
+      "crowdAge": "18-25",
+      "busyLevel": "packed"
+    },
+    "menu": [],
+    "dishes": [],
+    "posts": [],
+    "layers": [
+      "dance"
+    ]
+  },
+  {
+    "id": "badaboum",
+    "rank": 0,
+    "name": "Badaboum",
+    "address": "2 bis Rue des Taillandiers, 75011 Paris",
+    "arrondissement": "11e",
+    "lat": 48.8545,
+    "lng": 2.3754,
+    "photos": [],
+    "whyHere": "Small club behind Bastille with a cocktail bar in front and house sets in the back room.",
+    "pintPrice": 8,
+    "happyHour": null,
+    "openUntil": "06:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Badaboum%20Paris",
+    "sources": [],
+    "facts": {
+      "dancing": true,
+      "music": [
+        "electro",
+        "dj"
+      ],
+      "crowdAge": "25-35",
+      "busyLevel": "moderate"
+    },
+    "menu": [],
+    "dishes": [],
+    "posts": [],
+    "layers": [
+      "dance"
+    ]
+  },
+  {
+    "id": "djoon",
+    "rank": 0,
+    "name": "Djoon",
+    "address": "22 Boulevard Vincent Auriol, 75013 Paris",
+    "arrondissement": "13e",
+    "lat": 48.8358,
+    "lng": 2.3711,
+    "photos": [],
+    "whyHere": "Deep house and disco under the metro tracks, a warm mixed crowd that comes to dance, not to pose.",
+    "pintPrice": 7,
+    "happyHour": null,
+    "openUntil": "05:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Djoon%20Paris",
+    "sources": [],
+    "facts": {
+      "dancing": true,
+      "music": [
+        "electro",
+        "afro"
+      ],
+      "crowdAge": "mixed",
+      "busyLevel": "moderate"
+    },
+    "menu": [],
+    "dishes": [],
+    "posts": [],
+    "layers": [
+      "dance"
+    ]
+  },
+  {
+    "id": "supersonic",
+    "rank": 0,
+    "name": "Supersonic",
+    "address": "9 Rue Biscornet, 75012 Paris",
+    "arrondissement": "12e",
+    "lat": 48.8509,
+    "lng": 2.3684,
+    "photos": [],
+    "whyHere": "Free rock club with live bands early and indie DJ sets until dawn.",
+    "pintPrice": 6.5,
+    "happyHour": null,
+    "openUntil": "06:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Supersonic%20Paris",
+    "sources": [],
+    "facts": {
+      "dancing": true,
+      "music": [
+        "rock",
+        "live_band"
+      ],
+      "crowdAge": "18-25",
+      "busyLevel": "packed"
+    },
+    "menu": [],
+    "dishes": [],
+    "posts": [],
+    "layers": [
+      "dance"
+    ]
+  },
+  {
+    "id": "coutume-babylone",
+    "rank": 0,
+    "name": "Coutume Café",
+    "address": "47 Rue de Babylone, 75007 Paris",
+    "arrondissement": "7e",
+    "lat": 48.8516,
+    "lng": 2.3175,
+    "photos": [],
+    "whyHere": "Roaster's flagship with specialty filter coffee, big tables and wifi, laptops welcome on weekdays.",
+    "pintPrice": null,
+    "happyHour": null,
+    "openUntil": "18:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Coutume%20Caf%C3%A9%20Paris",
+    "sources": [],
+    "facts": {
+      "goodFor": [
+        "work"
+      ],
+      "vibe": [
+        "laid_back"
+      ]
+    },
+    "menu": [
+      {
+        "item": "espresso",
+        "category": "other",
+        "price": 2.8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cappuccino",
+        "category": "other",
+        "price": 4.8,
+        "happyHourPrice": null
+      },
+      {
+        "item": "filtre",
+        "category": "other",
+        "price": 5,
+        "happyHourPrice": null
+      }
+    ],
+    "dishes": [],
+    "posts": [],
+    "layers": [
+      "coffee"
+    ]
+  },
+  {
+    "id": "kb-coffee-roasters",
+    "rank": 0,
+    "name": "KB Coffee Roasters",
+    "address": "53 Avenue Trudaine, 75009 Paris",
+    "arrondissement": "9e",
+    "lat": 48.8822,
+    "lng": 2.341,
+    "photos": [],
+    "whyHere": "Specialty coffee and banana bread on a sunny terrace in South Pigalle.",
+    "pintPrice": null,
+    "happyHour": null,
+    "openUntil": "18:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=KB%20Coffee%20Roasters%20Paris",
+    "sources": [],
+    "facts": {
+      "terrace": true,
+      "vibe": [
+        "lively"
+      ]
+    },
+    "menu": [
+      {
+        "item": "espresso",
+        "category": "other",
+        "price": 2.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "flat white",
+        "category": "other",
+        "price": 4.5,
+        "happyHourPrice": null
+      }
+    ],
+    "dishes": [],
+    "posts": [],
+    "layers": [
+      "coffee"
+    ]
+  },
+  {
+    "id": "ten-belles",
+    "rank": 0,
+    "name": "Ten Belles",
+    "address": "10 Rue de la Grange aux Belles, 75010 Paris",
+    "arrondissement": "10e",
+    "lat": 48.8716,
+    "lng": 2.3654,
+    "photos": [],
+    "whyHere": "Tiny specialty coffee shop by the Canal Saint-Martin with a mezzanine to work from.",
+    "pintPrice": null,
+    "happyHour": null,
+    "openUntil": "17:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Ten%20Belles%20Paris",
+    "sources": [],
+    "facts": {
+      "goodFor": [
+        "work"
+      ],
+      "vibe": [
+        "cosy"
+      ]
+    },
+    "menu": [
+      {
+        "item": "espresso",
+        "category": "other",
+        "price": 2.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "latte",
+        "category": "other",
+        "price": 4.5,
+        "happyHourPrice": null
+      }
+    ],
+    "dishes": [],
+    "posts": [],
+    "layers": [
+      "coffee"
+    ]
+  },
+  {
+    "id": "fragments",
+    "rank": 0,
+    "name": "Fragments",
+    "address": "76 Rue des Tournelles, 75003 Paris",
+    "arrondissement": "3e",
+    "lat": 48.8592,
+    "lng": 2.3657,
+    "photos": [],
+    "whyHere": "Marais café with specialty coffee, avocado toast and a weekend brunch queue.",
+    "pintPrice": null,
+    "happyHour": null,
+    "openUntil": "17:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Fragments%20Paris",
+    "sources": [],
+    "facts": {
+      "vibe": [
+        "laid_back"
+      ]
+    },
+    "menu": [
+      {
+        "item": "espresso",
+        "category": "other",
+        "price": 2.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "cappuccino",
+        "category": "other",
+        "price": 4.5,
+        "happyHourPrice": null
+      }
+    ],
+    "dishes": [],
+    "posts": [],
+    "layers": [
+      "coffee"
+    ]
+  },
+  {
+    "id": "telescope",
+    "rank": 0,
+    "name": "Télescope",
+    "address": "5 Rue Villedo, 75001 Paris",
+    "arrondissement": "1er",
+    "lat": 48.8657,
+    "lng": 2.3359,
+    "photos": [],
+    "whyHere": "Minimal room near the Palais-Royal, one of the first specialty coffee bars in Paris.",
+    "pintPrice": null,
+    "happyHour": null,
+    "openUntil": "16:00",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=T%C3%A9lescope%20Paris",
+    "sources": [],
+    "facts": {
+      "vibe": [
+        "laid_back"
+      ]
+    },
+    "menu": [
+      {
+        "item": "espresso",
+        "category": "other",
+        "price": 2.5,
+        "happyHourPrice": null
+      },
+      {
+        "item": "filtre",
+        "category": "other",
+        "price": 4,
+        "happyHourPrice": null
+      }
+    ],
+    "dishes": [],
+    "posts": [],
+    "layers": [
+      "coffee"
+    ]
+  }
+]

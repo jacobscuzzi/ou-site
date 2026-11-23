@@ -1,5 +1,5 @@
-import type { Bar, SearchResponse } from '../api/types'
-import bars from './bars.json'
+import type { Bar, Layer, SearchResponse, Venue } from '../api/types'
+import { available, inBox, inLayer, toBar, wishLayer, type Box } from './catalog'
 import themes from './themes.json'
 
 type Theme = keyof typeof themes
@@ -33,25 +33,20 @@ function pickTheme(q: string): Theme {
   return best
 }
 
-const all: Bar[] = (bars as Omit<Bar, 'compliant' | 'constraintsNotMet' | 'dishes'>[]).map((b) => ({
-  dishes: [],
-  ...b,
-  compliant: true,
-  constraintsNotMet: [],
-}))
-const byId = new Map(all.map((b) => [b.id, b]))
-const searches = new Map<string, { query: string; bars: Bar[] }>()
+type Stored = { query: string; venue: Venue; layer: Layer | null; switched: boolean; bars: Bar[] }
+
+const searches = new Map<string, Stored>()
 
 const FIRST = 5
 const PAGE = 10
-const meta = { parsed: true, rankingVersion: 0 }
 
-export function mockSearch(q: string): SearchResponse {
+function rank(q: string, layer: Layer | null): Bar[] {
+  const pool = inLayer(layer).map(toBar)
+  if (layer !== null && layer !== 'drink') return pool
   const theme = pickTheme(q)
   const ids = themes[theme].length ? themes[theme] : themes.student
-  const picked = ids.map((id) => byId.get(id)).filter((b): b is Bar => Boolean(b))
-  const ranked = [...picked, ...all.filter((b) => !ids.includes(b.id))].map((b, i) => ({ ...b, rank: i + 1 }))
-
+  const picked = ids.map((id) => pool.find((b) => b.id === id)).filter((b): b is Bar => Boolean(b))
+  const ranked = [...picked, ...pool.filter((b) => !ids.includes(b.id))]
   if (theme === 'student' && ranked.length >= FIRST) {
     ranked[FIRST - 1] = {
       ...ranked[FIRST - 1],
@@ -59,10 +54,32 @@ export function mockSearch(q: string): SearchResponse {
       constraintsNotMet: [{ type: 'max_beer_price', requested: 5, actual: 6.5 }],
     }
   }
+  return ranked
+}
 
+function body(searchId: string, s: Stored, results: Bar[], hasMore: boolean): SearchResponse {
+  return {
+    searchId,
+    query: s.query,
+    venue: s.venue,
+    ...(s.layer && { layer: s.layer }),
+    results,
+    hasMore,
+    meta: { parsed: true, rankingVersion: 0, ...(s.layer && { layerSwitched: s.switched }) },
+  }
+}
+
+export function mockSearch(q: string, layer: Layer | null = null, box: Box | null = null, venue: Venue = 'bar'): SearchResponse {
+  const wish = layer && wishLayer(q)
+  const switched = Boolean(wish && wish !== layer && available(wish))
+  const searched = switched ? wish : layer
+  const ranked = rank(q, searched)
+    .filter((b) => !box || inBox(b, box))
+    .map((b, i) => ({ ...b, rank: i + 1 }))
   const searchId = Math.random().toString(36).slice(2)
-  searches.set(searchId, { query: q, bars: ranked })
-  return { searchId, query: q, results: ranked.slice(0, FIRST), hasMore: ranked.length > FIRST, meta }
+  const stored = { query: q, venue, layer: searched, switched, bars: ranked }
+  searches.set(searchId, stored)
+  return body(searchId, stored, ranked.slice(0, FIRST), ranked.length > FIRST)
 }
 
 export function mockMore(searchId: string, page: number): SearchResponse {
@@ -74,11 +91,5 @@ export function mockMore(searchId: string, page: number): SearchResponse {
   }
   const start = FIRST + (page - 1) * PAGE
   const end = start + PAGE
-  return {
-    searchId,
-    query: search.query,
-    results: search.bars.slice(start, end),
-    hasMore: end < search.bars.length && page < 30,
-    meta,
-  }
+  return body(searchId, search, search.bars.slice(start, end), end < search.bars.length && page < 30)
 }

@@ -42,6 +42,15 @@ export type Description = {
   en: string
 }
 
+export type Post = {
+  platform: 'tiktok'
+  postId: string
+  url: string
+  author: string
+  likes: number | null
+  kind: 'video' | 'photo'
+}
+
 export type MenuCategory = 'beer' | 'wine' | 'cocktail' | 'spirit' | 'cider' | 'other'
 
 export type MenuItem = {
@@ -72,14 +81,21 @@ export type Bar = {
   description?: Description
   menu: MenuItem[]
   dishes: Dish[]
+  posts: Post[]
 }
+
+export type Layer = 'drink' | 'eat' | 'dance' | 'coffee'
+
+export type Venue = 'bar' | 'restaurant' | 'cafe' | 'all'
 
 export type SearchResponse = {
   searchId: string
   query: string
+  venue: Venue
+  layer?: Layer
   results: Bar[]
   hasMore: boolean
-  meta: { parsed: boolean; rankingVersion: number }
+  meta: { parsed: boolean; rankingVersion: number; layerSwitched?: boolean }
 }
 
 export type MapBar = {
@@ -102,6 +118,11 @@ export type MapBar = {
 export type BarsResponse = {
   bars: MapBar[]
   updatedAt: string
+  layer?: Layer
+}
+
+export type LayersResponse = {
+  layers: { id: Layer; count: number; available: boolean }[]
 }
 
 export type ApiError = {

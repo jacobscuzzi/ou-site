@@ -1,17 +1,30 @@
 import { delay, http, HttpResponse } from 'msw'
-import { mockBar, mockBars } from './bars'
+import type { Venue } from '../api/types'
+import { mockBar, mockBars, mockLayers } from './bars'
+import { isLayer, parseBbox } from './catalog'
 import { mockMore, mockSearch } from './search'
+
+const venues: Venue[] = ['bar', 'restaurant', 'cafe', 'all']
+
+function bad(error: string) {
+  return HttpResponse.json({ error }, { status: 400 })
+}
 
 export const handlers = [
   http.get('/api/search', async ({ request }) => {
-    const q = new URL(request.url).searchParams.get('q')?.trim()
+    const params = new URL(request.url).searchParams
+    const q = params.get('q')?.trim()
+    const layer = params.get('layer')
+    const venue = params.get('venue') ?? 'bar'
+    const box = parseBbox(params.get('bbox'))
     await delay(400)
 
-    if (!q || q.length > 500) {
-      return HttpResponse.json({ error: 'missing q' }, { status: 400 })
-    }
+    if (!q || q.length > 500) return bad('missing q')
+    if (layer !== null && !isLayer(layer)) return bad('unknown layer')
+    if (!venues.includes(venue as Venue)) return bad('unknown venue')
+    if (box === 'bad') return bad('malformed bbox')
 
-    return HttpResponse.json(mockSearch(q))
+    return HttpResponse.json(mockSearch(q, layer, box, venue as Venue))
   }),
 
   http.get('/api/search/:id/more', async ({ request, params }) => {
@@ -29,9 +42,16 @@ export const handlers = [
     }
   }),
 
-  http.get('/api/bars', async () => {
+  http.get('/api/layers', async () => {
+    await delay(200)
+    return HttpResponse.json(mockLayers())
+  }),
+
+  http.get('/api/bars', async ({ request }) => {
+    const layer = new URL(request.url).searchParams.get('layer')
     await delay(400)
-    return HttpResponse.json(mockBars())
+    if (layer !== null && !isLayer(layer)) return bad('unknown layer')
+    return HttpResponse.json(mockBars(layer))
   }),
 
   http.get('/api/bars/:id', async ({ params }) => {
