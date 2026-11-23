@@ -451,6 +451,7 @@ export default function App() {
       selectedId={pick ? selectedId : null}
       onSelect={pick}
       onFirst={pick && follow}
+      onOpen={() => setPlaceOpened(true)}
     />
   )
 

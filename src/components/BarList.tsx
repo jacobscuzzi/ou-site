@@ -17,12 +17,13 @@ type Props = {
   selectedId?: string | null
   onSelect?: (id: string) => void
   onFirst?: (id: string) => void
+  onOpen?: () => void
 }
 
 const FIRST_PAGE = 5
 const MOSTLY = 0.5
 
-export default function BarList({ bars, loading, error, onRetry, hasMore, loadingMore, moreError, onMore, selectedId, onSelect, onFirst }: Props) {
+export default function BarList({ bars, loading, error, onRetry, hasMore, loadingMore, moreError, onMore, selectedId, onSelect, onFirst, onOpen }: Props) {
   const t = useT()
   const list = useRef<HTMLDivElement>(null)
 
@@ -85,6 +86,7 @@ export default function BarList({ bars, loading, error, onRetry, hasMore, loadin
           index={i < FIRST_PAGE ? i : (i - FIRST_PAGE) % 10}
           selected={bar.id === selectedId}
           onSelect={onSelect && (() => onSelect(bar.id))}
+          onOpen={onOpen}
         />
       ))}
       {moreError ? (

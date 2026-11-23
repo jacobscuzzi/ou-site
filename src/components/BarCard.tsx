@@ -6,14 +6,15 @@ import CardChips from './CardChips'
 import Photo from './Photo'
 import './BarCard.css'
 
-type Props = { bar: Bar; index: number; selected?: boolean; defaultOpen?: boolean; onSelect?: () => void }
+type Props = { bar: Bar; index: number; selected?: boolean; defaultOpen?: boolean; onSelect?: () => void; onOpen?: () => void }
 
-export default function BarCard({ bar, index, selected = false, defaultOpen = false, onSelect }: Props) {
+export default function BarCard({ bar, index, selected = false, defaultOpen = false, onSelect, onOpen }: Props) {
   const [open, setOpen] = useState(defaultOpen)
   const t = useT()
 
   function toggle() {
-    setOpen((o) => !o)
+    if (!open) onOpen?.()
+    setOpen(!open)
     onSelect?.()
   }
 
