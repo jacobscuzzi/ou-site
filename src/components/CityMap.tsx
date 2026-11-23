@@ -247,7 +247,7 @@ export default function CityMap(props: Props) {
   function checkStray(e: { originalEvent?: unknown }) {
     const map = mapRef.current
     const a = anchor.current
-    if (!map || !a || latest.current.results.length === 0) return
+    if (!map || !a) return
     if (!e.originalEvent) return capture()
     const box = map.getContainer()
     const p = map.project(a.center)
