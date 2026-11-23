@@ -244,10 +244,11 @@ export default function CityMap(props: Props) {
     latest.current.onStray(false)
   }
 
-  function checkStray() {
+  function checkStray(e: { originalEvent?: unknown }) {
     const map = mapRef.current
     const a = anchor.current
     if (!map || !a || latest.current.results.length === 0) return
+    if (!e.originalEvent) return capture()
     const box = map.getContainer()
     const p = map.project(a.center)
     const panned = Math.abs(p.x - box.clientWidth / 2) > box.clientWidth / 3 || Math.abs(p.y - box.clientHeight / 2) > box.clientHeight / 3

@@ -17,6 +17,7 @@
   box-shadow: var(--glass-edge), var(--hairline), var(--shadow-2);
 }
 
+.layer-current,
 .layer-dot {
   background: var(--glass-bubble);
 }

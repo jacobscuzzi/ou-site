@@ -293,7 +293,7 @@ const foodStrings: Record<Lang, typeof en> = {
     ...en,
     eyebrow: 'Paris, today',
     tagline: "Let's find the best restaurant for you.",
-    placeholder: 'What do you feel like eating?',
+    placeholder: 'What are you craving?',
     suggestions: [
       ['A cheap Lebanese place in the 10e', 'Good ramen near Bastille', 'A romantic dinner with a view', 'Brunch on Sunday'],
       ['A Neapolitan pizza in the 11e', 'Dinner for under 20 EUR', 'A bistro for a group of friends', 'A vegetarian restaurant'],
@@ -317,7 +317,7 @@ const foodStrings: Record<Lang, typeof en> = {
     ...fr,
     eyebrow: "Paris, aujourd'hui",
     tagline: 'Trouvons le meilleur restaurant pour toi.',
-    placeholder: 'Tu as envie de manger quoi ?',
+    placeholder: 'Envie de manger quoi ?',
     suggestions: [
       ['Un libanais pas cher dans le 10e', 'De bons ramen vers Bastille', 'Un dîner romantique avec vue', 'Un brunch le dimanche'],
       ['Une pizza napolitaine dans le 11e', 'Dîner pour moins de 20 €', 'Un bistrot pour un groupe d’amis', 'Un restaurant végétarien'],
@@ -366,7 +366,7 @@ const danceStrings: Record<Lang, typeof en> = {
   fr: {
     ...fr,
     tagline: 'Trouvons où danser ce soir.',
-    placeholder: 'Tu veux danser sur quoi ?',
+    placeholder: 'Danser sur quoi ?',
     suggestions: [
       ["Un club techno ouvert jusqu'au lever du soleil", 'Danser sur du hip-hop ce soir', 'Une soirée queer dans le Marais', 'Un club sans dress code'],
       ['Disco et house avec un public mixte', 'Un club gratuit dans le 11e', 'De la musique latine pour danser la salsa', 'Un bar où on danse sur les tables'],
