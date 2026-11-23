@@ -1,6 +1,6 @@
 import type { Bar } from '../api/types'
 import { useLang, useT } from '../i18n'
-import { foodMode } from '../mode'
+import { useLayer } from '../mode'
 import { price } from '../price'
 import { CocktailIcon, PinIcon } from './icons'
 import Dishes from './Dishes'
@@ -16,6 +16,7 @@ function hour(t: string) {
 export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
   const t = useT()
   const lang = useLang()
+  const foodMode = useLayer() === 'eat'
 
   return (
     <div className={open ? 'detail-wrap detail-open' : 'detail-wrap'} aria-hidden={!open}>

@@ -1,4 +1,4 @@
-import type { MapBar } from '../api/types'
+import type { Layer, MapBar } from '../api/types'
 import type * as GeoJSON from 'geojson'
 
 export type Bounds = { minLng: number; minLat: number; maxLng: number; maxLat: number }
@@ -6,6 +6,13 @@ export type Bounds = { minLng: number; minLat: number; maxLng: number; maxLat: n
 export type ChipKey = 'open' | 'terrace' | 'dancing' | 'cheap'
 
 export const CHEAP_PINT = 5
+
+export const layerChips: Record<Layer, ChipKey[]> = {
+  drink: ['open', 'terrace', 'dancing', 'cheap'],
+  eat: ['open', 'terrace'],
+  dance: ['open', 'cheap'],
+  coffee: ['open', 'terrace'],
+}
 
 export const PARIS: Bounds = { minLng: 2.224, minLat: 48.815, maxLng: 2.47, maxLat: 48.903 }
 

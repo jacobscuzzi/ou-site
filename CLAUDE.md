@@ -14,7 +14,9 @@ The API contract lives in the backend repo (`infra-oup`, `docs/specs/search-api.
 - Layout is a centred column, max-width 430px on phones and 1120px from 768px up. Design target is 390x844.
 - Components never import mock data directly. All data goes through `src/api/client.ts`.
   `VITE_USE_MOCK=true` serves the MSW mock; `false` talks to `VITE_API_URL`.
-- Small components, English in code, almost no comments, no emoji anywhere.
+- Small components, English in code, almost no comments. No emoji anywhere, except the four
+  layer emoji in the UI, which are the only ones allowed: drink U+1F37A, eat U+1F37D U+FE0F,
+  dance U+1F483, coffee U+2615 (defined once in `src/mode.ts`).
 
 ## Deploy
 The VPS clones this repo to `/srv/ou-site`. `infra-oup/hosticloud/infra/scripts/deploy.sh`

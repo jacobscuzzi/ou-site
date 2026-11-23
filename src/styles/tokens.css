@@ -161,6 +161,9 @@
   --bubble-stagger: 40ms;
   --bubble-enter-scale: 0.6;
   --control-size: 44px;
+  --layer-emoji: 22px;
+  --layer-pop-ms: 600ms;
+  --layer-pop-scale: 1.18;
   --fab-size: 56px;
   --fab-icon: 24px;
   --border-1: 1px;

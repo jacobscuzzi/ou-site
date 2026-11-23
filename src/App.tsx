@@ -1,14 +1,12 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ComponentProps, type ComponentType, type FocusEvent } from 'react'
-import { fetchBars, moreBars, searchBars } from './api/client'
-import type { Bar, MapBar } from './api/types'
-import { initialLang, LangContext, strings, type Lang } from './i18n'
-import { foodMode } from './mode'
-
-const layer = foodMode ? 'eat' : 'drink'
+import { fetchBars, fetchLayers, moreBars, searchBars } from './api/client'
+import type { Bar, Layer, MapBar } from './api/types'
+import { initialLang, LangContext, strings } from './i18n'
+import { initialLayer, LayerContext, rememberLayer } from './mode'
 import { tick } from './haptic'
-import { topInView, type Bounds, type ChipKey } from './map/geo'
+import { layerChips, topInView, type Bounds, type ChipKey } from './map/geo'
 import Logo from './components/Logo'
-import LangSwitch from './components/LangSwitch'
+import LayerSwitch from './components/LayerSwitch'
 import SearchBar from './components/SearchBar'
 import Suggestions from './components/Suggestions'
 import BarList from './components/BarList'
@@ -36,6 +34,8 @@ const BARS_RETRIES = 6
 const BARS_RETRY_DELAY = 5000
 const BARS_TIMEOUT = 10000
 const QUIET_MS = 900
+const LAYERS_RETRIES = 3
+const lang = initialLang()
 const desktop = '(min-width: 768px)'
 
 function initialView(): View {
@@ -47,7 +47,9 @@ function initialView(): View {
 }
 
 export default function App() {
-  const [lang, setLang] = useState<Lang>(initialLang)
+  const [layer, setLayer] = useState<Layer>(initialLayer)
+  const [layers, setLayers] = useState<Layer[] | null>(null)
+  const [moved, setMoved] = useState(0)
   const [value, setValue] = useState('')
   const [query, setQuery] = useState<string | null>(null)
   const [bars, setBars] = useState<Bar[]>([])
@@ -79,18 +81,39 @@ export default function App() {
   const [reveal, setReveal] = useState<{ id: string; n: number } | null>(null)
   const returnFocus = useRef<string | null>(null)
   const quietUntil = useRef(0)
-  const t = strings[lang]
+  const t = strings[layer][lang]
+  const layerRef = useRef(layer)
+  layerRef.current = layer
   const mode: View = mapFailed ? 'search' : view
   const shownMode = useRef(mode)
 
   useEffect(() => {
     document.documentElement.lang = lang
-    try {
-      localStorage.setItem('ou-lang', lang)
-    } catch {
-      // storage unavailable, the choice just lasts for this visit
+  }, [])
+
+  useEffect(() => {
+    const ctrl = new AbortController()
+    let tries = 0
+    let timer = 0
+    const load = () =>
+      fetchLayers(ctrl.signal)
+        .then((res) => setLayers(res.layers.filter((l) => l.available).map((l) => l.id)))
+        .catch((err: Error) => {
+          if (err.name === 'AbortError') return
+          tries += 1
+          if (tries < LAYERS_RETRIES) timer = window.setTimeout(load, BARS_RETRY_DELAY)
+          else setLayers([])
+        })
+    load()
+    return () => {
+      window.clearTimeout(timer)
+      ctrl.abort()
     }
-  }, [lang])
+  }, [])
+
+  useEffect(() => {
+    if (layers && layers.length > 0 && !layers.includes(layer)) setLayer('drink')
+  }, [layers, layer])
 
   useEffect(() => {
     try {
@@ -152,7 +175,7 @@ export default function App() {
       window.clearTimeout(timer)
       ctrl.abort()
     }
-  }, [barsAttempt])
+  }, [barsAttempt, layer])
 
   useEffect(() => {
     if (query === null) return
@@ -173,8 +196,12 @@ export default function App() {
     setLoadingMore(false)
     setMoreError(null)
 
-    searchBars(query, layer, null, ctrl.signal)
+    searchBars(query, layerRef.current, null, ctrl.signal)
       .then((res) => {
+        if (res.meta.layerSwitched && res.layer) {
+          setLayer(res.layer)
+          setMoved((n) => n + 1)
+        }
         setBars(res.results)
         setSearchId(res.searchId)
         setHasMore(res.hasMore)
@@ -182,7 +209,7 @@ export default function App() {
       })
       .catch((err: Error) => {
         if (err.name === 'AbortError' && !timedOut) return
-        setError(timedOut ? strings[lang].timeout : err.message)
+        setError(timedOut ? strings[layerRef.current][lang].timeout : err.message)
         setLoading(false)
       })
       .finally(() => clearTimeout(timer))
@@ -273,6 +300,17 @@ export default function App() {
     window.scrollTo({ top: 0 })
   }
 
+  function chooseLayer(next: Layer) {
+    if (next === layer) return
+    rememberLayer(next)
+    setLayer(next)
+    setChips((prev) => new Set([...prev].filter((c) => layerChips[next].includes(c))))
+    setSelectedId(null)
+    setHighlightId(null)
+    setReveal(null)
+    if (query !== null) setAttempt((n) => n + 1)
+  }
+
   function toggleChip(key: ChipKey) {
     setChips((prev) => {
       const next = new Set(prev)
@@ -349,10 +387,11 @@ export default function App() {
   }
 
   const heading = <h1 className="visually-hidden" tabIndex={-1}>où, {t.tagline}</h1>
-  const langSwitch = <LangSwitch lang={lang} onChange={setLang} />
+  const offered = layers && layers.length > 0 ? layers : [layer]
+  const layerSwitch = <LayerSwitch layer={layer} layers={offered} moved={moved} onChange={chooseLayer} />
   const searchBar = (onHome: () => void, homeLabel: string) => (
     <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={onHome} homeLabel={homeLabel}>
-      {langSwitch}
+      {layerSwitch}
     </SearchBar>
   )
   const barList = (pick?: (id: string) => void) => (
@@ -445,12 +484,9 @@ export default function App() {
       <div className={mapFailed ? 'content' : 'content app-fab'}>
         {query === null ? (
           <section className="start">
-            <div className="start-corner">{langSwitch}</div>
+            <div className="start-corner">{layerSwitch}</div>
             <div className="start-hero">
-              <p className="eyebrow">
-                {t.eyebrow}
-                {foodMode && ` · ${t.foodBeta}`}
-              </p>
+              <p className="eyebrow">{t.eyebrow}</p>
               <h1 className="start-title" tabIndex={-1}>
                 <Logo size="var(--text-hero)" /> ?
               </h1>
@@ -478,9 +514,11 @@ export default function App() {
 
   return (
     <LangContext.Provider value={lang}>
-      {stage}
-      {classic}
-      <InstallHint placeOpened={placeOpened} />
+      <LayerContext.Provider value={layer}>
+        {stage}
+        {classic}
+        <InstallHint placeOpened={placeOpened} />
+      </LayerContext.Provider>
     </LangContext.Provider>
   )
 }

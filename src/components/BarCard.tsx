@@ -1,7 +1,7 @@
 import { useState, type CSSProperties, type KeyboardEvent } from 'react'
 import type { Bar } from '../api/types'
 import { cuisineLabel, hintFor, useLang, useT } from '../i18n'
-import { foodMode } from '../mode'
+import { useLayer } from '../mode'
 import { price } from '../price'
 import { tagsFor } from '../tags'
 import BarDetail from './BarDetail'
@@ -15,6 +15,7 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
   const [open, setOpen] = useState(defaultOpen)
   const t = useT()
   const lang = useLang()
+  const foodMode = useLayer() === 'eat'
   const tags = tagsFor(bar, lang)
 
   function toggle() {

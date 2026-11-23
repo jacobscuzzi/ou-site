@@ -1,6 +1,6 @@
 import type { MapBar } from '../api/types'
 import { cuisineLabel, useLang, useT } from '../i18n'
-import { foodMode } from '../mode'
+import { useLayer } from '../mode'
 import { price } from '../price'
 import { labelFor } from '../tags'
 import { BeerIcon, ClockIcon } from './icons'
@@ -20,6 +20,7 @@ type Props = {
 function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSelect: () => void }) {
   const t = useT()
   const lang = useLang()
+  const foodMode = useLayer() === 'eat'
 
   return (
     <button

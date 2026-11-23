@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
-import type { ConstraintNotMet } from './api/types'
-import { foodMode } from './mode'
+import type { ConstraintNotMet, Layer } from './api/types'
+import { useLayer } from './mode'
 
 export type Lang = 'en' | 'fr'
 
@@ -107,7 +107,6 @@ const en = {
   perPerson: (p: string) => `${p} per person`,
   dishesShowAll: (n: number) => `Show all dishes (${n})`,
   dishesNote: 'Menu from Google Maps, prices may have changed.',
-  foodBeta: 'Food beta',
   openMaps: 'Open in Google Maps',
   errorTitle: 'Something went wrong',
   timeout: 'The search took too long, please try again.',
@@ -124,7 +123,9 @@ const en = {
   mapLabel: 'Map of bars in Paris',
   sheetLabel: 'Bar list',
   sheetHandle: { peek: 'Panel collapsed, raise it', half: 'Panel half open, raise it', full: 'Panel fully open, lower it' },
-  switchTo: 'Passer en français',
+  layerMenu: (name: string) => `Showing ${name}, change`,
+  layerNames: { drink: 'Drinks', eat: 'Food', dance: 'Dancing', coffee: 'Coffee' } as Record<Layer, string>,
+  layerSwitched: (name: string) => `Showing ${name} for this search`,
   installTitle: 'Add où to your home screen',
   installText: 'It opens like an app, straight on the map.',
   installAction: 'Install',
@@ -207,7 +208,6 @@ const fr: typeof en = {
   perPerson: (p: string) => `${p} par personne`,
   dishesShowAll: (n: number) => `Voir tous les plats (${n})`,
   dishesNote: 'Carte issue de Google Maps, les prix ont pu changer.',
-  foodBeta: 'Food bêta',
   openMaps: 'Ouvrir dans Google Maps',
   errorTitle: 'Un problème est survenu',
   timeout: 'La recherche a pris trop de temps, réessaie.',
@@ -224,7 +224,9 @@ const fr: typeof en = {
   mapLabel: 'Carte des bars de Paris',
   sheetLabel: 'Liste des bars',
   sheetHandle: { peek: 'Panneau réduit, le monter', half: 'Panneau à moitié ouvert, le monter', full: 'Panneau ouvert, le descendre' },
-  switchTo: 'Switch to English',
+  layerMenu: (name: string) => `${name} affiché, changer`,
+  layerNames: { drink: 'Boire un verre', eat: 'Manger', dance: 'Danser', coffee: 'Café' },
+  layerSwitched: (name: string) => `${name} affiché pour cette recherche`,
   installTitle: "Ajoute où à ton écran d'accueil",
   installText: "Il s'ouvre comme une app, directement sur la carte.",
   installAction: 'Installer',
@@ -259,6 +261,8 @@ const fr: typeof en = {
 }
 
 const drinkStrings: Record<Lang, typeof en> = { en, fr }
+
+export type Strings = typeof en
 
 const foodStrings: Record<Lang, typeof en> = {
   en: {
@@ -309,7 +313,12 @@ const foodStrings: Record<Lang, typeof en> = {
   },
 }
 
-export const strings = foodMode ? foodStrings : drinkStrings
+export const strings: Record<Layer, Record<Lang, typeof en>> = {
+  drink: drinkStrings,
+  eat: foodStrings,
+  dance: drinkStrings,
+  coffee: drinkStrings,
+}
 
 const cuisinesFr: Record<string, string> = {
   french: 'Français', italian: 'Italien', japanese: 'Japonais', chinese: 'Chinois', middle_eastern: 'Moyen-Orient',
@@ -335,15 +344,11 @@ export function useLang() {
 }
 
 export function useT() {
-  return strings[useLang()]
+  return strings[useLayer()][useLang()]
 }
 
 export function initialLang(): Lang {
-  try {
-    const stored = localStorage.getItem('ou-lang')
-    if (stored === 'en' || stored === 'fr') return stored
-  } catch {
-    // storage unavailable, fall through to the browser language
-  }
-  return navigator.language.toLowerCase().startsWith('fr') ? 'fr' : 'en'
+  const asked = new URLSearchParams(location.search).get('lang')
+  if (asked === 'en' || asked === 'fr') return asked
+  return (navigator.language ?? '').toLowerCase().startsWith('fr') ? 'fr' : 'en'
 }

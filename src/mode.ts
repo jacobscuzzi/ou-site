@@ -1,15 +1,75 @@
-const KEY = 'ou-mode'
+import { createContext, useContext } from 'react'
+import type { Layer } from './api/types'
 
-// Hidden food beta: ?mode=food turns it on for the tab, ?mode=drink turns it off.
-function readFoodMode(): boolean {
-  const asked = new URLSearchParams(location.search).get('mode')
+export const LAYERS: Layer[] = ['drink', 'eat', 'dance', 'coffee']
+
+export const layerEmoji: Record<Layer, string> = {
+  drink: '\u{1F37A}',
+  eat: '\u{1F37D}\u{FE0F}',
+  dance: '\u{1F483}',
+  coffee: '\u{2615}',
+}
+
+const KEY = 'ou-layer'
+const DANCE_NIGHTS = ['Thu', 'Fri', 'Sat']
+const MORNING_AFTER = ['Fri', 'Sat', 'Sun']
+
+const paris = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', weekday: 'short', hour: 'numeric', hourCycle: 'h23' })
+
+export function defaultLayer(now = new Date()): Layer {
+  const parts = paris.formatToParts(now)
+  const hour = Number(parts.find((p) => p.type === 'hour')?.value)
+  const day = parts.find((p) => p.type === 'weekday')?.value ?? ''
+  if (hour >= 6 && hour < 11) return 'coffee'
+  if (hour >= 11 && hour < 15) return 'eat'
+  if (hour >= 15 && hour < 18) return 'coffee'
+  if (hour >= 18 && hour < 23) return 'drink'
+  const danceNight = hour >= 23 ? DANCE_NIGHTS.includes(day) : MORNING_AFTER.includes(day)
+  return danceNight ? 'dance' : 'drink'
+}
+
+export function isLayer(v: string | null): v is Layer {
+  return v !== null && (LAYERS as string[]).includes(v)
+}
+
+function fromUrl(): Layer | null {
+  const params = new URLSearchParams(location.search)
+  const layer = params.get('layer')
+  if (isLayer(layer)) return layer
+  const mode = params.get('mode')
+  if (mode === 'food') return 'eat'
+  if (mode === 'drink') return 'drink'
+  return null
+}
+
+export function rememberLayer(layer: Layer) {
   try {
-    if (asked === 'food') sessionStorage.setItem(KEY, 'food')
-    if (asked === 'drink') sessionStorage.removeItem(KEY)
-    return sessionStorage.getItem(KEY) === 'food'
+    sessionStorage.setItem(KEY, layer)
   } catch {
-    return asked === 'food'
+    // storage unavailable, the pick lasts until the page reloads
   }
 }
 
-export const foodMode = readFoodMode()
+function stored(): Layer | null {
+  try {
+    const v = sessionStorage.getItem(KEY)
+    return isLayer(v) ? v : null
+  } catch {
+    return null
+  }
+}
+
+export function initialLayer(): Layer {
+  const asked = fromUrl()
+  if (asked) {
+    rememberLayer(asked)
+    return asked
+  }
+  return stored() ?? defaultLayer()
+}
+
+export const LayerContext = createContext<Layer>('drink')
+
+export function useLayer() {
+  return useContext(LayerContext)
+}

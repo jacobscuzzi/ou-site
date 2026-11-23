@@ -62,7 +62,8 @@ html.locked body {
 [data-lite] .card-rank,
 [data-lite] .notice,
 [data-lite] .thinking-panel,
-[data-lite] .lang,
+[data-lite] .layer-current,
+[data-lite] .layer-dot,
 [data-lite] .sheet,
 [data-lite] .citymap-control {
   -webkit-backdrop-filter: none;
@@ -236,7 +237,7 @@ html.locked body {
   touch-action: none;
 }
 
-.top :is(.search-pill, .lang, .chips, .bubble) {
+.top :is(.search-pill, .layer, .chips, .bubble) {
   pointer-events: auto;
 }
 
