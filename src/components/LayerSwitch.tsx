@@ -63,7 +63,7 @@ export default function LayerSwitch({ layer, layers, moved, onChange }: Props) {
         className={moved > 0 ? 'layer-current layer-moved' : 'layer-current'}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-controls="layer-menu"
+        aria-controls={open ? 'layer-menu' : undefined}
         aria-label={t.layerMenu(name)}
         aria-disabled={others.length === 0 || undefined}
         onClick={() => others.length > 0 && setOpen((o) => !o)}
@@ -82,8 +82,7 @@ export default function LayerSwitch({ layer, layers, moved, onChange }: Props) {
             <button
               key={l}
               type="button"
-              role="menuitemradio"
-              aria-checked={false}
+              role="menuitem"
               className="layer-option"
               style={{ '--i': i } as CSSProperties}
               tabIndex={-1}
