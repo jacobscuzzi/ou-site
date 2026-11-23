@@ -90,3 +90,11 @@ export function MapIcon({ size = 24 }: IconProps) {
     </svg>
   )
 }
+
+export function DownIcon({ size = 20 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size} strokeWidth={2.4}>
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  )
+}

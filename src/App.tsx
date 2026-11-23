@@ -15,7 +15,8 @@ import Sheet, { type SheetHeight } from './components/Sheet'
 import Chips from './components/Chips'
 import ExploreList from './components/ExploreList'
 import InstallHint from './components/InstallHint'
-import { BackIcon, MapIcon } from './components/icons'
+import { BackIcon, DownIcon, MapIcon } from './components/icons'
+import { useSheetHistory } from './sheetHistory'
 
 type MapProps = ComponentProps<typeof import('./components/CityMap').default>
 
@@ -86,6 +87,8 @@ export default function App() {
   layerRef.current = layer
   const mode: View = mapFailed ? 'search' : view
   const shownMode = useRef(mode)
+
+  useSheetHistory(sheet, () => setSheet('peek'))
 
   useEffect(() => {
     document.documentElement.lang = lang
@@ -433,6 +436,11 @@ export default function App() {
           padKey={`${sheet}:${query === null}`}
         />
       </Suspense>
+      {sheet !== 'peek' && (
+        <button type="button" className="sheet-down" onClick={() => setSheet('peek')} aria-label={t.backToMap}>
+          <DownIcon />
+        </button>
+      )}
       <Sheet
         height={sheet}
         onHeight={setSheet}
