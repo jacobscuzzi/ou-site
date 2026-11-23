@@ -1,6 +1,7 @@
 import { useState, type CSSProperties, type KeyboardEvent } from 'react'
 import type { Bar } from '../api/types'
-import { hintFor, useLang, useT } from '../i18n'
+import { cuisineLabel, hintFor, useLang, useT } from '../i18n'
+import { foodMode } from '../mode'
 import { price } from '../price'
 import { tagsFor } from '../tags'
 import BarDetail from './BarDetail'
@@ -13,7 +14,8 @@ type Props = { bar: Bar; index: number; selected?: boolean; defaultOpen?: boolea
 export default function BarCard({ bar, index, selected = false, defaultOpen = false, onSelect }: Props) {
   const [open, setOpen] = useState(defaultOpen)
   const t = useT()
-  const tags = tagsFor(bar, useLang())
+  const lang = useLang()
+  const tags = tagsFor(bar, lang)
 
   function toggle() {
     setOpen((o) => !o)
@@ -58,7 +60,11 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
               {open ? t.openTill(bar.openUntil) : t.till(bar.openUntil)}
             </span>
           )}
-          {bar.pintPrice !== null && (
+          {foodMode && bar.facts?.cuisine?.[0] && <span className="chip">{cuisineLabel(bar.facts.cuisine[0], lang)}</span>}
+          {foodMode && bar.facts?.pricePerPerson !== undefined && (
+            <span className="chip chip-pink">{t.perPerson(price(bar.facts.pricePerPerson))}</span>
+          )}
+          {!foodMode && bar.pintPrice !== null && (
             <span className="chip chip-pink">
               <span className="chip-icon"><BeerIcon /></span>
               {t.pint(price(bar.pintPrice))}

@@ -1,4 +1,7 @@
+import { foodMode } from '../mode'
 import type { ApiError, Bar, BarsResponse } from './types'
+
+const venue = foodMode ? 'restaurant' : null
 
 const useMock = import.meta.env.VITE_USE_MOCK === 'true'
 const baseUrl = useMock ? '' : (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
@@ -37,6 +40,7 @@ async function get<T>(path: string, fallback: () => Promise<T>, failures: Failur
 
 export function searchBars(q: string, signal?: AbortSignal) {
   const params = new URLSearchParams({ q })
+  if (venue) params.set('venue', venue)
   return get(`/api/search?${params}`, () => inPageMock(async () => (await import('../mocks/search')).mockSearch(q), signal), searchFailures, signal)
 }
 
@@ -51,7 +55,7 @@ export function moreBars(searchId: string, page: number, signal?: AbortSignal) {
 }
 
 export function fetchBars(signal?: AbortSignal) {
-  return get<BarsResponse>('/api/bars', () => inPageMock(async () => (await import('../mocks/bars')).mockBars(), signal), barsFailures, signal)
+  return get<BarsResponse>(venue ? `/api/bars?venue=${venue}` : '/api/bars',() => inPageMock(async () => (await import('../mocks/bars')).mockBars(), signal), barsFailures, signal)
 }
 
 export function fetchBar(id: string, signal?: AbortSignal) {
