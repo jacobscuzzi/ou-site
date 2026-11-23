@@ -15,7 +15,7 @@
   border: var(--border-1) solid var(--glass-border);
   box-shadow: var(--glass-edge), var(--hairline), var(--shadow-3);
   transform: translateX(-50%);
-  animation: install-in 0.32s var(--ease);
+  animation: install-in var(--panel-in-ms) var(--ease);
 }
 
 .install-icon {
