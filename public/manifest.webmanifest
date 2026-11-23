@@ -1,0 +1,17 @@
+{
+  "name": "où",
+  "short_name": "où",
+  "description": "Où sortir à Paris : bars, restos, clubs et cafés, trouvés à partir de ce que tu décris.",
+  "lang": "fr",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#D3227A",
+  "background_color": "#f7f6f4",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
