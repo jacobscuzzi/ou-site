@@ -1,5 +1,5 @@
-import type { Bar, BarsResponse, Layer, LayersResponse, MapBar } from '../api/types'
-import { available, catalog, inLayer, LAYERS, toBar, type MockPlace } from './catalog'
+import type { Bar, BarsResponse, Layer, LayersResponse, MapBar, Venue } from '../api/types'
+import { available, catalog, inLayer, LAYERS, places, toBar, type MockPlace } from './catalog'
 
 const vibes = ['lively', 'cosy', 'chic', 'party', 'laid_back']
 const musics = ['dj', 'jazz', 'techno', 'rock']
@@ -44,8 +44,8 @@ function toMapBar(p: MockPlace): MapBar {
   }
 }
 
-export function mockBars(layer: Layer | null = null): BarsResponse {
-  return { bars: inLayer(layer).map(toMapBar), updatedAt: new Date().toISOString(), ...(layer && { layer }) }
+export function mockBars(layer: Layer | null = null, venue: Venue = 'bar'): BarsResponse {
+  return { bars: places(layer, venue).map(toMapBar), updatedAt: new Date().toISOString(), ...(layer && { layer }) }
 }
 
 export function mockLayers(): LayersResponse {

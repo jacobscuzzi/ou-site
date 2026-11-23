@@ -1,6 +1,6 @@
-import type { Bar, Layer, Post } from '../api/types'
+import type { Bar, Layer, Post, Venue } from '../api/types'
 import bars from './bars.json'
-import places from './places.json'
+import extra from './places.json'
 
 export type MockPlace = Omit<Bar, 'compliant' | 'constraintsNotMet'> & { layers: Layer[] }
 
@@ -43,7 +43,7 @@ const drink: MockPlace[] = (bars as Omit<MockPlace, 'layers' | 'dishes' | 'posts
   layers: danceBars.has(b.id) ? ['drink', 'dance'] : ['drink'],
 }))
 
-export const catalog: MockPlace[] = [...drink, ...(places as MockPlace[])]
+export const catalog: MockPlace[] = [...drink, ...(extra as MockPlace[])]
 
 export const LAYERS: Layer[] = ['drink', 'eat', 'dance', 'coffee']
 
@@ -51,8 +51,30 @@ export function isLayer(v: string | null): v is Layer {
   return v !== null && (LAYERS as string[]).includes(v)
 }
 
-export function inLayer(layer: Layer | null) {
-  return catalog.filter((p) => p.layers.includes(layer ?? 'drink'))
+export function inLayer(layer: Layer) {
+  return catalog.filter((p) => p.layers.includes(layer))
+}
+
+export const VENUES: Venue[] = ['bar', 'restaurant', 'cafe', 'all']
+
+export function isVenue(v: string): v is Venue {
+  return (VENUES as string[]).includes(v)
+}
+
+function kindOf(p: MockPlace) {
+  if (p.layers.includes('drink')) return 'bar'
+  if (p.layers.includes('eat')) return 'restaurant'
+  if (p.layers.includes('coffee')) return 'cafe'
+  return 'club'
+}
+
+export function places(layer: Layer | null, venue: Venue) {
+  if (layer) return inLayer(layer)
+  if (venue === 'all') return catalog
+  return catalog.filter((p) => {
+    const kind = kindOf(p)
+    return kind === venue || (venue === 'bar' && kind === 'club')
+  })
 }
 
 export function available(layer: Layer) {

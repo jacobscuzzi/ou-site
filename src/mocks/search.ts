@@ -1,5 +1,5 @@
 import type { Bar, Layer, SearchResponse, Venue } from '../api/types'
-import { available, inBox, inLayer, toBar, wishLayer, type Box } from './catalog'
+import { available, inBox, places, toBar, wishLayer, type Box } from './catalog'
 import themes from './themes.json'
 
 type Theme = keyof typeof themes
@@ -40,9 +40,9 @@ const searches = new Map<string, Stored>()
 const FIRST = 5
 const PAGE = 10
 
-function rank(q: string, layer: Layer | null): Bar[] {
-  const pool = inLayer(layer).map(toBar)
-  if (layer !== null && layer !== 'drink') return [...pool].sort((a, b) => Number(Boolean(b.facts)) - Number(Boolean(a.facts)))
+function rank(q: string, layer: Layer | null, venue: Venue): Bar[] {
+  const pool = places(layer, venue).map(toBar)
+  if ((layer !== null && layer !== 'drink') || (layer === null && venue !== 'bar')) return [...pool].sort((a, b) => Number(Boolean(b.facts)) - Number(Boolean(a.facts)))
   const theme = pickTheme(q)
   const ids = themes[theme].length ? themes[theme] : themes.student
   const picked = ids.map((id) => pool.find((b) => b.id === id)).filter((b): b is Bar => Boolean(b))
@@ -73,7 +73,7 @@ export function mockSearch(q: string, layer: Layer | null = null, box: Box | nul
   const wish = layer && wishLayer(q)
   const switched = Boolean(wish && wish !== layer && available(wish))
   const searched = switched ? wish : layer
-  const ranked = rank(q, searched)
+  const ranked = rank(q, searched, venue)
     .filter((b) => !box || inBox(b, box))
     .map((b, i) => ({ ...b, rank: i + 1 }))
   const searchId = Math.random().toString(36).slice(2)
