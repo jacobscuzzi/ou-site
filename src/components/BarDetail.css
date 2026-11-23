@@ -18,6 +18,22 @@
   transition: opacity 0.3s var(--ease);
 }
 
+.detail-photos {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.detail-photo {
+  flex: none;
+  width: var(--strip-photo);
+  height: var(--strip-photo);
+  border-radius: var(--radius-photo);
+  scroll-snap-align: start;
+}
+
 .detail-open .detail {
   padding-top: var(--space-1);
   padding-bottom: var(--space-2);
