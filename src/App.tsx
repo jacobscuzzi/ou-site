@@ -96,7 +96,7 @@ export default function App() {
   const mode: View = mapFailed ? 'search' : view
   const shownMode = useRef(mode)
 
-  useSheetHistory(sheet, () => setSheet('peek'))
+  useSheetHistory(sheet, mode === 'map', () => setSheet('peek'))
 
   useEffect(() => {
     document.documentElement.lang = lang

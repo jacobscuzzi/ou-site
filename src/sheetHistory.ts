@@ -3,20 +3,21 @@ import type { SheetHeight } from './components/Sheet'
 
 const desktop = '(min-width: 768px)'
 
-export function useSheetHistory(height: SheetHeight, collapse: () => void) {
+export function useSheetHistory(height: SheetHeight, shown: boolean, collapse: () => void) {
   const pushed = useRef(false)
   const latest = useRef(collapse)
   latest.current = collapse
 
   useEffect(() => {
-    if (height !== 'peek' && !pushed.current && !window.matchMedia(desktop).matches) {
+    const open = shown && height !== 'peek' && !window.matchMedia(desktop).matches
+    if (open && !pushed.current) {
       history.pushState({ sheet: height }, '')
       pushed.current = true
-    } else if (height === 'peek' && pushed.current) {
+    } else if (!open && pushed.current) {
       pushed.current = false
       history.back()
     }
-  }, [height])
+  }, [height, shown])
 
   useEffect(() => {
     const pop = () => {
