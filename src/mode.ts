@@ -59,13 +59,13 @@ function stored(): Layer | null {
   }
 }
 
-export function initialLayer(): Layer {
+export function initialLayer(): { layer: Layer; asked: boolean } {
   const asked = fromUrl()
   if (asked) {
     rememberLayer(asked)
-    return asked
+    return { layer: asked, asked: true }
   }
-  return stored() ?? defaultLayer()
+  return { layer: stored() ?? defaultLayer(), asked: false }
 }
 
 export const LayerContext = createContext<Layer>('drink')

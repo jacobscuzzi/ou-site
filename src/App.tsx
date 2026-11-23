@@ -35,7 +35,9 @@ const BARS_RETRIES = 6
 const BARS_RETRY_DELAY = 5000
 const BARS_TIMEOUT = 10000
 const QUIET_MS = 900
-const LAYERS_RETRIES = 3
+const LAYERS_RETRIES = 2
+const LAYERS_RETRY_DELAY = 1500
+const LAYERS_TIMEOUT = 5000
 const lang = initialLang()
 const desktop = '(min-width: 768px)'
 
@@ -48,7 +50,8 @@ function initialView(): View {
 }
 
 export default function App() {
-  const [layer, setLayer] = useState<Layer>(initialLayer)
+  const [start] = useState(initialLayer)
+  const [layer, setLayer] = useState<Layer>(start.layer)
   const [layers, setLayers] = useState<Layer[] | null>(null)
   const [moved, setMoved] = useState(0)
   const [value, setValue] = useState('')
@@ -85,6 +88,7 @@ export default function App() {
   const returnFocus = useRef<string | null>(null)
   const quietUntil = useRef(0)
   const t = strings[layer][lang]
+  const ready = layers !== null
   const layerRef = useRef(layer)
   layerRef.current = layer
   const areaRef = useRef(area)
@@ -100,27 +104,38 @@ export default function App() {
 
   useEffect(() => {
     const ctrl = new AbortController()
+    const fallback: Layer[] = start.asked && start.layer !== 'drink' ? ['drink', start.layer] : ['drink']
     let tries = 0
     let timer = 0
-    const load = () =>
-      fetchLayers(ctrl.signal)
-        .then((res) => setLayers(res.layers.filter((l) => l.available).map((l) => l.id)))
-        .catch((err: Error) => {
-          if (err.name === 'AbortError') return
+    const settle = (list: Layer[]) => {
+      const offered = list.length > 0 ? list : fallback
+      setLayers(offered)
+      if (!offered.includes(layerRef.current)) applyLayer('drink')
+    }
+    const load = () => {
+      const attemptCtrl = new AbortController()
+      const abort = () => attemptCtrl.abort()
+      const limit = window.setTimeout(abort, LAYERS_TIMEOUT)
+      ctrl.signal.addEventListener('abort', abort)
+      fetchLayers(attemptCtrl.signal)
+        .then((res) => !ctrl.signal.aborted && settle(res.layers.filter((l) => l.available).map((l) => l.id)))
+        .catch(() => {
+          if (ctrl.signal.aborted) return
           tries += 1
-          if (tries < LAYERS_RETRIES) timer = window.setTimeout(load, BARS_RETRY_DELAY)
-          else setLayers([])
+          if (tries < LAYERS_RETRIES) timer = window.setTimeout(load, LAYERS_RETRY_DELAY)
+          else settle([])
         })
+        .finally(() => {
+          window.clearTimeout(limit)
+          ctrl.signal.removeEventListener('abort', abort)
+        })
+    }
     load()
     return () => {
       window.clearTimeout(timer)
       ctrl.abort()
     }
   }, [])
-
-  useEffect(() => {
-    if (layers && layers.length > 0 && !layers.includes(layer)) setLayer('drink')
-  }, [layers, layer])
 
   useEffect(() => {
     try {
@@ -177,15 +192,20 @@ export default function App() {
     }
     setBarsState('loading')
     setBarsWarming(false)
+    if (!ready) return
     load()
     return () => {
       window.clearTimeout(timer)
       ctrl.abort()
     }
-  }, [barsAttempt, layer])
+  }, [barsAttempt, layer, ready])
 
   useEffect(() => {
     if (query === null) return
+    if (!ready) {
+      setLoading(true)
+      return
+    }
     abortRef.current?.abort()
     const ctrl = new AbortController()
     abortRef.current = ctrl
@@ -225,7 +245,7 @@ export default function App() {
       clearTimeout(timer)
       ctrl.abort()
     }
-  }, [query, attempt])
+  }, [query, attempt, ready])
 
   useEffect(() => {
     if (!reveal) return
@@ -411,7 +431,7 @@ export default function App() {
   }
 
   const heading = <h1 className="visually-hidden" tabIndex={-1}>où, {t.tagline}</h1>
-  const offered = layers && layers.length > 0 ? layers : [layer]
+  const offered = layers ?? [layer]
   const layerSwitch = <LayerSwitch layer={layer} layers={offered} moved={moved} onChange={chooseLayer} />
   const searchBar = (onHome: () => void, homeLabel: string) => (
     <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={onHome} homeLabel={homeLabel}>
