@@ -1,7 +1,5 @@
-import { foodMode } from '../mode'
-import type { ApiError, Bar, BarsResponse } from './types'
-
-const venue = foodMode ? 'restaurant' : null
+import type { Bounds } from '../map/geo'
+import type { ApiError, Bar, BarsResponse, Layer, LayersResponse, SearchResponse } from './types'
 
 const useMock = import.meta.env.VITE_USE_MOCK === 'true'
 const baseUrl = useMock ? '' : (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
@@ -19,6 +17,7 @@ type Failures = { label: string; names: Record<number, string> }
 
 const searchFailures: Failures = { label: 'Search', names: { 410: 'SearchExpired' } }
 const barsFailures: Failures = { label: 'Bars', names: { 503: 'BarsLoading' } }
+const layersFailures: Failures = { label: 'Layers', names: {} }
 const barFailures: Failures = { label: 'Bar', names: { 404: 'BarNotFound', 503: 'BarsLoading' } }
 
 async function get<T>(path: string, fallback: () => Promise<T>, failures: Failures, signal?: AbortSignal): Promise<T> {
@@ -38,15 +37,29 @@ async function get<T>(path: string, fallback: () => Promise<T>, failures: Failur
   return res.json()
 }
 
-export function searchBars(q: string, signal?: AbortSignal) {
-  const params = new URLSearchParams({ q })
-  if (venue) params.set('venue', venue)
-  return get(`/api/search?${params}`, () => inPageMock(async () => (await import('../mocks/search')).mockSearch(q), signal), searchFailures, signal)
+function bboxParam(b: Bounds) {
+  return [b.minLng, b.minLat, b.maxLng, b.maxLat].map((n) => n.toFixed(5)).join(',')
+}
+
+export function searchBars(q: string, layer: Layer, bbox: Bounds | null, signal?: AbortSignal) {
+  const params = new URLSearchParams({ q, layer })
+  if (bbox) params.set('bbox', bboxParam(bbox))
+  return get<SearchResponse>(
+    `/api/search?${params}`,
+    () =>
+      inPageMock(async () => {
+        const { mockSearch } = await import('../mocks/search')
+        const box = bbox && ([bbox.minLng, bbox.minLat, bbox.maxLng, bbox.maxLat] as [number, number, number, number])
+        return mockSearch(q, layer, box)
+      }, signal),
+    searchFailures,
+    signal,
+  )
 }
 
 export function moreBars(searchId: string, page: number, signal?: AbortSignal) {
   const params = new URLSearchParams({ page: String(page) })
-  return get(
+  return get<SearchResponse>(
     `/api/search/${encodeURIComponent(searchId)}/more?${params}`,
     () => inPageMock(async () => (await import('../mocks/search')).mockMore(searchId, page), signal),
     searchFailures,
@@ -54,8 +67,12 @@ export function moreBars(searchId: string, page: number, signal?: AbortSignal) {
   )
 }
 
-export function fetchBars(signal?: AbortSignal) {
-  return get<BarsResponse>(venue ? `/api/bars?venue=${venue}` : '/api/bars',() => inPageMock(async () => (await import('../mocks/bars')).mockBars(), signal), barsFailures, signal)
+export function fetchBars(layer: Layer, signal?: AbortSignal) {
+  return get<BarsResponse>(`/api/bars?layer=${layer}`, () => inPageMock(async () => (await import('../mocks/bars')).mockBars(layer), signal), barsFailures, signal)
+}
+
+export function fetchLayers(signal?: AbortSignal) {
+  return get<LayersResponse>('/api/layers', () => inPageMock(async () => (await import('../mocks/bars')).mockLayers(), signal), layersFailures, signal)
 }
 
 export function fetchBar(id: string, signal?: AbortSignal) {

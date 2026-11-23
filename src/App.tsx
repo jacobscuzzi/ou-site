@@ -3,6 +3,8 @@ import { fetchBars, moreBars, searchBars } from './api/client'
 import type { Bar, MapBar } from './api/types'
 import { initialLang, LangContext, strings, type Lang } from './i18n'
 import { foodMode } from './mode'
+
+const layer = foodMode ? 'eat' : 'drink'
 import { tick } from './haptic'
 import { topInView, type Bounds, type ChipKey } from './map/geo'
 import Logo from './components/Logo'
@@ -128,7 +130,7 @@ export default function App() {
         abort()
       }, BARS_TIMEOUT)
       ctrl.signal.addEventListener('abort', abort)
-      fetchBars(attemptCtrl.signal)
+      fetchBars(layer, attemptCtrl.signal)
         .then((res) => {
           if (res.bars.length === 0) return retry()
           setMapBars(res.bars)
@@ -171,7 +173,7 @@ export default function App() {
     setLoadingMore(false)
     setMoreError(null)
 
-    searchBars(query, ctrl.signal)
+    searchBars(query, layer, null, ctrl.signal)
       .then((res) => {
         setBars(res.results)
         setSearchId(res.searchId)
@@ -232,7 +234,7 @@ export default function App() {
         res = await moreBars(searchId, next, ctrl.signal)
       } catch (err) {
         if ((err as Error).name !== 'SearchExpired') throw err
-        const fresh = await searchBars(query, ctrl.signal)
+        const fresh = await searchBars(query, layer, null, ctrl.signal)
         setSearchId(fresh.searchId)
         res = await moreBars(fresh.searchId, next, ctrl.signal)
       }
