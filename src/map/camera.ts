@@ -60,11 +60,36 @@ export function focusOn(map: MaplibreMap, at: Point, timing: CameraTiming) {
   })
 }
 
+// Share of the map above the sheet that stays free for the results, however much room the
+// controls and bubble margins ask for. The sheet itself is never squeezed: it covers the map.
+const MIN_FIT_SHARE = 0.5
+
+function squeeze(a: number, b: number, size: number): [number, number] {
+  const room = size * (1 - MIN_FIT_SHARE)
+  if (a + b <= room || a + b === 0) return [a, b]
+  const k = room / (a + b)
+  return [a * k, b * k]
+}
+
+function sheetHeight(map: MaplibreMap): number {
+  const probe = document.createElement('div')
+  probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;height:var(--sheet-now, 0px)'
+  map.getContainer().appendChild(probe)
+  const h = probe.getBoundingClientRect().height
+  probe.remove()
+  return h
+}
+
 export function fitTo(map: MaplibreMap, b: Bounds, timing: CameraTiming) {
   const p = padding(map)
   const extra = timing.comfort
+  const box = map.getContainer()
+  const sheet = Math.min(sheetHeight(map), p.bottom)
+  const [top, above] = squeeze(p.top + extra, p.bottom - sheet + extra, box.clientHeight - sheet)
+  const bottom = sheet + above
+  const [left, right] = squeeze(p.left + extra, p.right + extra, box.clientWidth)
   map.fitBounds(lngLatBounds(b), {
-    padding: { top: p.top + extra, bottom: p.bottom + extra, left: p.left + extra, right: p.right + extra },
+    padding: { top, bottom, left, right },
     maxZoom: STREET_ZOOM,
     duration: timing.fit,
     easing: easeOut,
