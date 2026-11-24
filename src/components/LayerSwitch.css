@@ -5,26 +5,33 @@
 
 .layer-current,
 .layer-dot {
+  position: relative;
   display: grid;
   place-items: center;
   width: var(--control-size);
   height: var(--control-size);
   border-radius: var(--radius-pill);
-  background: var(--glass-pill);
-  -webkit-backdrop-filter: var(--blur-3);
-  backdrop-filter: var(--blur-3);
-  border: var(--border-1) solid var(--glass-border);
-  box-shadow: var(--glass-edge), var(--hairline), var(--shadow-2);
+  background: var(--glass-lens);
+  -webkit-backdrop-filter: var(--blur-lens);
+  backdrop-filter: var(--blur-lens);
+  border: var(--border-1) solid var(--glass-border-strong);
+  box-shadow: var(--glass-lens-edge), var(--hairline), var(--shadow-lens);
+  overflow: hidden;
 }
 
-.layer-current,
-.layer-dot {
-  background: var(--glass-bubble);
+.layer-current::before,
+.layer-dot::before {
+  content: '';
+  position: absolute;
+  inset: var(--border-1) 12% 52%;
+  border-radius: var(--radius-pill);
+  background: var(--glass-lens-shine);
+  pointer-events: none;
 }
 
 .layer-current[aria-expanded='true'] {
   border-color: var(--pink);
-  box-shadow: var(--glass-edge), var(--hairline), var(--focus-ring), var(--shadow-2);
+  box-shadow: var(--glass-lens-edge), var(--hairline), var(--focus-ring), var(--shadow-lens);
 }
 
 .layer-current[aria-disabled='true'] {
@@ -32,8 +39,10 @@
 }
 
 .layer-emoji {
+  position: relative;
   font-size: var(--layer-emoji);
   line-height: 1;
+  filter: var(--shadow-emoji);
 }
 
 .layer-menu {
@@ -60,8 +69,11 @@
 .layer-name {
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-pill);
-  background: var(--glass-bubble);
-  box-shadow: var(--shadow-2);
+  background: var(--glass-lens-label);
+  -webkit-backdrop-filter: var(--blur-lens);
+  backdrop-filter: var(--blur-lens);
+  border: var(--border-1) solid var(--glass-border-strong);
+  box-shadow: var(--glass-lens-edge), var(--shadow-lens);
   font-size: var(--text-sm);
   font-weight: 600;
   color: var(--ink);
@@ -76,7 +88,7 @@
 .layer-current:focus-visible,
 .layer-option:focus-visible .layer-dot {
   border-color: var(--pink);
-  box-shadow: var(--glass-edge), var(--focus-ring), var(--shadow-2);
+  box-shadow: var(--glass-lens-edge), var(--focus-ring), var(--shadow-lens);
 }
 
 .layer-option:hover .layer-dot {
