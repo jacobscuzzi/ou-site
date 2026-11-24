@@ -4,6 +4,7 @@ import { useLayer } from '../mode'
 import { price } from '../price'
 import { labelFor, tagsFor } from '../tags'
 import { BeerIcon, ClockIcon } from './icons'
+import KindBadge from './KindBadge'
 
 const coffeeItem = /espresso|expresso|caf[eé]|coffee|filtre|filter|flat white|cappuccino|latte/
 const specialty = /specialty|spécialité|roaster|torréfact/i
@@ -46,6 +47,7 @@ export default function CardChips({ bar, open }: { bar: Bar; open: boolean }) {
 
   return (
     <div className="card-chips">
+      <KindBadge kinds={bar.kinds} />
       {bar.openUntil && (
         <span className="chip">
           <span className="chip-icon"><ClockIcon /></span>

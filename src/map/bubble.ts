@@ -1,5 +1,6 @@
 import { Marker, type Map as MaplibreMap } from 'maplibre-gl'
 import type { Bar, MapBar } from '../api/types'
+import type { DanceKind } from '../kind'
 import { cleanName, stablePick } from './geo'
 
 export type BubbleSize = 'lg' | 'md' | 'sm'
@@ -12,6 +13,7 @@ export type BubbleSpec = {
   photo?: string
   rank?: number
   size: BubbleSize
+  kind?: DanceKind | null
 }
 
 type Item = { marker: Marker; el: HTMLButtonElement; photo: HTMLSpanElement; name: HTMLSpanElement }
@@ -28,7 +30,7 @@ function still() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches || 'lite' in document.documentElement.dataset
 }
 
-export function resultSpecs(results: Bar[]): BubbleSpec[] {
+export function resultSpecs(results: Bar[], kindOf: (kinds: string[] | undefined) => DanceKind | null): BubbleSpec[] {
   return results.map((bar) => ({
     id: bar.id,
     name: bar.name,
@@ -37,16 +39,23 @@ export function resultSpecs(results: Bar[]): BubbleSpec[] {
     photo: bar.photos[0],
     rank: bar.rank,
     size: bar.rank <= TOP_RANKS ? 'lg' : 'sm',
+    kind: kindOf(bar.kinds),
   }))
 }
 
-export function exploreSpecs(map: MaplibreMap, visible: MapBar[], previous: readonly string[], gap: number): BubbleSpec[] {
+export function exploreSpecs(
+  map: MaplibreMap,
+  visible: MapBar[],
+  previous: readonly string[],
+  gap: number,
+  kindOf: (kinds: string[] | undefined) => DanceKind | null,
+): BubbleSpec[] {
   const at = (bar: MapBar) => map.project([bar.lng, bar.lat])
   const byId = new Map(visible.map((bar) => [bar.id, bar]))
   return stablePick(visible, previous, at, EXPLORE_MAX, gap).flatMap((id) => {
     const bar = byId.get(id)
     if (!bar) return []
-    return { id, name: bar.name, lat: bar.lat, lng: bar.lng, photo: bar.cover, size: 'md' as const }
+    return { id, name: bar.name, lat: bar.lat, lng: bar.lng, photo: bar.cover, size: 'md' as const, kind: kindOf(bar.kinds) }
   })
 }
 
@@ -132,6 +141,8 @@ export class BubbleLayer {
       }
       item.name.textContent = cleanName(spec.name)
       item.el.dataset.size = spec.size
+      if (spec.kind) item.el.dataset.kind = spec.kind
+      else delete item.el.dataset.kind
       item.el.setAttribute('aria-label', spec.rank === undefined ? spec.name : `${spec.rank}. ${spec.name}`)
       fillBadge(item.el, spec.rank)
     }

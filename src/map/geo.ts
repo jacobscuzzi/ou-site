@@ -110,6 +110,7 @@ export function barsToGeoJSON(bars: MapBar[]): GeoJSON.FeatureCollection<GeoJSON
         dancing: flag(checks.dancing(bar)),
         cheap: flag(checks.cheap(bar)),
         top: flag(bar.quality >= threshold),
+        club: flag(bar.kinds?.includes('club') === true),
       },
     })),
   }

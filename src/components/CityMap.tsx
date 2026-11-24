@@ -13,6 +13,8 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Bar, MapBar } from '../api/types'
 import { useT } from '../i18n'
+import { danceKind } from '../kind'
+import { useLayer } from '../mode'
 import { barsToGeoJSON, boundsOf, chipFilter, passes, PARIS, type Bounds, type ChipKey } from '../map/geo'
 import { BubbleLayer, exploreSpecs, resultSpecs } from '../map/bubble'
 import { focusOn, fitTo, glideTo, inView, lngLatBounds, padding, type CameraTiming } from '../map/camera'
@@ -58,6 +60,7 @@ function readTokens() {
   return {
     dot: str('--dot'),
     dotTop: str('--dot-top'),
+    dotClub: str('--dot-club'),
     stroke: str('--dot-stroke'),
     selected: str('--dot-selected'),
     rMin: num('--dot-r-min'),
@@ -123,7 +126,7 @@ function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[]) {
     type: 'circle',
     source: 'bars',
     paint: {
-      'circle-color': ['case', top, tk.dotTop, tk.dot],
+      'circle-color': ['case', ['==', ['get', 'club'], 1], tk.dotClub, top, tk.dotTop, tk.dot],
     },
   })
   map.addLayer({
@@ -221,12 +224,16 @@ function clearBounds(map: MaplibreMap): Bounds {
 export default function CityMap(props: Props) {
   const { bars, results, chips, selectedId, highlightId, active, fitKey, anchorKey, padKey } = props
   const t = useT()
+  const layer = useLayer()
+  const kindOf = (kinds: string[] | undefined) => danceKind(kinds, layer)
   const el = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MaplibreMap | null>(null)
   const tokens = useRef<Tokens | null>(null)
   const ready = useRef(false)
   const latest = useRef(props)
   latest.current = props
+  const latestKind = useRef(kindOf)
+  latestKind.current = kindOf
   const bubbles = useRef<BubbleLayer | null>(null)
   const exploreIds = useRef<string[]>([])
   const pressed = useRef(new Set<number>())
@@ -269,7 +276,7 @@ export default function CityMap(props: Props) {
     const p = latest.current
     if (p.results.length > 0) {
       exploreIds.current = []
-      layer.sync(resultSpecs(p.results), lookOf(p))
+      layer.sync(resultSpecs(p.results, latestKind.current), lookOf(p))
       return applyFilter(map, p.chips, layer.ids())
     }
     if (map.isMoving() || pressed.current.size > 0) {
@@ -280,7 +287,7 @@ export default function CityMap(props: Props) {
     const loose = { ...pad, left: 0, right: 0 }
     const kept = new Set(exploreIds.current)
     const visible = p.bars.filter((bar) => passes(bar, p.chips) && inView(map, bar, kept.has(bar.id) ? loose : pad))
-    layer.sync(exploreSpecs(map, visible, exploreIds.current, tokens.current.bubbleGap), lookOf(p))
+    layer.sync(exploreSpecs(map, visible, exploreIds.current, tokens.current.bubbleGap, latestKind.current), lookOf(p))
     exploreIds.current = layer.ids()
     applyFilter(map, p.chips, layer.ids())
   }

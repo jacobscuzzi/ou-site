@@ -2,7 +2,7 @@ import type { Bar, Layer, Post, Venue } from '../api/types'
 import bars from './bars.json'
 import extra from './places.json'
 
-export type MockPlace = Omit<Bar, 'compliant' | 'constraintsNotMet'> & { layers: Layer[] }
+export type MockPlace = Omit<Bar, 'compliant' | 'constraintsNotMet' | 'kinds'> & { layers: Layer[] }
 
 const danceBars = new Set([
   'red-factory-paris',
@@ -61,7 +61,7 @@ export function isVenue(v: string): v is Venue {
   return (VENUES as string[]).includes(v)
 }
 
-function kindOf(p: MockPlace) {
+export function kindOf(p: MockPlace) {
   if (p.layers.includes('drink')) return 'bar'
   if (p.layers.includes('eat')) return 'restaurant'
   if (p.layers.includes('coffee')) return 'cafe'
@@ -81,8 +81,9 @@ export function available(layer: Layer) {
   return layer !== 'coffee' || new URLSearchParams(location.search).has('mock-coffee')
 }
 
-export function toBar({ layers: _, ...p }: MockPlace): Bar {
-  return { ...p, compliant: true, constraintsNotMet: [] }
+export function toBar(place: MockPlace): Bar {
+  const { layers: _, ...p } = place
+  return { ...p, kinds: [kindOf(place)], compliant: true, constraintsNotMet: [] }
 }
 
 const wishes: [Layer, RegExp][] = [

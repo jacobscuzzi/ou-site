@@ -73,6 +73,7 @@ export type Bar = {
   pintPrice: number | null
   happyHour: HappyHour | null
   openUntil: string | null
+  kinds: string[]
   googleMapsUrl: string
   sources: { type: SourceType; url: string }[]
   compliant: boolean
@@ -107,6 +108,7 @@ export type MapBar = {
   quality: number
   pintPrice: number | null
   openUntil: string | null
+  kinds: string[]
   tags: string[]
   terrace?: boolean
   dancing?: boolean

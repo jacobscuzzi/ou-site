@@ -4,6 +4,7 @@ import { useLayer } from '../mode'
 import { price } from '../price'
 import { labelFor } from '../tags'
 import { BeerIcon, ClockIcon } from './icons'
+import KindBadge from './KindBadge'
 import Photo from './Photo'
 import './ExploreList.css'
 
@@ -38,6 +39,7 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
           <span className="xrow-arr">{bar.arrondissement}</span>
         </span>
         <span className="xrow-chips">
+          <KindBadge kinds={bar.kinds} />
           {bar.openUntil && (
             <span className="chip">
               <span className="chip-icon"><ClockIcon /></span>

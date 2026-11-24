@@ -1,5 +1,5 @@
 import type { Bar, BarsResponse, Layer, LayersResponse, MapBar, Venue } from '../api/types'
-import { available, catalog, inLayer, LAYERS, places, toBar, type MockPlace } from './catalog'
+import { available, catalog, inLayer, kindOf, LAYERS, places, toBar, type MockPlace } from './catalog'
 
 const vibes = ['lively', 'cosy', 'chic', 'party', 'laid_back']
 const musics = ['dj', 'jazz', 'techno', 'rock']
@@ -35,6 +35,7 @@ function toMapBar(p: MockPlace): MapBar {
     quality: Math.round((0.2 + ((i * 7) % 15) * 0.05) * 100) / 100,
     pintPrice: i % 15 === 4 ? null : p.pintPrice,
     openUntil: i % 2 === 1 ? null : p.openUntil,
+    kinds: [kindOf(p)],
     tags,
     ...(terrace && { terrace: true }),
     ...(dancing && { dancing: true }),

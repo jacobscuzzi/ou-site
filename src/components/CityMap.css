@@ -64,6 +64,10 @@
   transition: box-shadow 0.25s var(--ease);
 }
 
+.spot[data-kind='club'] .spot-body {
+  background: var(--bubble-club);
+}
+
 .spot-photo {
   display: flex;
   align-items: center;

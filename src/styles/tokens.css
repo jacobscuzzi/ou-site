@@ -45,6 +45,11 @@
   --ink-2: #6e6e76;
   --ink-3: #3a3a40;
   --chip: rgba(255, 255, 255, 0.55);
+  --chip-height: 26px;
+  --kind-club: var(--ink);
+  --on-kind-club: var(--surface);
+  --kind-bar: var(--ink-3);
+  --kind-border: 1.5px;
   --line: rgba(17, 17, 20, 0.06);
   --outline: rgba(17, 17, 20, 0.05);
 
@@ -121,6 +126,7 @@
   --metro-label-size: var(--text-chip);
   --dot: var(--rose);
   --dot-top: var(--pink);
+  --dot-club: var(--kind-club);
   --dot-stroke: var(--rose-deep);
   --dot-selected: var(--ink);
   --dot-r-min: 3px;
@@ -150,6 +156,7 @@
   --bubble-badge-border: 2px;
   --bubble-letter: 0.4;
   --bubble-gradient: linear-gradient(135deg, var(--pink), var(--coral));
+  --bubble-club: var(--kind-club);
   --bubble-pulse: 1.08;
   --bubble-selected-scale: 1.2;
   --bubble-period: 2.8s;
