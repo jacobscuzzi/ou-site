@@ -137,3 +137,29 @@
   font-size: var(--text-sm);
   color: var(--ink-2);
 }
+
+.xrow-item {
+  position: relative;
+}
+
+.xrow-item-cta .xrow {
+  padding-bottom: calc(var(--action-compact) + var(--space-3));
+}
+
+.xrow-cta .action {
+  min-height: var(--action-compact);
+  padding: 0 var(--space-3);
+  font-size: var(--text-xs);
+}
+
+.xrow-cta {
+  position: absolute;
+  right: var(--space-3);
+  bottom: var(--space-2);
+}
+
+.chip-deal {
+  background: var(--pink-gradient);
+  color: var(--on-pink);
+  font-weight: 700;
+}

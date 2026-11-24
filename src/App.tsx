@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ComponentProps, type ComponentType, type FocusEvent } from 'react'
-import { fetchBars, fetchLayers, moreBars, searchBars } from './api/client'
-import type { Bar, Layer, MapBar } from './api/types'
+import { fetchBars, fetchDays, fetchEvents, fetchLayers, moreBars, searchBars } from './api/client'
+import type { Bar, Event, Layer, MapBar } from './api/types'
 import { initialLang, LangContext, strings } from './i18n'
 import { initialLayer, LayerContext, rememberLayer } from './mode'
 import { tick } from './haptic'
@@ -15,6 +15,10 @@ import Sheet, { type SheetHeight } from './components/Sheet'
 import Chips from './components/Chips'
 import ExploreList from './components/ExploreList'
 import InstallHint from './components/InstallHint'
+import DayStrip, { NightToggle } from './components/DayStrip'
+import MonthSheet from './components/MonthSheet'
+import EventList from './components/EventList'
+import { initialDate, longDay, nights, sameNight, shortDate, STRIP_DAYS, tonight, weekend, writeDate, type Night } from './night'
 import { BackIcon, DownIcon, MapIcon, SearchIcon } from './components/icons'
 import { useSheetHistory } from './sheetHistory'
 
@@ -28,6 +32,9 @@ function MapUnavailable({ onFail }: MapProps) {
 const CityMap = lazy<ComponentType<MapProps>>(() => import('./components/CityMap').catch(() => ({ default: MapUnavailable })))
 
 type View = 'map' | 'search'
+
+const one = (day: string): Night => ({ from: day, to: day })
+const nightLayer = (l: Layer) => l === 'dance' || l === 'drink'
 
 const NO_RESULTS: Bar[] = []
 const VIEW_KEY = 'ou-view'
@@ -82,6 +89,13 @@ export default function App() {
   const [placeOpened, setPlaceOpened] = useState(false)
   const [stray, setStray] = useState(false)
   const [area, setArea] = useState<Bounds | null>(null)
+  const [night, setNight] = useState<Night | null>(() => (start.layer === 'dance' ? one(initialDate() ?? tonight()) : null))
+  const [counts, setCounts] = useState<Record<string, number> | null>(null)
+  const [nightEvents, setNightEvents] = useState<Event[]>([])
+  const [eventsState, setEventsState] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [eventsAttempt, setEventsAttempt] = useState(0)
+  const [monthOpen, setMonthOpen] = useState(false)
+  const stripStart = tonight()
   const abortRef = useRef<AbortController | null>(null)
   const moreRef = useRef<AbortController | null>(null)
   const [reveal, setReveal] = useState<{ id: string; n: number } | null>(null)
@@ -229,6 +243,10 @@ export default function App() {
           applyLayer(res.layer)
           setMoved((n) => n + 1)
         }
+        const range = res.meta.dateRange
+        const searched = res.layer ?? layerRef.current
+        if (range && searched === 'dance') setNight(one(range.from))
+        else if (range && searched === 'drink') setNight(range)
         setBars(res.results)
         setSearchId(res.searchId)
         setHasMore(res.hasMore)
@@ -246,6 +264,34 @@ export default function App() {
       ctrl.abort()
     }
   }, [query, attempt, ready])
+
+  useEffect(() => {
+    if (!ready || layer !== 'dance') return
+    const ctrl = new AbortController()
+    fetchDays('dance', stripStart, nights(stripStart, STRIP_DAYS)[STRIP_DAYS - 1], ctrl.signal)
+      .then((res) => setCounts(Object.fromEntries(res.days.map((d) => [d.date, d.count]))))
+      .catch(() => undefined)
+    return () => ctrl.abort()
+  }, [layer, ready, stripStart])
+
+  useEffect(() => {
+    if (!ready || !night || !nightLayer(layer)) return
+    const ctrl = new AbortController()
+    setEventsState('loading')
+    fetchEvents(layer, night.from, night.to, ctrl.signal)
+      .then((res) => {
+        setNightEvents(res.events)
+        setEventsState('ready')
+      })
+      .catch((err: Error) => {
+        if (err.name !== 'AbortError') setEventsState('error')
+      })
+    return () => ctrl.abort()
+  }, [layer, night?.from, night?.to, ready, eventsAttempt])
+
+  useEffect(() => {
+    writeDate(layer === 'dance' && night && night.from === night.to && night.from !== tonight() ? night.from : null)
+  }, [layer, night])
 
   useEffect(() => {
     if (!reveal) return
@@ -342,6 +388,7 @@ export default function App() {
 
   function applyLayer(next: Layer) {
     setLayer(next)
+    setNight((n) => (next === 'dance' ? (n && n.from === n.to ? n : one(tonight())) : null))
     setChips((prev) => new Set([...prev].filter((c) => layerChips[next].includes(c))))
   }
 
@@ -392,6 +439,40 @@ export default function App() {
   }
 
   const top = useMemo(() => topInView(mapBars, bounds, chips), [mapBars, bounds, chips])
+  const showNight = night !== null && nightLayer(layer)
+  const nightIds = useMemo(
+    () => (showNight && eventsState === 'ready' ? new Set(nightEvents.map((e) => e.placeId)) : null),
+    [showNight, eventsState, nightEvents],
+  )
+  const kindsOf = (id: string) => mapBars.find((b) => b.id === id)?.kinds ?? []
+  const stripDays = useMemo(() => {
+    const days = nights(stripStart, STRIP_DAYS)
+    return night && night.from === night.to && !days.includes(night.from) && night.from > stripStart ? [...days, night.from] : days
+  }, [stripStart, night])
+
+  function nightTitle() {
+    if (!night) return ''
+    const when =
+      night.from === night.to
+        ? night.from === tonight()
+          ? t.whenTonight
+          : t.whenOn(longDay(night.from, lang))
+        : sameNight(night, weekend())
+          ? t.whenWeekend
+          : `${shortDate(night.from, lang)} – ${shortDate(night.to, lang)}`
+    return eventsState === 'ready' ? t.eventsTitle(when, nightEvents.length) : when.charAt(0).toUpperCase() + when.slice(1)
+  }
+
+  function pickNight(n: Night | null) {
+    setNight(n)
+    setSelectedId(null)
+    setHighlightId(null)
+  }
+
+  function closeMonth() {
+    setMonthOpen(false)
+    document.querySelector<HTMLElement>('.strip-cal')?.focus({ preventScroll: true })
+  }
   const exploreState = barsState !== 'ready' ? barsState : top.length > 0 ? 'ready' : 'empty'
   const previewId = selectedId && (query === null || !results.some((b) => b.id === selectedId)) ? selectedId : null
 
@@ -456,10 +537,22 @@ export default function App() {
   )
 
   const stage = mapUsed && !mapFailed && (
-    <main className="stage" data-view="map" hidden={mode !== 'map'} onPointerDown={() => setSuggesting(false)} data-sheet={sheet} data-mode={query === null ? 'explore' : 'results'}>
+    <main
+      className="stage"
+      data-view="map"
+      hidden={mode !== 'map'}
+      onPointerDown={() => setSuggesting(false)}
+      data-sheet={sheet}
+      data-mode={query === null ? 'explore' : 'results'}
+      data-strip={nightLayer(layer) || undefined}
+    >
       {heading}
       <div className="top" onFocusCapture={topFocus} onPointerDown={(e) => e.stopPropagation()}>
         {searchBar(showSearch, t.classicSearch)}
+        {layer === 'dance' && night && (
+          <DayStrip days={stripDays} counts={counts} value={night} onPick={pickNight} onCalendar={() => setMonthOpen(true)} />
+        )}
+        {layer === 'drink' && <NightToggle value={night} onPick={pickNight} />}
         <Chips bars={mapBars} value={chips} onToggle={toggleChip} />
         {query === null && suggesting && <Suggestions single onPick={search} />}
         {query !== null && stray && !loading && (
@@ -483,7 +576,8 @@ export default function App() {
           onSelect={pickFromMap}
           onBounds={setBounds}
           onFail={() => setMapFailed(true)}
-          padKey={`${sheet}:${query === null}`}
+          padKey={`${sheet}:${query === null}:${layer}`}
+          night={nightIds}
         />
       </Suspense>
       {sheet !== 'peek' && (
@@ -507,6 +601,19 @@ export default function App() {
         {previewId ? (
           <div className="pane">
             <BarPreview key={previewId} id={previewId} />
+          </div>
+        ) : query === null && showNight ? (
+          <div className="pane">
+            <EventList
+              title={nightTitle()}
+              events={nightEvents}
+              state={eventsState}
+              kindsOf={kindsOf}
+              selectedId={selectedId}
+              onSelect={pickFromList}
+              onRetry={() => setEventsAttempt((n) => n + 1)}
+              withDate={night !== null && night.from !== night.to}
+            />
           </div>
         ) : query === null ? (
           <div className="pane">
@@ -576,6 +683,17 @@ export default function App() {
         {stage}
         {classic}
         <InstallHint placeOpened={placeOpened} />
+        {monthOpen && (
+          <MonthSheet
+            layer="dance"
+            value={night?.from ?? null}
+            onPick={(d) => {
+              pickNight(one(d))
+              closeMonth()
+            }}
+            onClose={closeMonth}
+          />
+        )}
       </LayerContext.Provider>
     </LangContext.Provider>
   )

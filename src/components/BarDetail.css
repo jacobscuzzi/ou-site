@@ -89,3 +89,13 @@
     transition: none;
   }
 }
+
+.detail-events {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.detail .actions {
+  margin-top: var(--space-1);
+}

@@ -7,6 +7,8 @@ import Dishes from './Dishes'
 import Menu from './Menu'
 import Photo from './Photo'
 import Posts from './Posts'
+import Actions from './Actions'
+import EventCard from './EventCard'
 import './BarDetail.css'
 
 function hour(t: string) {
@@ -33,6 +35,14 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
             ))}
           </div>
         )}
+        {(bar.events ?? []).length > 0 && (
+          <section className="detail-events">
+            <h3 className="menu-title">{t.nextEvents}</h3>
+            {bar.events.map((e) => (
+              <EventCard key={e.id} event={e} kinds={bar.kinds} showPlace={false} />
+            ))}
+          </section>
+        )}
         <Posts posts={bar.posts ?? []} focusable={open} />
         {bar.happyHour && (
           <div className="detail-chips">
@@ -44,6 +54,7 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
           </div>
         )}
         {eat ? <Dishes dishes={bar.dishes ?? []} focusable={open} /> : <Menu items={bar.menu} focusable={open} />}
+        <Actions actions={(bar.actions ?? []).slice(1)} kinds={bar.kinds} focusable={open} />
         <div className="detail-foot">
           <span className="detail-address">
             <PinIcon />

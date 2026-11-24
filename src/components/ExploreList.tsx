@@ -6,6 +6,7 @@ import { labelFor } from '../tags'
 import { BeerIcon, ClockIcon } from './icons'
 import KindBadge from './KindBadge'
 import Photo from './Photo'
+import { ActionLink } from './Actions'
 import './ExploreList.css'
 
 type Props = {
@@ -39,6 +40,7 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
           <span className="xrow-arr">{bar.arrondissement}</span>
         </span>
         <span className="xrow-chips">
+          {bar.deal && <span className="chip chip-deal">{t.dealBadge}</span>}
           <KindBadge kinds={bar.kinds} />
           {bar.openUntil && (
             <span className="chip">
@@ -83,8 +85,13 @@ export default function ExploreList({ bars, state, warming, selectedId, onSelect
       {state === 'ready' && (
         <ul className="explore-list">
           {bars.map((bar) => (
-            <li key={bar.id}>
+            <li key={bar.id} className={bar.action ? 'xrow-item xrow-item-cta' : 'xrow-item'}>
               <Row bar={bar} selected={bar.id === selectedId} onSelect={() => onSelect(bar.id)} />
+              {bar.action && (
+                <span className="xrow-cta">
+                  <ActionLink action={bar.action} kinds={bar.kinds} />
+                </span>
+              )}
             </li>
           ))}
         </ul>
