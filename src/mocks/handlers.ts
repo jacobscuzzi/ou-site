@@ -1,6 +1,7 @@
 import { delay, http, HttpResponse } from 'msw'
 import { mockBar, mockBars, mockLayers } from './bars'
 import { isLayer, isVenue, parseBbox } from './catalog'
+import { mockDays, mockEvents, validDate } from './events'
 import { mockMore, mockSearch } from './search'
 
 function bad(error: string) {
@@ -52,6 +53,29 @@ export const handlers = [
     if (layer !== null && !isLayer(layer)) return bad('unknown layer')
     if (layer === null && !isVenue(venue)) return bad('unknown venue')
     return HttpResponse.json(mockBars(layer, isVenue(venue) ? venue : 'bar'))
+  }),
+
+  http.get('/api/events', async ({ request }) => {
+    const params = new URL(request.url).searchParams
+    const layer = params.get('layer')
+    const date = params.get('date')
+    const from = params.get('from') ?? date
+    const to = params.get('to') ?? date
+    await delay(300)
+    if (layer !== null && !isLayer(layer)) return bad('unknown layer')
+    if (!validDate(from) || !validDate(to) || (from && to && from > to)) return bad('bad date')
+    return HttpResponse.json(mockEvents(layer, from, to))
+  }),
+
+  http.get('/api/events/days', async ({ request }) => {
+    const params = new URL(request.url).searchParams
+    const layer = params.get('layer')
+    const from = params.get('from')
+    const to = params.get('to')
+    await delay(200)
+    if (layer !== null && !isLayer(layer)) return bad('unknown layer')
+    if (!validDate(from) || !validDate(to)) return bad('bad date')
+    return HttpResponse.json(mockDays(layer, from, to))
   }),
 
   http.get('/api/bars/:id', async ({ params }) => {

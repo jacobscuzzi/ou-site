@@ -2,8 +2,9 @@ import type { Bar, Layer, OpeningPeriod, Post, Venue } from '../api/types'
 import { currentPeriod, parisNow } from '../hours'
 import bars from './bars.json'
 import extra from './places.json'
+import { mockActions, placeDeal, placeEvents } from './events'
 
-export type MockPlace = Omit<Bar, 'compliant' | 'constraintsNotMet' | 'kinds' | 'hours' | 'openNow'> & { layers: Layer[] }
+export type MockPlace = Omit<Bar, 'compliant' | 'constraintsNotMet' | 'kinds' | 'hours' | 'openNow' | 'events' | 'deal' | 'actions'> & { layers: Layer[] }
 
 const danceBars = new Set([
   'red-factory-paris',
@@ -108,7 +109,17 @@ export function opening(p: MockPlace): Pick<Bar, 'openUntil' | 'openNow' | 'hour
 
 export function toBar(place: MockPlace): Bar {
   const { layers: _, ...p } = place
-  return { ...p, ...opening(place), kinds: [kindOf(place)], compliant: true, constraintsNotMet: [] }
+  const deal = placeDeal(place)
+  return {
+    ...p,
+    ...opening(place),
+    kinds: [kindOf(place)],
+    compliant: true,
+    constraintsNotMet: [],
+    events: placeEvents(place),
+    ...(deal && { deal }),
+    actions: mockActions(place),
+  }
 }
 
 const wishes: [Layer, RegExp][] = [

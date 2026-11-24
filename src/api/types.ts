@@ -91,6 +91,54 @@ export type Bar = {
   menu: MenuItem[]
   dishes: Dish[]
   posts: Post[]
+  events: Event[]
+  deal?: Event
+  actions: Action[]
+}
+
+export type ActionKind = 'tickets' | 'offer' | 'booking' | 'venue_page' | 'website' | 'directions'
+
+export type Action = {
+  kind: ActionKind
+  provider: string
+  url: string
+}
+
+export type Event = {
+  id: string
+  kind: 'party' | 'deal'
+  placeId: string
+  placeName: string
+  title: string
+  night: string | null
+  startsAt: string | null
+  endsAt: string | null
+  regular: boolean
+  genres: string[]
+  lineup: string[]
+  priceMin: number | null
+  priceMax: number | null
+  discountPct: number | null
+  conditions: string | null
+  validUntil: string | null
+  image: string | null
+  lat: number
+  lng: number
+  sources: string[]
+  posts: Post[]
+  actions: Action[]
+}
+
+export type EventsResponse = {
+  events: Event[]
+  from: string
+  to: string
+  layer?: Layer
+}
+
+export type DaysResponse = {
+  days: { date: string; count: number }[]
+  layer?: Layer
 }
 
 export type Layer = 'drink' | 'eat' | 'dance' | 'coffee'
@@ -104,7 +152,7 @@ export type SearchResponse = {
   layer?: Layer
   results: Bar[]
   hasMore: boolean
-  meta: { parsed: boolean; rankingVersion: number; layerSwitched?: boolean }
+  meta: { parsed: boolean; rankingVersion: number; layerSwitched?: boolean; dateRange?: { from: string; to: string } }
 }
 
 export type MapBar = {
@@ -125,6 +173,8 @@ export type MapBar = {
   cuisines?: string[]
   music?: string[]
   pricePerPerson?: number
+  deal?: boolean
+  action?: Action
 }
 
 export type BarsResponse = {

@@ -1,5 +1,5 @@
 import type { Bounds } from '../map/geo'
-import type { ApiError, Bar, BarsResponse, Layer, LayersResponse, SearchResponse } from './types'
+import type { Action, ApiError, Bar, BarsResponse, DaysResponse, EventsResponse, Layer, LayersResponse, SearchResponse } from './types'
 
 const useMock = import.meta.env.VITE_USE_MOCK === 'true'
 const baseUrl = useMock ? '' : (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
@@ -18,6 +18,7 @@ type Failures = { label: string; names: Record<number, string> }
 const searchFailures: Failures = { label: 'Search', names: { 410: 'SearchExpired' } }
 const barsFailures: Failures = { label: 'Bars', names: { 503: 'BarsLoading' } }
 const layersFailures: Failures = { label: 'Layers', names: {} }
+const eventsFailures: Failures = { label: 'Events', names: {} }
 const barFailures: Failures = { label: 'Bar', names: { 404: 'BarNotFound', 503: 'BarsLoading' } }
 
 async function get<T>(path: string, fallback: () => Promise<T>, failures: Failures, signal?: AbortSignal): Promise<T> {
@@ -82,4 +83,28 @@ export function fetchBar(id: string, signal?: AbortSignal) {
     barFailures,
     signal,
   )
+}
+
+export function fetchEvents(layer: Layer, from: string, to: string, signal?: AbortSignal) {
+  const params = new URLSearchParams(from === to ? { layer, date: from } : { layer, from, to })
+  return get<EventsResponse>(
+    `/api/events?${params}`,
+    () => inPageMock(async () => (await import('../mocks/events')).mockEvents(layer, from, to), signal),
+    eventsFailures,
+    signal,
+  )
+}
+
+export function fetchDays(layer: Layer, from: string, to: string, signal?: AbortSignal) {
+  const params = new URLSearchParams({ layer, from, to })
+  return get<DaysResponse>(
+    `/api/events/days?${params}`,
+    () => inPageMock(async () => (await import('../mocks/events')).mockDays(layer, from, to), signal),
+    eventsFailures,
+    signal,
+  )
+}
+
+export function actionHref(a: Action) {
+  return a.url.startsWith('/') ? `${baseUrl}${a.url}` : a.url
 }

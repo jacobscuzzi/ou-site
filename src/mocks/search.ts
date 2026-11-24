@@ -1,5 +1,6 @@
 import type { Bar, Layer, SearchResponse, Venue } from '../api/types'
 import { available, inBox, places, toBar, wishLayer, type Box } from './catalog'
+import { mockWhen } from './events'
 import themes from './themes.json'
 
 type Theme = keyof typeof themes
@@ -33,7 +34,7 @@ function pickTheme(q: string): Theme {
   return best
 }
 
-type Stored = { query: string; venue: Venue; layer: Layer | null; switched: boolean; bars: Bar[] }
+type Stored = { query: string; venue: Venue; layer: Layer | null; switched: boolean; bars: Bar[]; range?: { from: string; to: string } }
 
 const searches = new Map<string, Stored>()
 
@@ -65,7 +66,12 @@ function body(searchId: string, s: Stored, results: Bar[], hasMore: boolean): Se
     ...(s.layer && { layer: s.layer }),
     results,
     hasMore,
-    meta: { parsed: true, rankingVersion: 0, ...(s.layer && { layerSwitched: s.switched }) },
+    meta: {
+      parsed: true,
+      rankingVersion: 0,
+      ...(s.layer && { layerSwitched: s.switched }),
+      ...(s.range && { dateRange: s.range }),
+    },
   }
 }
 
@@ -77,7 +83,7 @@ export function mockSearch(q: string, layer: Layer | null = null, box: Box | nul
     .filter((b) => !box || inBox(b, box))
     .map((b, i) => ({ ...b, rank: i + 1 }))
   const searchId = Math.random().toString(36).slice(2)
-  const stored = { query: q, venue, layer: searched, switched, bars: ranked }
+  const stored = { query: q, venue, layer: searched, switched, bars: ranked, range: mockWhen(q) }
   searches.set(searchId, stored)
   return body(searchId, stored, ranked.slice(0, FIRST), ranked.length > FIRST)
 }
