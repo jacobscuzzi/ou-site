@@ -1,16 +1,26 @@
 import { useEffect, useState } from 'react'
 import { useT } from '../i18n'
-import { chromeIntent, dismissedRecently, dismissInstall, installKind, isAndroid, onInstallChange, promptInstall, visits } from '../install'
+import { chromeIntent, dismissedRecently, dismissInstall, installKind, isAndroid, isPhone, onInstallChange, promptInstall, visits } from '../install'
 import './InstallHint.css'
+
+const FIRST_VISIT_DELAY = 4000
 
 export default function InstallHint({ placeOpened }: { placeOpened: boolean }) {
   const t = useT()
   const [kind, setKind] = useState(installKind)
   const [closed, setClosed] = useState(dismissedRecently)
 
+  const [waited, setWaited] = useState(false)
+
   useEffect(() => onInstallChange(() => setKind(installKind())), [])
 
-  if (!kind || closed || (!placeOpened && visits < 2)) return null
+  useEffect(() => {
+    if (!isPhone) return
+    const timer = window.setTimeout(() => setWaited(true), FIRST_VISIT_DELAY)
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  if (!kind || closed || !(placeOpened || visits >= 2 || waited)) return null
 
   function close() {
     dismissInstall()
@@ -24,6 +34,7 @@ export default function InstallHint({ placeOpened }: { placeOpened: boolean }) {
   }
 
   const inApp = kind === 'in-app'
+  const steps = { ios: t.installIosSteps, 'ios-share': t.installIosShareSteps, android: t.installAndroidSteps, prompt: null, 'in-app': null }[kind]
   return (
     <aside className="install" role="dialog" aria-labelledby="install-title">
       <img className="install-icon" src="/icon-192.png" alt="" width={44} height={44} />
@@ -32,9 +43,9 @@ export default function InstallHint({ placeOpened }: { placeOpened: boolean }) {
           {inApp ? t.installInAppTitle : t.installTitle}
         </h2>
         {kind === 'prompt' && <p className="install-text">{t.installText}</p>}
-        {kind === 'ios' && (
+        {steps && (
           <ol className="install-steps">
-            {t.installIosSteps.map((step) => (
+            {steps.map((step) => (
               <li key={step}>{step}</li>
             ))}
           </ol>

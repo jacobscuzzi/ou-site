@@ -1,4 +1,4 @@
-export type InstallKind = 'prompt' | 'ios' | 'in-app'
+export type InstallKind = 'prompt' | 'android' | 'ios' | 'ios-share' | 'in-app'
 
 type PromptEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> }
 
@@ -7,6 +7,7 @@ const COUNTED_KEY = 'ou-visit-counted'
 const DISMISSED_KEY = 'ou-install-dismissed'
 const QUIET_DAYS = 14
 const IN_APP = /musical_ly|BytedanceWebview|TikTok|Instagram|FBAN|FBAV/i
+const IOS_OTHER = /CriOS|FxiOS|EdgiOS/
 
 let deferred: PromptEvent | null = null
 const listeners = new Set<() => void>()
@@ -33,6 +34,8 @@ const ua = navigator.userAgent
 export const isAndroid = /Android/i.test(ua)
 const isIos = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1)
 
+export const isPhone = isAndroid || isIos
+
 function standalone() {
   return window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true
 }
@@ -41,8 +44,8 @@ export function installKind(): InstallKind | null {
   if (standalone()) return null
   if (IN_APP.test(ua)) return isAndroid || isIos ? 'in-app' : null
   if (deferred) return 'prompt'
-  if (isIos) return 'ios'
-  return null
+  if (isIos) return IOS_OTHER.test(ua) ? 'ios-share' : 'ios'
+  return isAndroid ? 'android' : null
 }
 
 export async function promptInstall() {
