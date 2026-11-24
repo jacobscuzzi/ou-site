@@ -3,16 +3,45 @@ import type * as GeoJSON from 'geojson'
 
 export type Bounds = { minLng: number; minLat: number; maxLng: number; maxLat: number }
 
-export type ChipKey = 'open' | 'terrace' | 'dancing' | 'cheap'
+const cuisineGroups = {
+  asian: ['japanese', 'chinese', 'korean', 'vietnamese', 'thai'],
+  street: ['burger', 'street_food', 'american', 'mexican', 'latin_american'],
+  italian: ['italian', 'pizza'],
+  brunch: ['brunch'],
+  oriental: ['middle_eastern', 'lebanese', 'north_african', 'turkish', 'greek'],
+  indian: ['indian'],
+  african: ['african', 'caribbean'],
+  french: ['french'],
+}
+
+const musicGroups = {
+  techno: ['techno', 'electro'],
+  hiphop: ['hip_hop', 'afro'],
+  latin: ['latin'],
+  live: ['live_band', 'jazz'],
+  karaoke: ['karaoke'],
+}
+
+type CuisineChip = keyof typeof cuisineGroups
+type MusicChip = keyof typeof musicGroups
+
+export type ChipKey = 'open' | 'terrace' | 'dancing' | 'cheap' | 'budget' | 'clubs' | 'dancebars' | CuisineChip | MusicChip
 
 export const CHEAP_PINT = 5
+export const CHEAP_MEAL = 15
+
+const cuisineChips = Object.keys(cuisineGroups) as CuisineChip[]
+const musicChips = Object.keys(musicGroups) as MusicChip[]
 
 export const layerChips: Record<Layer, ChipKey[]> = {
   drink: ['open', 'terrace', 'dancing', 'cheap'],
-  eat: ['open', 'terrace'],
-  dance: ['open', 'cheap'],
+  eat: ['open', 'terrace', 'budget', ...cuisineChips],
+  dance: ['open', 'clubs', 'dancebars', ...musicChips, 'cheap'],
   coffee: ['open', 'terrace'],
 }
+
+// Chips of one family widen each other (Asian or Italian); everything else narrows.
+const families: ChipKey[][] = [cuisineChips, musicChips, ['clubs', 'dancebars']]
 
 export const PARIS: Bounds = { minLng: 2.224, minLat: 48.815, maxLng: 2.47, maxLat: 48.903 }
 
@@ -21,11 +50,33 @@ const checks: Record<ChipKey, (bar: MapBar) => boolean> = {
   terrace: (bar) => bar.terrace === true,
   dancing: (bar) => bar.dancing === true,
   cheap: (bar) => bar.pintPrice !== null && bar.pintPrice < CHEAP_PINT,
+  budget: (bar) => bar.pricePerPerson !== undefined && bar.pricePerPerson < CHEAP_MEAL,
+  clubs: (bar) => bar.kinds?.includes('club') === true,
+  dancebars: (bar) => bar.kinds?.includes('bar') === true && !bar.kinds.includes('club'),
+  ...group(cuisineGroups, (bar) => bar.cuisines ?? (bar.cuisine ? [bar.cuisine] : [])),
+  ...group(musicGroups, (bar) => bar.music ?? bar.tags),
+}
+
+function group<K extends string>(groups: Record<K, string[]>, values: (bar: MapBar) => string[]) {
+  const out = {} as Record<K, (bar: MapBar) => boolean>
+  for (const key of Object.keys(groups) as K[]) out[key] = (bar) => values(bar).some((v) => groups[key].includes(v))
+  return out
+}
+
+function split(chips: ReadonlySet<ChipKey>) {
+  const any = families.map((f) => f.filter((c) => chips.has(c))).filter((f) => f.length > 0)
+  const all = [...chips].filter((c) => !families.some((f) => f.includes(c)))
+  return { all, any }
 }
 
 export function passes(bar: MapBar, chips: ReadonlySet<ChipKey>): boolean {
-  for (const chip of chips) if (!checks[chip](bar)) return false
-  return true
+  const { all, any } = split(chips)
+  return all.every((c) => checks[c](bar)) && any.every((f) => f.some((c) => checks[c](bar)))
+}
+
+export function offeredChips(layer: Layer, bars: MapBar[], active: ReadonlySet<ChipKey>): ChipKey[] {
+  if (bars.length === 0) return layerChips[layer].filter((c) => active.has(c) || !families.some((f) => f.includes(c)))
+  return layerChips[layer].filter((c) => active.has(c) || bars.some(checks[c]))
 }
 
 export function inBounds(bar: { lat: number; lng: number }, b: Bounds): boolean {
@@ -105,10 +156,7 @@ export function barsToGeoJSON(bars: MapBar[]): GeoJSON.FeatureCollection<GeoJSON
         id: bar.id,
         name: cleanName(bar.name),
         quality: bar.quality,
-        open: flag(checks.open(bar)),
-        terrace: flag(checks.terrace(bar)),
-        dancing: flag(checks.dancing(bar)),
-        cheap: flag(checks.cheap(bar)),
+        ...Object.fromEntries((Object.keys(checks) as ChipKey[]).map((chip) => [chip, flag(checks[chip](bar))])),
         top: flag(bar.quality >= threshold),
         club: flag(bar.kinds?.includes('club') === true),
       },
@@ -118,5 +166,7 @@ export function barsToGeoJSON(bars: MapBar[]): GeoJSON.FeatureCollection<GeoJSON
 
 export function chipFilter(chips: ReadonlySet<ChipKey>): unknown[] | null {
   if (chips.size === 0) return null
-  return ['all', ...[...chips].map((chip) => ['==', ['get', chip], 1])]
+  const on = (chip: ChipKey) => ['==', ['get', chip], 1]
+  const { all, any } = split(chips)
+  return ['all', ...all.map(on), ...any.map((f) => ['any', ...f.map(on)])]
 }

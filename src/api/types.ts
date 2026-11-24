@@ -122,6 +122,8 @@ export type MapBar = {
   dancing?: boolean
   cover?: string
   cuisine?: string
+  cuisines?: string[]
+  music?: string[]
   pricePerPerson?: number
 }
 

@@ -26,6 +26,7 @@ function toMapBar(p: MockPlace): MapBar {
     .filter((t): t is string => Boolean(t))
     .slice(0, 3)
   const cover = i % 20 === 7 ? undefined : p.photos[0]
+  const music = faked ? tags.filter((m) => musics.includes(m)) : (p.facts?.music ?? [])
   return {
     id: p.id,
     name: p.name,
@@ -40,7 +41,8 @@ function toMapBar(p: MockPlace): MapBar {
     ...(terrace && { terrace: true }),
     ...(dancing && { dancing: true }),
     ...(cover && { cover }),
-    ...(p.facts?.cuisine?.[0] && { cuisine: p.facts.cuisine[0] }),
+    ...(p.facts?.cuisine?.[0] && { cuisine: p.facts.cuisine[0], cuisines: p.facts.cuisine }),
+    ...(music.length > 0 && { music }),
     ...(p.facts?.pricePerPerson !== undefined && { pricePerPerson: p.facts.pricePerPerson }),
   }
 }

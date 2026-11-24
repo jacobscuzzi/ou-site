@@ -460,7 +460,7 @@ export default function App() {
       {heading}
       <div className="top" onFocusCapture={topFocus} onPointerDown={(e) => e.stopPropagation()}>
         {searchBar(showSearch, t.classicSearch)}
-        <Chips value={chips} onToggle={toggleChip} />
+        <Chips bars={mapBars} value={chips} onToggle={toggleChip} />
         {query === null && suggesting && <Suggestions single onPick={search} />}
         {query !== null && stray && !loading && (
           <button type="button" className="search-here" onClick={searchHere}>

@@ -1,19 +1,22 @@
 import { useT } from '../i18n'
-import { CHEAP_PINT, layerChips, type ChipKey } from '../map/geo'
+import type { MapBar } from '../api/types'
+import { CHEAP_MEAL, CHEAP_PINT, offeredChips, type ChipKey } from '../map/geo'
 import { useLayer } from '../mode'
 import './Chips.css'
 
-type Props = { value: ReadonlySet<ChipKey>; onToggle: (k: ChipKey) => void }
+type Props = { bars: MapBar[]; value: ReadonlySet<ChipKey>; onToggle: (k: ChipKey) => void }
 
-export default function Chips({ value, onToggle }: Props) {
+export default function Chips({ bars, value, onToggle }: Props) {
   const t = useT()
   const labels: Record<ChipKey, string> = {
     open: t.chipOpen,
     terrace: t.chipTerrace,
     dancing: t.chipDancing,
     cheap: t.chipCheap(CHEAP_PINT),
+    budget: t.chipBudget(CHEAP_MEAL),
+    ...t.chipGroups,
   }
-  const items = layerChips[useLayer()].map((key) => [key, labels[key]] as const)
+  const items = offeredChips(useLayer(), bars, value).map((key) => [key, labels[key]] as const)
 
   return (
     <div className="chips" role="group" aria-label={t.chipsLabel}>
