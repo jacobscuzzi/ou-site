@@ -75,7 +75,13 @@ function body(searchId: string, s: Stored, results: Bar[], hasMore: boolean): Se
   }
 }
 
-export function mockSearch(q: string, layer: Layer | null = null, box: Box | null = null, venue: Venue = 'bar'): SearchResponse {
+export function mockSearch(
+  q: string,
+  layer: Layer | null = null,
+  box: Box | null = null,
+  venue: Venue = 'bar',
+  night: { from: string; to: string } | null = null,
+): SearchResponse {
   const wish = layer && wishLayer(q)
   const switched = Boolean(wish && wish !== layer && available(wish))
   const searched = switched ? wish : layer
@@ -83,7 +89,7 @@ export function mockSearch(q: string, layer: Layer | null = null, box: Box | nul
     .filter((b) => !box || inBox(b, box))
     .map((b, i) => ({ ...b, rank: i + 1 }))
   const searchId = Math.random().toString(36).slice(2)
-  const stored = { query: q, venue, layer: searched, switched, bars: ranked, range: mockWhen(q) }
+  const stored = { query: q, venue, layer: searched, switched, bars: ranked, range: night ?? mockWhen(q) }
   searches.set(searchId, stored)
   return body(searchId, stored, ranked.slice(0, FIRST), ranked.length > FIRST)
 }

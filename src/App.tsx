@@ -89,7 +89,10 @@ export default function App() {
   const [placeOpened, setPlaceOpened] = useState(false)
   const [stray, setStray] = useState(false)
   const [area, setArea] = useState<Bounds | null>(null)
-  const [night, setNight] = useState<Night | null>(() => (start.layer === 'dance' ? one(initialDate() ?? tonight()) : null))
+  const [asked] = useState(initialDate)
+  const [night, setNight] = useState<Night | null>(() => (start.layer === 'dance' ? one(asked ?? tonight()) : null))
+  const nightRef = useRef(night)
+  nightRef.current = night
   const [counts, setCounts] = useState<Record<string, number> | null>(null)
   const [nightEvents, setNightEvents] = useState<Event[]>([])
   const [eventsState, setEventsState] = useState<'loading' | 'ready' | 'error'>('loading')
@@ -237,7 +240,7 @@ export default function App() {
     setLoadingMore(false)
     setMoreError(null)
 
-    searchBars(query, layerRef.current, areaRef.current, ctrl.signal)
+    searchBars(query, layerRef.current, areaRef.current, pickedNight(), ctrl.signal)
       .then((res) => {
         if (res.meta.layerSwitched && res.layer) {
           applyLayer(res.layer)
@@ -246,7 +249,12 @@ export default function App() {
         const range = res.meta.dateRange
         const searched = res.layer ?? layerRef.current
         if (range && searched === 'dance') setNight(one(range.from))
-        else if (range && searched === 'drink') setNight(range)
+        else if (range && searched === 'drink') {
+          const today = tonight()
+          const options = [one(today), weekend(today)]
+          const match = options.find((o) => sameNight(o, range))
+          if (match) setNight(match)
+        }
         setBars(res.results)
         setSearchId(res.searchId)
         setHasMore(res.hasMore)
@@ -290,7 +298,7 @@ export default function App() {
   }, [layer, night?.from, night?.to, ready, eventsAttempt])
 
   useEffect(() => {
-    writeDate(layer === 'dance' && night && night.from === night.to && night.from !== tonight() ? night.from : null)
+    if (layer === 'dance') writeDate(night && night.from === night.to && night.from !== tonight() ? night.from : null)
   }, [layer, night])
 
   useEffect(() => {
@@ -301,6 +309,14 @@ export default function App() {
     const top = box.scrollTop + card.getBoundingClientRect().top - box.getBoundingClientRect().top
     box.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
   }, [reveal])
+
+  // A night the user picked goes with the search; the default night (tonight in dance) does not,
+  // so a day named in the query still moves the picker.
+  function pickedNight(): Night | null {
+    const n = nightRef.current
+    if (!n || !nightLayer(layerRef.current)) return null
+    return layerRef.current === 'dance' && sameNight(n, one(tonight())) ? null : n
+  }
 
   function search(q: string) {
     const trimmed = q.trim()
@@ -335,7 +351,7 @@ export default function App() {
         res = await moreBars(searchId, next, ctrl.signal)
       } catch (err) {
         if ((err as Error).name !== 'SearchExpired') throw err
-        const fresh = await searchBars(query, layer, area, ctrl.signal)
+        const fresh = await searchBars(query, layer, area, pickedNight(), ctrl.signal)
         setSearchId(fresh.searchId)
         res = await moreBars(fresh.searchId, next, ctrl.signal)
       }
@@ -388,7 +404,7 @@ export default function App() {
 
   function applyLayer(next: Layer) {
     setLayer(next)
-    setNight((n) => (next === 'dance' ? (n && n.from === n.to ? n : one(tonight())) : null))
+    setNight((n) => (next === 'dance' ? (n && n.from === n.to ? n : one(asked ?? tonight())) : null))
     setChips((prev) => new Set([...prev].filter((c) => layerChips[next].includes(c))))
   }
 
@@ -439,7 +455,8 @@ export default function App() {
   }
 
   const top = useMemo(() => topInView(mapBars, bounds, chips), [mapBars, bounds, chips])
-  const showNight = night !== null && nightLayer(layer)
+  const hasEvents = layer !== 'dance' || (counts !== null && Object.values(counts).some((n) => n > 0))
+  const showNight = night !== null && nightLayer(layer) && hasEvents
   const nightIds = useMemo(
     () => (showNight && eventsState === 'ready' ? new Set(nightEvents.map((e) => e.placeId)) : null),
     [showNight, eventsState, nightEvents],
@@ -544,12 +561,12 @@ export default function App() {
       onPointerDown={() => setSuggesting(false)}
       data-sheet={sheet}
       data-mode={query === null ? 'explore' : 'results'}
-      data-strip={nightLayer(layer) || undefined}
+      data-strip={(nightLayer(layer) && hasEvents) || undefined}
     >
       {heading}
       <div className="top" onFocusCapture={topFocus} onPointerDown={(e) => e.stopPropagation()}>
         {searchBar(showSearch, t.classicSearch)}
-        {layer === 'dance' && night && (
+        {layer === 'dance' && night && hasEvents && (
           <DayStrip days={stripDays} counts={counts} value={night} onPick={pickNight} onCalendar={() => setMonthOpen(true)} />
         )}
         {layer === 'drink' && <NightToggle value={night} onPick={pickNight} />}

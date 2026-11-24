@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { Event } from '../api/types'
 import { useLang, useT, type Strings } from '../i18n'
 import { labelFor } from '../tags'
@@ -34,9 +35,26 @@ export function DealLine({ deal }: { deal: Event }) {
   )
 }
 
-type Props = { event: Event; kinds: string[]; selected?: boolean; onSelect?: () => void; showPlace?: boolean; showDate?: boolean }
+function Main({ className, onSelect, focusable, children }: { className: string; onSelect?: () => void; focusable: boolean; children: ReactNode }) {
+  if (!onSelect) return <div className={className}>{children}</div>
+  return (
+    <button type="button" className={className} onClick={onSelect} tabIndex={focusable ? 0 : -1}>
+      {children}
+    </button>
+  )
+}
 
-export default function EventCard({ event, kinds, selected = false, onSelect, showPlace = true, showDate = !showPlace }: Props) {
+type Props = {
+  event: Event
+  kinds: string[]
+  selected?: boolean
+  onSelect?: () => void
+  showPlace?: boolean
+  showDate?: boolean
+  focusable?: boolean
+}
+
+export default function EventCard({ event, kinds, selected = false, onSelect, showPlace = true, showDate = !showPlace, focusable = true }: Props) {
   const t = useT()
   const lang = useLang()
   const time = eventTime(event)
@@ -45,7 +63,7 @@ export default function EventCard({ event, kinds, selected = false, onSelect, sh
 
   return (
     <article className={selected ? 'ev ev-selected' : 'ev'} data-id={event.placeId}>
-      <button type="button" className="ev-main" onClick={onSelect} disabled={!onSelect}>
+      <Main className="ev-main" onSelect={onSelect} focusable={focusable}>
         <span className="ev-when">
           {event.night && showDate && <span className="ev-date">{shortDate(event.night, lang)}</span>}
           {time && <span className="ev-time">{time}</span>}
@@ -61,14 +79,14 @@ export default function EventCard({ event, kinds, selected = false, onSelect, sh
             {event.lineup.length > 0 && <span className="ev-lineup">{event.lineup.slice(0, 3).join(', ')}</span>}
           </span>
         )}
-      </button>
+      </Main>
       {(cost || (main && main.kind === 'tickets')) && (
         <div className="ev-foot">
           {cost && <span className="ev-price">{cost}</span>}
-          {main && main.kind === 'tickets' && <ActionLink action={main} kinds={kinds} main />}
+          {main && main.kind === 'tickets' && <ActionLink action={main} kinds={kinds} main focusable={focusable} />}
         </div>
       )}
-      <Posts posts={event.posts} focusable />
+      <Posts posts={event.posts} focusable={focusable} />
     </article>
   )
 }

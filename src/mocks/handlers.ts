@@ -22,7 +22,11 @@ export const handlers = [
     if (layer === null && !isVenue(venue)) return bad('unknown venue')
     if (box === 'bad') return bad('malformed bbox')
 
-    return HttpResponse.json(mockSearch(q, layer, box, isVenue(venue) ? venue : 'bar'))
+    const date = params.get('date')
+    const from = params.get('from') ?? date
+    const to = params.get('to') ?? date
+    const night = from && to ? { from, to } : null
+    return HttpResponse.json(mockSearch(q, layer, box, isVenue(venue) ? venue : 'bar', night))
   }),
 
   http.get('/api/search/:id/more', async ({ request, params }) => {

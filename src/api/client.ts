@@ -42,16 +42,21 @@ function bboxParam(b: Bounds) {
   return [b.minLng, b.minLat, b.maxLng, b.maxLat].map((n) => n.toFixed(5)).join(',')
 }
 
-export function searchBars(q: string, layer: Layer, bbox: Bounds | null, signal?: AbortSignal) {
+export function searchBars(q: string, layer: Layer, bbox: Bounds | null, night: { from: string; to: string } | null, signal?: AbortSignal) {
   const params = new URLSearchParams({ q, layer })
   if (bbox) params.set('bbox', bboxParam(bbox))
+  if (night && night.from === night.to) params.set('date', night.from)
+  else if (night) {
+    params.set('from', night.from)
+    params.set('to', night.to)
+  }
   return get<SearchResponse>(
     `/api/search?${params}`,
     () =>
       inPageMock(async () => {
         const { mockSearch } = await import('../mocks/search')
         const box = bbox && ([bbox.minLng, bbox.minLat, bbox.maxLng, bbox.maxLat] as [number, number, number, number])
-        return mockSearch(q, layer, box)
+        return mockSearch(q, layer, box, 'bar', night)
       }, signal),
     searchFailures,
     signal,

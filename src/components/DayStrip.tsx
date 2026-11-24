@@ -59,10 +59,12 @@ export function NightToggle({ value, onPick }: { value: Night | null; onPick: (n
   const today = tonight()
   const tonightNight = { from: today, to: today }
   const we = weekend(today)
-  const options: [Night, string][] = [
-    [tonightNight, t.tonight],
-    [we, t.thisWeekend],
-  ]
+  const options: [Night, string][] = sameNight(tonightNight, we)
+    ? [[tonightNight, t.tonight]]
+    : [
+        [tonightNight, t.tonight],
+        [we, t.thisWeekend],
+      ]
   return (
     <div className="strip strip-toggle" role="group" aria-label={t.nightsLabel}>
       {options.map(([n, label]) => {

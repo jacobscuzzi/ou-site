@@ -33,12 +33,29 @@ export default function MonthSheet({ layer, value, onPick, onClose }: Props) {
   const from = month < today ? today : month
   const thisMonth = monthStart(today)
 
+  const closeLatest = useRef(onClose)
+  closeLatest.current = onClose
+  const box = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     closeRef.current?.focus()
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') return closeLatest.current()
+      if (e.key !== 'Tab' || !box.current) return
+      const items = [...box.current.querySelectorAll<HTMLElement>('button:not(:disabled)')]
+      const first = items[0]
+      const last = items[items.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
+  }, [])
 
   useEffect(() => {
     if (from > end) return
@@ -55,8 +72,8 @@ export default function MonthSheet({ layer, value, onPick, onClose }: Props) {
   const heads = Array.from({ length: 7 }, (_, i) => shortDay(addDays('2026-11-23', i), lang))
 
   return (
-    <div className="month-scrim" onPointerDown={onClose}>
-      <div className="month" role="dialog" aria-modal="true" aria-label={t.monthTitle} onPointerDown={(e) => e.stopPropagation()}>
+    <div className="month-scrim" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="month" ref={box} role="dialog" aria-modal="true" aria-label={t.monthTitle}>
         <div className="month-head">
           <button type="button" className="month-nav" aria-label={t.prevMonth} disabled={month <= thisMonth} onClick={() => setMonth(shiftMonth(month, -1))}>
             <BackIcon />

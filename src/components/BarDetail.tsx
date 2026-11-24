@@ -39,7 +39,7 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
           <section className="detail-events">
             <h3 className="menu-title">{t.nextEvents}</h3>
             {bar.events.map((e) => (
-              <EventCard key={e.id} event={e} kinds={bar.kinds} showPlace={false} />
+              <EventCard key={e.id} event={e} kinds={bar.kinds} showPlace={false} focusable={open} />
             ))}
           </section>
         )}

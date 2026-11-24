@@ -36,7 +36,9 @@ function paris(d: Date) {
 }
 
 export function tonight(now = new Date()) {
-  return paris(new Date(now.getTime() - 6 * 3_600_000))
+  const hour = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', hour: '2-digit', hourCycle: 'h23' }).format(now))
+  const day = paris(now)
+  return hour < 6 ? addDays(day, -1) : day
 }
 
 function addDays(day: string, n: number) {
@@ -50,7 +52,8 @@ function weekday(day: string) {
 }
 
 function at(day: string, hm: string, plus = 0) {
-  return `${plus ? addDays(day, plus) : day}T${hm}:00${parisOffset(day)}`
+  const d = plus ? addDays(day, plus) : day
+  return `${d}T${hm}:00${parisOffset(d)}`
 }
 
 function parisOffset(day: string) {

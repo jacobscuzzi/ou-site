@@ -6,13 +6,14 @@ const DAY = 86_400_000
 const DATE = /^\d{4}-\d{2}-\d{2}$/
 export const STRIP_DAYS = 14
 
-function parisDay(d: Date) {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d)
-}
-
-// A night runs from 12:00 to 06:00: before 06:00 it is still the previous day's night.
+// A night runs from 12:00 to 06:00: before 06:00 Paris time it is still the previous day's night.
 export function tonight(now = new Date()) {
-  return parisDay(new Date(now.getTime() - 6 * 3_600_000))
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23',
+  }).formatToParts(now)
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? ''
+  const day = `${get('year')}-${get('month')}-${get('day')}`
+  return Number(get('hour')) < 6 ? addDays(day, -1) : day
 }
 
 export function addDays(day: string, n: number) {
