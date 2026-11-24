@@ -193,7 +193,7 @@
   --bubble-height: 40px;
   --top-clear: calc(env(safe-area-inset-top) + var(--space-4) + var(--search-height) + var(--space-3));
   --card-skeleton: 300px;
-  --sheet-peek: 168px;
+  --sheet-peek: calc(var(--control-size) + env(safe-area-inset-bottom));
   --sheet-half: 54vh;
   --sheet-full: calc(100vh - var(--top-clear));
   --panel-width: 400px;

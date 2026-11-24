@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type FocusEvent, type PointerEvent, type ReactNode } from 'react'
+import { useLayoutEffect, useRef, useState, type FocusEvent, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
 import { useT } from '../i18n'
 import './Sheet.css'
 
@@ -104,7 +104,13 @@ export default function Sheet({ height, onHeight, header, scrollKey, children }:
     onHeight('full')
   }
 
-  const cycle = () => onHeight(order[(order.indexOf(height) + 1) % order.length])
+  const step = (by: number) => onHeight(order[Math.min(order.length - 1, Math.max(0, order.indexOf(height) + by))])
+  const toggle = () => onHeight(height === 'peek' ? 'half' : height === 'half' ? 'peek' : 'half')
+  const handleKey = (e: KeyboardEvent) => {
+    if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return
+    e.preventDefault()
+    step(e.key === 'ArrowUp' ? 1 : -1)
+  }
 
   return (
     <section
@@ -124,7 +130,7 @@ export default function Sheet({ height, onHeight, header, scrollKey, children }:
       {order.map((h) => (
         <i key={h} ref={(el) => void (marks.current[h] = el)} className={`sheet-mark sheet-mark-${h}`} aria-hidden="true" />
       ))}
-      <button type="button" className="sheet-handle" aria-label={t.sheetHandle[height]} aria-expanded={height !== 'peek'} onClick={cycle}>
+      <button type="button" className="sheet-handle" aria-label={t.sheetHandle[height]} aria-expanded={height !== 'peek'} onClick={toggle} onKeyDown={handleKey}>
         <span className="sheet-grip" />
       </button>
       {header && <div className="sheet-header">{header}</div>}

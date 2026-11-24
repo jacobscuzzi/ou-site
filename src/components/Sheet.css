@@ -103,8 +103,20 @@
   touch-action: pan-y;
 }
 
+@media (max-width: 767px) {
+  .sheet[data-height='peek']:not(.sheet-dragging) :is(.sheet-header, .sheet-content) {
+    visibility: hidden;
+    transition: visibility 0s var(--camera-ms);
+  }
+
+  .sheet[data-height='peek'] .sheet-grip {
+    opacity: 0.6;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .sheet {
+  .sheet,
+  .sheet[data-height='peek'] :is(.sheet-header, .sheet-content) {
     transition: none;
   }
 }
