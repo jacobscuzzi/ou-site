@@ -48,10 +48,10 @@ export default function CardChips({ bar, open }: { bar: Bar; open: boolean }) {
   return (
     <div className="card-chips">
       <KindBadge kinds={bar.kinds} />
-      {bar.openUntil && (
+      {bar.openUntil && !open && (
         <span className="chip">
           <span className="chip-icon"><ClockIcon /></span>
-          {open ? t.openTill(bar.openUntil) : t.till(bar.openUntil)}
+          {t.till(bar.openUntil)}
         </span>
       )}
       {layer === 'eat' && facts.cuisine?.[0] && <span className="chip">{cuisineLabel(facts.cuisine[0], lang)}</span>}

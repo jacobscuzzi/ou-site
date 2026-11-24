@@ -45,6 +45,11 @@
   --ink-2: #6e6e76;
   --ink-3: #3a3a40;
   --chip: rgba(255, 255, 255, 0.55);
+  --open: #13804a;
+  --open-soft: rgba(19, 128, 74, 0.12);
+  --closed: #c2331f;
+  --closed-soft: rgba(194, 51, 31, 0.1);
+  --hours-dot: 10px;
   --chip-height: 26px;
   --kind-club: var(--ink);
   --on-kind-club: var(--surface);

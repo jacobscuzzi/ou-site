@@ -1,0 +1,114 @@
+.hours {
+  --hours-ink: var(--ink-2);
+  --hours-soft: var(--fill);
+  margin: 0;
+  border-radius: var(--radius-photo);
+  background: var(--hours-soft);
+}
+
+.hours-open {
+  --hours-ink: var(--open);
+  --hours-soft: var(--open-soft);
+}
+
+.hours-closed {
+  --hours-ink: var(--closed);
+  --hours-soft: var(--closed-soft);
+}
+
+.hours-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--control-size);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-photo);
+  font-size: var(--text-base);
+  color: var(--ink);
+  text-align: left;
+}
+
+button.hours-line {
+  cursor: pointer;
+}
+
+button.hours-line:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.hours-dot {
+  flex: none;
+  width: var(--hours-dot);
+  height: var(--hours-dot);
+  border-radius: var(--radius-pill);
+  background: var(--hours-ink);
+}
+
+.hours-state {
+  font-weight: 700;
+  color: var(--hours-ink);
+  white-space: nowrap;
+}
+
+.hours-rest {
+  min-width: 0;
+  font-weight: 500;
+}
+
+.hours-toggle {
+  display: inline-flex;
+  margin-left: auto;
+  color: var(--ink-2);
+  transition: rotate 0.25s var(--ease);
+}
+
+.hours-toggle-on {
+  rotate: 180deg;
+}
+
+.hours-week {
+  width: 100%;
+  padding: 0 var(--space-3) var(--space-3);
+  border-spacing: 0;
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+
+.hours-week th,
+.hours-week td {
+  padding: var(--space-1) var(--space-2);
+  font-weight: 400;
+  text-align: left;
+}
+
+.hours-week th::first-letter {
+  text-transform: uppercase;
+}
+
+.hours-week td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.hours-today th,
+.hours-today td {
+  background: var(--surface);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.hours-today th {
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+}
+
+.hours-today td {
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hours-toggle {
+    transition: none;
+  }
+}

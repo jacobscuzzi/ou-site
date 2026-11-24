@@ -60,6 +60,12 @@ export type MenuItem = {
   happyHourPrice: number | null
 }
 
+export type OpeningPeriod = {
+  day: 1 | 2 | 3 | 4 | 5 | 6 | 7
+  open: string
+  close: string
+}
+
 export type Bar = {
   id: string
   rank: number
@@ -73,6 +79,8 @@ export type Bar = {
   pintPrice: number | null
   happyHour: HappyHour | null
   openUntil: string | null
+  openNow?: boolean
+  hours?: OpeningPeriod[]
   kinds: string[]
   googleMapsUrl: string
   sources: { type: SourceType; url: string }[]

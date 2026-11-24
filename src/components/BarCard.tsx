@@ -3,6 +3,7 @@ import type { Bar } from '../api/types'
 import { hintFor, useT } from '../i18n'
 import BarDetail from './BarDetail'
 import CardChips from './CardChips'
+import Hours from './Hours'
 import Photo from './Photo'
 import './BarCard.css'
 
@@ -48,6 +49,8 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
           <span className="card-name">{bar.name}</span>
           <span className="card-arr">{bar.arrondissement}</span>
         </div>
+
+        {open && <Hours bar={bar} />}
 
         <CardChips bar={bar} open={open} />
 

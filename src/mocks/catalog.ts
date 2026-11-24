@@ -1,8 +1,9 @@
-import type { Bar, Layer, Post, Venue } from '../api/types'
+import type { Bar, Layer, OpeningPeriod, Post, Venue } from '../api/types'
+import { currentPeriod, parisNow } from '../hours'
 import bars from './bars.json'
 import extra from './places.json'
 
-export type MockPlace = Omit<Bar, 'compliant' | 'constraintsNotMet' | 'kinds'> & { layers: Layer[] }
+export type MockPlace = Omit<Bar, 'compliant' | 'constraintsNotMet' | 'kinds' | 'hours' | 'openNow'> & { layers: Layer[] }
 
 const danceBars = new Set([
   'red-factory-paris',
@@ -81,9 +82,33 @@ export function available(layer: Layer) {
   return layer !== 'coffee' || new URLSearchParams(location.search).has('mock-coffee')
 }
 
+const EVERY_DAY = [1, 2, 3, 4, 5, 6, 7] as const
+const CLUB_NIGHTS = [4, 5, 6] as const
+
+// The json openUntil is the usual closing time; the week is built around it.
+function weekOf(p: MockPlace): OpeningPeriod[] | undefined {
+  const i = catalog.indexOf(p)
+  const close = p.openUntil
+  if (!close || i % 17 === 5) return undefined
+  const kind = kindOf(p)
+  const days = kind === 'club' ? CLUB_NIGHTS : EVERY_DAY.filter((d) => i % 5 !== 1 || d !== 1)
+  return days.flatMap((day): OpeningPeriod[] => {
+    if (kind === 'restaurant') return [{ day, open: '12:00', close: '14:30' }, { day, open: '19:00', close }]
+    const open = kind === 'club' ? '23:00' : kind === 'cafe' ? '08:00' : i % 3 === 0 ? '10:00' : '17:00'
+    return [{ day, open, close }]
+  })
+}
+
+export function opening(p: MockPlace): Pick<Bar, 'openUntil' | 'openNow' | 'hours'> {
+  const hours = weekOf(p)
+  if (!hours) return { openUntil: null }
+  const now = currentPeriod(hours, parisNow())
+  return { openUntil: now?.close ?? null, openNow: now !== null, hours }
+}
+
 export function toBar(place: MockPlace): Bar {
   const { layers: _, ...p } = place
-  return { ...p, kinds: [kindOf(place)], compliant: true, constraintsNotMet: [] }
+  return { ...p, ...opening(place), kinds: [kindOf(place)], compliant: true, constraintsNotMet: [] }
 }
 
 const wishes: [Layer, RegExp][] = [
