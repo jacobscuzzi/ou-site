@@ -180,6 +180,16 @@
   --bubble-stagger: 40ms;
   --bubble-enter-scale: 0.6;
   --control-size: 44px;
+  --strip-day: 46px;
+  --action-compact: 32px;
+  --strip-height: 48px;
+  --strip-toggle-width: 240px;
+  --strip-none-opacity: 0.5;
+  --strip-clear: 0px;
+  --dot-r-faded: 2.5px;
+  --dot-faded-opacity: 0.3;
+  --sheet-scrim: rgba(17, 17, 20, 0.35);
+  --cal-cell: 44px;
   --layer-emoji: 22px;
   --post-tile: 84px;
   --post-play: 28px;

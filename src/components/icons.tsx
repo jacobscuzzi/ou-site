@@ -140,3 +140,20 @@ export function CloseIcon({ size = 18 }: IconProps) {
     </svg>
   )
 }
+
+export function CalendarIcon({ size = 18 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <rect x="3" y="5" width="18" height="16" rx="3" />
+      <path d="M3 10h18M8 3v4M16 3v4" />
+    </svg>
+  )
+}
+
+export function NextIcon({ size = 18 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M9 6l6 6-6 6" />
+    </svg>
+  )
+}

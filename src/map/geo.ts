@@ -25,7 +25,7 @@ const musicGroups = {
 type CuisineChip = keyof typeof cuisineGroups
 type MusicChip = keyof typeof musicGroups
 
-export type ChipKey = 'open' | 'terrace' | 'dancing' | 'cheap' | 'budget' | 'clubs' | 'dancebars' | CuisineChip | MusicChip
+export type ChipKey = 'open' | 'terrace' | 'dancing' | 'cheap' | 'budget' | 'clubs' | 'dancebars' | 'deal' | CuisineChip | MusicChip
 
 export const CHEAP_PINT = 5
 export const CHEAP_MEAL = 15
@@ -35,9 +35,9 @@ const musicChips = Object.keys(musicGroups) as MusicChip[]
 
 export const layerChips: Record<Layer, ChipKey[]> = {
   drink: ['open', 'terrace', 'dancing', 'cheap'],
-  eat: ['open', 'terrace', 'budget', ...cuisineChips],
+  eat: ['deal', 'open', 'terrace', 'budget', ...cuisineChips],
   dance: ['open', 'clubs', 'dancebars', ...musicChips, 'cheap'],
-  coffee: ['open', 'terrace'],
+  coffee: ['deal', 'open', 'terrace'],
 }
 
 // Chips of one family widen each other (Asian or Italian); everything else narrows.
@@ -53,6 +53,7 @@ const checks: Record<ChipKey, (bar: MapBar) => boolean> = {
   budget: (bar) => bar.pricePerPerson !== undefined && bar.pricePerPerson < CHEAP_MEAL,
   clubs: (bar) => bar.kinds?.includes('club') === true,
   dancebars: (bar) => bar.kinds?.includes('bar') === true && !bar.kinds.includes('club'),
+  deal: (bar) => bar.deal === true,
   ...group(cuisineGroups, (bar) => bar.cuisines ?? (bar.cuisine ? [bar.cuisine] : [])),
   ...group(musicGroups, (bar) => bar.music ?? bar.tags),
 }
@@ -144,7 +145,7 @@ export function boundsOf(points: { lat: number; lng: number }[]): Bounds | null 
 
 const flag = (v: boolean) => (v ? 1 : 0)
 
-export function barsToGeoJSON(bars: MapBar[]): GeoJSON.FeatureCollection<GeoJSON.Point> {
+export function barsToGeoJSON(bars: MapBar[], night: ReadonlySet<string> | null = null): GeoJSON.FeatureCollection<GeoJSON.Point> {
   const ranked = bars.map((bar) => bar.quality).sort((a, b) => b - a)
   const threshold = ranked[Math.ceil(ranked.length / 4) - 1] ?? Infinity
   return {
@@ -159,6 +160,7 @@ export function barsToGeoJSON(bars: MapBar[]): GeoJSON.FeatureCollection<GeoJSON
         ...Object.fromEntries((Object.keys(checks) as ChipKey[]).map((chip) => [chip, flag(checks[chip](bar))])),
         top: flag(bar.quality >= threshold),
         club: flag(bar.kinds?.includes('club') === true),
+        ev: flag(night === null || night.has(bar.id)),
       },
     })),
   }

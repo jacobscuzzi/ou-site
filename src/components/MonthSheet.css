@@ -1,0 +1,123 @@
+.month-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--sheet-scrim);
+}
+
+.month {
+  width: 100%;
+  max-width: var(--app-width-phone);
+  padding: var(--space-4) var(--space-4) calc(var(--space-5) + env(safe-area-inset-bottom));
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background: var(--surface);
+  box-shadow: var(--shadow-sheet);
+  animation: month-in var(--panel-in-ms) var(--ease);
+}
+
+@keyframes month-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .month {
+    animation: none;
+  }
+}
+
+.month-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.month-title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: 700;
+  text-align: center;
+}
+
+.month-nav {
+  display: grid;
+  place-items: center;
+  width: var(--control-size);
+  height: var(--control-size);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+}
+
+.month-nav:disabled {
+  opacity: var(--strip-none-opacity);
+  cursor: default;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-1);
+}
+
+.month-wd {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-align: center;
+  color: var(--ink-2);
+}
+
+.month-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: var(--cal-cell);
+  border: 0;
+  border-radius: var(--radius-photo);
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.month-day:disabled {
+  color: var(--ink-2);
+  opacity: var(--strip-none-opacity);
+  cursor: default;
+}
+
+.month-day-on {
+  background: var(--pink-gradient);
+  color: var(--on-pink);
+}
+
+.month-count {
+  min-height: var(--text-chip);
+  font-size: var(--text-chip);
+  line-height: 1;
+  color: var(--pink-text);
+}
+
+.month-count-none {
+  color: var(--ink-2);
+}
+
+.month-day-on .month-count {
+  color: var(--on-pink);
+}
+
+.month-nav:focus-visible,
+.month-day:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}

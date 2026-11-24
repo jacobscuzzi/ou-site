@@ -49,6 +49,7 @@ type Props = {
   onBounds: (b: Bounds) => void
   onFail: () => void
   padKey?: string
+  night?: ReadonlySet<string> | null
 }
 
 type Tokens = ReturnType<typeof readTokens>
@@ -71,6 +72,8 @@ function readTokens() {
     opacityMin: num('--dot-opacity-min'),
     opacityMax: num('--dot-opacity-max'),
     dim: num('--dot-dim-opacity'),
+    rFaded: num('--dot-r-faded'),
+    faded: num('--dot-faded-opacity'),
     hit: num('--dot-hit'),
     bubbleGap: num('--bubble-gap'),
     bubbleOut: num('--bubble-out'),
@@ -117,10 +120,10 @@ function widen(b: Bounds, m: number): Bounds {
   return { minLng: b.minLng - m, minLat: b.minLat - m, maxLng: b.maxLng + m, maxLat: b.maxLat + m }
 }
 
-function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[]) {
+function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[], night: ReadonlySet<string> | null) {
   const top: ExpressionSpecification = ['==', ['get', 'top'], 1]
   const font = styleFont(map)
-  map.addSource('bars', { type: 'geojson', data: barsToGeoJSON(bars) })
+  map.addSource('bars', { type: 'geojson', data: barsToGeoJSON(bars, night) })
   map.addLayer({
     id: 'dots',
     type: 'circle',
@@ -151,8 +154,8 @@ function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[]) {
   })
 }
 
-function applyData(map: MaplibreMap, bars: MapBar[]) {
-  map.getSource<GeoJSONSource>('bars')?.setData(barsToGeoJSON(bars))
+function applyData(map: MaplibreMap, bars: MapBar[], night: ReadonlySet<string> | null) {
+  map.getSource<GeoJSONSource>('bars')?.setData(barsToGeoJSON(bars, night))
 }
 
 function applyFilter(map: MaplibreMap, chips: ReadonlySet<ChipKey>, bubbled: string[] = []) {
@@ -168,14 +171,17 @@ function collapseAttribution(map: MaplibreMap) {
 
 function applyLook(map: MaplibreMap, tk: Tokens, dimmed: boolean, selectedId: string | null) {
   const selected: ExpressionSpecification = ['==', ['get', 'id'], selectedId ?? '']
+  const faded: ExpressionSpecification = ['==', ['get', 'ev'], 0]
   const base: ExpressionSpecification | number = dimmed
     ? tk.dim
     : ['interpolate', ['linear'], ['get', 'quality'], 0, tk.opacityMin, 1, tk.opacityMax]
-  const opacity: ExpressionSpecification = ['case', selected, tk.opacityMax, base]
+  const opacity: ExpressionSpecification = ['case', selected, tk.opacityMax, faded, tk.faded, base]
   map.setPaintProperty('dots', 'circle-radius', [
     'case',
     selected,
     tk.rSelected,
+    faded,
+    tk.rFaded,
     ['interpolate', ['linear'], ['get', 'quality'], 0, tk.rMin, 1, tk.rMax],
   ])
   map.setPaintProperty('dots', 'circle-opacity', opacity)
@@ -286,7 +292,9 @@ export default function CityMap(props: Props) {
     const pad = padding(map)
     const loose = { ...pad, left: 0, right: 0 }
     const kept = new Set(exploreIds.current)
-    const visible = p.bars.filter((bar) => passes(bar, p.chips) && inView(map, bar, kept.has(bar.id) ? loose : pad))
+    const visible = p.bars.filter(
+      (bar) => passes(bar, p.chips) && (!p.night || p.night.has(bar.id)) && inView(map, bar, kept.has(bar.id) ? loose : pad),
+    )
     layer.sync(exploreSpecs(map, visible, exploreIds.current, tokens.current.bubbleGap, latestKind.current), lookOf(p))
     exploreIds.current = layer.ids()
     applyFilter(map, p.chips, layer.ids())
@@ -362,7 +370,7 @@ export default function CityMap(props: Props) {
     map.on('load', () => {
       const p = latest.current
       applyTheme(map, tk)
-      addLayers(map, tk, p.bars)
+      addLayers(map, tk, p.bars, p.night ?? null)
       ready.current = true
       names()
       setLoaded(true)
@@ -407,9 +415,9 @@ export default function CityMap(props: Props) {
 
   useEffect(() => {
     const map = mapRef.current
-    if (map && ready.current) applyData(map, bars)
+    if (map && ready.current) applyData(map, bars, latest.current.night ?? null)
     refreshBubbles()
-  }, [bars])
+  }, [bars, props.night])
 
   useEffect(() => {
     const map = mapRef.current

@@ -1,0 +1,113 @@
+.strip {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  margin: 0 var(--space-5);
+  padding: var(--space-1);
+  border: var(--border-1) solid var(--glass-border-strong);
+  border-radius: var(--radius-tile);
+  background: var(--glass-lens);
+  -webkit-backdrop-filter: var(--blur-lens);
+  backdrop-filter: var(--blur-lens);
+  box-shadow: var(--glass-lens-edge), var(--hairline), var(--shadow-lens);
+  pointer-events: auto;
+}
+
+.strip-days {
+  display: flex;
+  flex: 1;
+  gap: var(--space-1);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  touch-action: pan-x;
+}
+
+.strip-days::-webkit-scrollbar {
+  display: none;
+}
+
+.strip-day,
+.strip-opt {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--strip-day);
+  height: var(--strip-height);
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-photo);
+  background: transparent;
+  font: inherit;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.strip-opt {
+  flex: 1;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.strip-name {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.strip-num {
+  font-size: var(--text-base);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.strip-count {
+  min-height: var(--text-chip);
+  font-size: var(--text-chip);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--pink-text);
+}
+
+.strip-count-none {
+  color: var(--ink-2);
+  opacity: var(--strip-none-opacity);
+}
+
+.strip-day-on {
+  background: var(--pink-gradient);
+  box-shadow: var(--shadow-send);
+  color: var(--on-pink);
+}
+
+.strip-day-on .strip-count {
+  color: var(--on-pink);
+}
+
+.strip-day:focus-visible,
+.strip-opt:focus-visible,
+.strip-cal:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.strip-cal {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--control-size);
+  border: 0;
+  border-left: var(--border-1) solid var(--line);
+  border-radius: 0 var(--radius-photo) var(--radius-photo) 0;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+}
+
+.strip-toggle {
+  align-self: flex-start;
+  min-width: var(--strip-toggle-width);
+}

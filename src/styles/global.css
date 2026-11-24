@@ -209,8 +209,21 @@ html.locked body {
   --sheet-now: var(--sheet-half);
 }
 
+.stage {
+  --map-pad-top: calc(var(--top-clear) + var(--control-size) + var(--space-5) + var(--strip-clear));
+}
+
+.stage[data-strip] {
+  --strip-clear: calc(var(--strip-height) + var(--space-4));
+}
+
 .stage[data-mode='explore'] {
-  --map-pad-top: calc(var(--top-clear) + var(--control-size) + var(--space-1) + var(--bubble-height) + var(--space-5));
+  --map-pad-top: calc(var(--top-clear) + var(--control-size) + var(--space-1) + var(--bubble-height) + var(--space-5) + var(--strip-clear));
+}
+
+.top .strip {
+  margin-top: calc(-1 * var(--space-1));
+  margin-bottom: var(--space-2);
 }
 
 .visually-hidden {
