@@ -1,0 +1,129 @@
+.ev {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: var(--border-1) solid var(--glass-border);
+  border-radius: var(--radius-tile);
+  background: var(--glass-lite);
+  box-shadow: var(--shadow-1);
+}
+
+.ev-selected {
+  border-color: var(--pink);
+  box-shadow: var(--shadow-1), var(--focus-ring);
+}
+
+.ev-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ev-main:disabled {
+  cursor: default;
+}
+
+.ev-main:focus-visible {
+  outline: none;
+  border-radius: var(--radius-photo);
+  box-shadow: var(--focus-ring);
+}
+
+.ev-when {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--pink-text);
+}
+
+.ev-date {
+  color: var(--ink);
+}
+
+.ev-regular {
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--pink-soft);
+  font-size: var(--text-xs);
+}
+
+.ev-title {
+  font-size: var(--text-md);
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.ev-place {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.ev-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.ev-lineup {
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+}
+
+.ev-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.ev-price {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--pink-text);
+}
+
+.ev .posts {
+  margin: 0;
+}
+
+.deal-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.deal-badge {
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--pink-gradient);
+  color: var(--on-pink);
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+
+.deal-title {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.deal-until {
+  color: var(--ink-2);
+}
