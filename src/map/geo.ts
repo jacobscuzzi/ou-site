@@ -26,7 +26,11 @@ const musicGroups = {
 type CuisineChip = keyof typeof cuisineGroups
 type MusicChip = keyof typeof musicGroups
 
-export type ChipKey = 'open' | 'terrace' | 'dancing' | 'cheap' | 'budget' | 'clubs' | 'dancebars' | 'deal' | CuisineChip | MusicChip
+// coffee chips read one place tag each
+const tagChips = { laptop: ['laptop_friendly'], quiet: ['quiet'], bakery: ['bakery'] }
+type TagChip = keyof typeof tagChips
+
+export type ChipKey = 'open' | 'terrace' | 'dancing' | 'cheap' | 'budget' | 'clubs' | 'dancebars' | 'deal' | CuisineChip | MusicChip | TagChip
 
 export const CHEAP_PINT = 5
 export const CHEAP_MEAL = 15
@@ -38,7 +42,7 @@ export const layerChips: Record<Layer, ChipKey[]> = {
   drink: ['open', 'terrace', 'dancing', 'cheap'],
   eat: ['open', 'terrace', 'budget', ...cuisineChips],
   dance: ['open', 'clubs', 'dancebars', ...musicChips, 'cheap'],
-  coffee: ['open', 'terrace'],
+  coffee: ['open', 'terrace', 'laptop', 'quiet', 'bakery'],
 }
 
 // Chips of one family exclude each other (Italian replaces Burgers, Techno replaces Afro);
@@ -68,6 +72,7 @@ const checks: Record<ChipKey, (bar: MapBar) => boolean> = {
   // a cuisine from the profile, or a cuisine tag with its evidence (kebab comes from the tags only)
   ...group(cuisineGroups, (bar) => [...(bar.cuisines ?? (bar.cuisine ? [bar.cuisine] : [])), ...(bar.tags ?? [])]),
   ...group(musicGroups, (bar) => bar.music ?? bar.tags),
+  ...group(tagChips, (bar) => bar.tags ?? []),
 }
 
 function group<K extends string>(groups: Record<K, string[]>, values: (bar: MapBar) => string[]) {
