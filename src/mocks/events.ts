@@ -92,10 +92,11 @@ function party(p: MockPlace, night: string, n: number): Event {
     conditions: null,
     validUntil: null,
     image: null,
+    photo: p.photos[0] ?? null,
     lat: p.lat,
     lng: p.lng,
     sources: n % 3 === 0 ? ['shotgun', 'resident_advisor', 'tiktok'] : ['shotgun'],
-    posts: n % 3 === 0 ? tiles.slice(0, 1 + (i % 2)) : [],
+    posts: n % 3 === 0 ? tiles.slice(0, 1 + (i % 2)) : p.posts,
     actions: [{ kind: 'tickets', provider: 'shotgun', url: ticket }, ...mockActions(p)],
   }
 }
@@ -119,10 +120,11 @@ function regular(p: MockPlace, night: string): Event {
     conditions: null,
     validUntil: null,
     image: null,
+    photo: p.photos[0] ?? null,
     lat: p.lat,
     lng: p.lng,
     sources: ['profile'],
-    posts: [],
+    posts: p.posts,
     actions: mockActions(p),
   }
 }
@@ -176,6 +178,7 @@ function dealsOn(night: string, layer: Layer): Event[] {
       conditions,
       validUntil: until,
       image: null,
+      photo: p.photos[0] ?? null,
       lat: p.lat,
       lng: p.lng,
       sources: [pct ? 'thefork' : 'editorial'],

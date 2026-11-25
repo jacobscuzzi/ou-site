@@ -1,4 +1,4 @@
-import type { Bar, BarsResponse, Layer, LayersResponse, MapBar, Venue } from '../api/types'
+import type { Bar, BarsResponse, Layer, LayersResponse, MapBar, PostsResponse, Venue } from '../api/types'
 import { mockActions, placeDeal } from './events'
 import { available, catalog, inLayer, kindOf, LAYERS, opening, places, toBar, type MockPlace } from './catalog'
 
@@ -56,6 +56,15 @@ export function mockBars(layer: Layer | null = null, venue: Venue = 'bar'): Bars
 
 export function mockLayers(): LayersResponse {
   return { layers: LAYERS.map((id) => ({ id, count: inLayer(id).length, available: available(id) })) }
+}
+
+export function mockPosts(ids: string[]): PostsResponse {
+  const out: PostsResponse['posts'] = {}
+  for (const id of ids.slice(0, 30)) {
+    const p = catalog.find((x) => x.id === id)
+    if (p && p.posts.length > 0) out[id] = p.posts
+  }
+  return { posts: out }
 }
 
 export function mockBar(id: string): Bar {

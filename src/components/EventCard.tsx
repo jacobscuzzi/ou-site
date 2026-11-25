@@ -4,6 +4,7 @@ import { useLang, useT, type Strings } from '../i18n'
 import { labelFor } from '../tags'
 import { clockOf, shortDate } from '../night'
 import { ActionLink } from './Actions'
+import Photo from './Photo'
 import Posts from './Posts'
 import './EventCard.css'
 
@@ -87,23 +88,26 @@ export default function EventCard({ event, kinds, selected = false, onSelect, sh
 
   return (
     <article className={selected ? 'ev ev-selected' : 'ev'} data-id={event.placeId}>
-      <Main className="ev-main" onSelect={onSelect} focusable={focusable}>
-        <span className="ev-when">
-          {event.night && showDate && <span className="ev-date">{shortDate(event.night, lang)}</span>}
-          {time && <span className="ev-time">{time}</span>}
-          {event.regular && <span className="ev-regular">{t.regularNight}</span>}
-        </span>
-        <span className="ev-title">{event.title}</span>
-        {showPlace && <span className="ev-place">{event.placeName}</span>}
-        {(event.genres.length > 0 || event.lineup.length > 0) && (
-          <span className="ev-tags">
-            {event.genres.slice(0, 2).map((g) => (
-              <span key={g} className="chip">{labelFor(g, lang)}</span>
-            ))}
-            {event.lineup.length > 0 && <span className="ev-lineup">{event.lineup.slice(0, 3).join(', ')}</span>}
+      <div className="ev-head">
+        <Photo className="ev-photo" src={event.image ?? event.photo ?? undefined} />
+        <Main className="ev-main" onSelect={onSelect} focusable={focusable}>
+          <span className="ev-when">
+            {event.night && showDate && <span className="ev-date">{shortDate(event.night, lang)}</span>}
+            {time && <span className="ev-time">{time}</span>}
+            {event.regular && <span className="ev-regular">{t.regularNight}</span>}
           </span>
-        )}
-      </Main>
+          <span className="ev-title">{event.title}</span>
+          {showPlace && <span className="ev-place">{event.placeName}</span>}
+          {(event.genres.length > 0 || event.lineup.length > 0) && (
+            <span className="ev-tags">
+              {event.genres.slice(0, 2).map((g) => (
+                <span key={g} className="chip">{labelFor(g, lang)}</span>
+              ))}
+              {event.lineup.length > 0 && <span className="ev-lineup">{event.lineup.slice(0, 3).join(', ')}</span>}
+            </span>
+          )}
+        </Main>
+      </div>
       {(cost || (main && main.kind === 'tickets')) && (
         <div className="ev-foot">
           {cost && <span className="ev-price">{cost}</span>}

@@ -122,6 +122,7 @@ export type Event = {
   conditions: string | null
   validUntil: string | null
   image: string | null
+  photo: string | null
   lat: number
   lng: number
   sources: string[]
@@ -135,6 +136,10 @@ export type EventsResponse = {
   to: string
   layer?: Layer
   places?: MapBar[]
+}
+
+export type PostsResponse = {
+  posts: Record<string, Post[]>
 }
 
 export type DaysResponse = {

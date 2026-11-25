@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ComponentProps, type ComponentType, type FocusEvent } from 'react'
-import { fetchBars, fetchDays, fetchEvents, fetchLayers, moreBars, searchBars } from './api/client'
-import type { Bar, Event, Layer, MapBar } from './api/types'
+import { fetchBars, fetchDays, fetchEvents, fetchLayers, fetchPosts, moreBars, searchBars } from './api/client'
+import type { Bar, Event, Layer, MapBar, Post } from './api/types'
 import { initialLang, LangContext, strings } from './i18n'
 import { initialLayer, LayerContext, rememberLayer } from './mode'
 import { tick } from './haptic'
@@ -100,6 +100,8 @@ export default function App() {
   const [nightPlaces, setNightPlaces] = useState<MapBar[]>([])
   const [tonightEvents, setTonightEvents] = useState<Event[]>([])
   const [eventView, setEventView] = useState<Event | null>(null)
+  // TikToks of the places the explore list shows (the map entries carry none), kept per place
+  const [rowPosts, setRowPosts] = useState<ReadonlyMap<string, Post[]>>(() => new Map())
   const [eventsState, setEventsState] = useState<'loading' | 'ready' | 'error'>('loading')
   const [eventsAttempt, setEventsAttempt] = useState(0)
   const [monthOpen, setMonthOpen] = useState(false)
@@ -489,6 +491,32 @@ export default function App() {
   const badgeIds = useMemo(() => (tonightOf.size > 0 ? new Set(tonightOf.keys()) : null), [tonightOf])
   const kindsOf = (id: string) => shownBars.find((b) => b.id === id)?.kinds ?? []
 
+  const missingPosts = top
+    .map((b) => b.id)
+    .filter((id) => !rowPosts.has(id))
+    .slice(0, 30)
+    .join(',')
+  useEffect(() => {
+    if (!missingPosts) return
+    const ids = missingPosts.split(',')
+    const ctrl = new AbortController()
+    const timer = setTimeout(() => {
+      fetchPosts(ids, ctrl.signal)
+        .then((res) =>
+          setRowPosts((prev) => {
+            const next = new Map(prev)
+            for (const id of ids) next.set(id, res.posts[id] ?? [])
+            return next
+          }),
+        )
+        .catch(() => undefined)
+    }, 300)
+    return () => {
+      clearTimeout(timer)
+      ctrl.abort()
+    }
+  }, [missingPosts])
+
   function openEvent(e: Event) {
     quietUntil.current = performance.now() + QUIET_MS
     setHighlightId(null)
@@ -681,6 +709,7 @@ export default function App() {
               onSelect={pickFromList}
               onRetry={() => setBarsAttempt((n) => n + 1)}
               eventOf={(id) => tonightOf.get(id)}
+              postsOf={(id) => rowPosts.get(id)}
               onEvent={layer === 'drink' ? openEvent : undefined}
             />
           </div>

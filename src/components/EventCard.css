@@ -172,3 +172,21 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.ev-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.ev-photo {
+  flex: none;
+  width: var(--ev-photo);
+  height: var(--ev-photo);
+  border-radius: var(--radius-photo);
+}
+
+.ev-head .ev-main {
+  flex: 1;
+  min-width: 0;
+}

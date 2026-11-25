@@ -38,14 +38,21 @@ const posts: Record<string, Post[]> = {
   'dirty-lemon': [tiktok('the_fatmap', '7640066650405965088', 'photo', null)],
 }
 
-const drink: MockPlace[] = (bars as Omit<MockPlace, 'layers' | 'dishes' | 'posts'>[]).map((b) => ({
+// The mock lends the known TikToks to two places in three, so every list shows rows with posts.
+const known = Object.values(posts).flat()
+function lent(i: number): Post[] {
+  if (i % 3 === 2) return []
+  return Array.from({ length: 1 + (i % 4) }, (_, n) => known[(i + n) % known.length])
+}
+
+const drink: MockPlace[] = (bars as Omit<MockPlace, 'layers' | 'dishes' | 'posts'>[]).map((b, i) => ({
   ...b,
   dishes: [],
-  posts: posts[b.id] ?? [],
+  posts: posts[b.id] ?? lent(i),
   layers: danceBars.has(b.id) ? ['drink', 'dance'] : ['drink'],
 }))
 
-export const catalog: MockPlace[] = [...drink, ...(extra as MockPlace[])]
+export const catalog: MockPlace[] = [...drink, ...(extra as MockPlace[]).map((p, i) => ({ ...p, posts: p.posts?.length ? p.posts : lent(i + 1) }))]
 
 export const LAYERS: Layer[] = ['drink', 'eat', 'dance', 'coffee']
 

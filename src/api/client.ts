@@ -1,5 +1,5 @@
 import type { Bounds } from '../map/geo'
-import type { Action, ApiError, Bar, BarsResponse, DaysResponse, EventsResponse, Layer, LayersResponse, SearchResponse } from './types'
+import type { Action, ApiError, Bar, BarsResponse, DaysResponse, EventsResponse, Layer, LayersResponse, PostsResponse, SearchResponse } from './types'
 
 const useMock = import.meta.env.VITE_USE_MOCK === 'true'
 const baseUrl = useMock ? '' : (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
@@ -19,6 +19,7 @@ const searchFailures: Failures = { label: 'Search', names: { 410: 'SearchExpired
 const barsFailures: Failures = { label: 'Bars', names: { 503: 'BarsLoading' } }
 const layersFailures: Failures = { label: 'Layers', names: {} }
 const eventsFailures: Failures = { label: 'Events', names: {} }
+const postsFailures: Failures = { label: 'Posts', names: {} }
 const barFailures: Failures = { label: 'Bar', names: { 404: 'BarNotFound', 503: 'BarsLoading' } }
 
 async function get<T>(path: string, fallback: () => Promise<T>, failures: Failures, signal?: AbortSignal): Promise<T> {
@@ -79,6 +80,15 @@ export function fetchBars(layer: Layer, signal?: AbortSignal) {
 
 export function fetchLayers(signal?: AbortSignal) {
   return get<LayersResponse>('/api/layers', () => inPageMock(async () => (await import('../mocks/bars')).mockLayers(), signal), layersFailures, signal)
+}
+
+export function fetchPosts(ids: string[], signal?: AbortSignal) {
+  return get<PostsResponse>(
+    `/api/posts?ids=${ids.map(encodeURIComponent).join(',')}`,
+    () => inPageMock(async () => (await import('../mocks/bars')).mockPosts(ids), signal),
+    postsFailures,
+    signal,
+  )
 }
 
 export function fetchBar(id: string, signal?: AbortSignal) {

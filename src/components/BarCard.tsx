@@ -5,6 +5,7 @@ import BarDetail from './BarDetail'
 import CardChips from './CardChips'
 import Hours from './Hours'
 import Photo from './Photo'
+import Posts from './Posts'
 import { ActionLink } from './Actions'
 import EventCard, { DealLine, TonightLine } from './EventCard'
 import { useLayer } from '../mode'
@@ -80,6 +81,8 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
             {hintFor(bar.constraintsNotMet, t)}
           </p>
         )}
+
+        <Posts posts={bar.posts ?? []} focusable />
 
         <BarDetail bar={bar} open={open} />
       </div>

@@ -1,5 +1,5 @@
 import { delay, http, HttpResponse } from 'msw'
-import { mockBar, mockBars, mockLayers } from './bars'
+import { mockBar, mockBars, mockLayers, mockPosts } from './bars'
 import { isLayer, isVenue, parseBbox } from './catalog'
 import { mockDays, mockEvents, validDate } from './events'
 import { mockMore, mockSearch } from './search'
@@ -80,6 +80,13 @@ export const handlers = [
     if (layer !== null && !isLayer(layer)) return bad('unknown layer')
     if (!validDate(from) || !validDate(to)) return bad('bad date')
     return HttpResponse.json(mockDays(layer, from, to))
+  }),
+
+  http.get('/api/posts', async ({ request }) => {
+    await delay(200)
+    const ids = (new URL(request.url).searchParams.get('ids') ?? '').split(',').filter(Boolean)
+    if (ids.length === 0 || ids.length > 30) return HttpResponse.json({ error: 'ids must list 1 to 30 place ids' }, { status: 400 })
+    return HttpResponse.json(mockPosts(ids))
   }),
 
   http.get('/api/bars/:id', async ({ params }) => {

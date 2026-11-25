@@ -6,7 +6,6 @@ import { CocktailIcon, PinIcon } from './icons'
 import Dishes from './Dishes'
 import Menu from './Menu'
 import Photo from './Photo'
-import Posts from './Posts'
 import Actions from './Actions'
 import EventCard from './EventCard'
 import './BarDetail.css'
@@ -43,7 +42,6 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
             ))}
           </section>
         )}
-        <Posts posts={bar.posts ?? []} focusable={open} />
         {bar.happyHour && (
           <div className="detail-chips">
             <span className="chip">

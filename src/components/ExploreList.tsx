@@ -1,4 +1,4 @@
-import type { Event, MapBar } from '../api/types'
+import type { Event, MapBar, Post } from '../api/types'
 import { cuisineLabel, useLang, useT } from '../i18n'
 import { useLayer } from '../mode'
 import { price } from '../price'
@@ -8,6 +8,7 @@ import KindBadge from './KindBadge'
 import Photo from './Photo'
 import { ActionLink } from './Actions'
 import { TonightLine } from './EventCard'
+import Posts from './Posts'
 import './ExploreList.css'
 
 type Props = {
@@ -21,6 +22,7 @@ type Props = {
   // drink layer: the party a bar has tonight, and what a tap on its line does
   eventOf?: (id: string) => Event | undefined
   onEvent?: (e: Event) => void
+  postsOf?: (id: string) => Post[] | undefined
 }
 
 function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSelect: () => void }) {
@@ -69,7 +71,7 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
   )
 }
 
-export default function ExploreList({ bars, state, warming, selectedId, onSelect, onRetry, title, eventOf, onEvent }: Props) {
+export default function ExploreList({ bars, state, warming, selectedId, onSelect, onRetry, title, eventOf, onEvent, postsOf }: Props) {
   const t = useT()
 
   return (
@@ -91,18 +93,21 @@ export default function ExploreList({ bars, state, warming, selectedId, onSelect
           {bars.map((bar) => {
             const party = onEvent && eventOf?.(bar.id)
             return (
-              <li key={bar.id} className={['xrow-item', bar.action && 'xrow-item-cta', party && 'xrow-item-ev'].filter(Boolean).join(' ')}>
-                <Row bar={bar} selected={bar.id === selectedId} onSelect={() => onSelect(bar.id)} />
-                {party && (
-                  <span className="xrow-ev">
-                    <TonightLine event={party} onOpen={() => onEvent(party)} />
-                  </span>
-                )}
-                {bar.action && (
-                  <span className="xrow-cta">
-                    <ActionLink action={bar.action} kinds={bar.kinds} />
-                  </span>
-                )}
+              <li key={bar.id} className="xrow-item">
+                <div className={['xrow-box', bar.action && 'xrow-item-cta', party && 'xrow-item-ev'].filter(Boolean).join(' ')}>
+                  <Row bar={bar} selected={bar.id === selectedId} onSelect={() => onSelect(bar.id)} />
+                  {party && (
+                    <span className="xrow-ev">
+                      <TonightLine event={party} onOpen={() => onEvent(party)} />
+                    </span>
+                  )}
+                  {bar.action && (
+                    <span className="xrow-cta">
+                      <ActionLink action={bar.action} kinds={bar.kinds} />
+                    </span>
+                  )}
+                </div>
+                <Posts posts={postsOf?.(bar.id) ?? []} focusable />
               </li>
             )
           })}
