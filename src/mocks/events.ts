@@ -65,6 +65,7 @@ function parisOffset(day: string) {
 
 const titles = ['Techno All Night', 'House Sessions', 'Afro Club', 'Disco Fever', 'Warehouse', 'Rap Night']
 const genres = [['techno'], ['house'], ['afro', 'hip_hop'], ['disco'], ['techno', 'electro'], ['hip_hop']]
+const vibes = [['underground'], [], ['student'], ['queer'], ['underground', 'big_room'], []]
 const tiles: Post[] = [
   { platform: 'tiktok', postId: '7672815858439261473', url: 'https://www.tiktok.com/@nicolastheparisian/video/7672815858439261473', author: 'nicolastheparisian', likes: 926, kind: 'video', thumb: '/photos/tt/7672815858439261473.webp' },
   { platform: 'tiktok', postId: '7649444200856948000', url: 'https://www.tiktok.com/@timsurtiktok99/video/7649444200856948000', author: 'timsurtiktok99', likes: 558, kind: 'video', thumb: '/photos/tt/7649444200856948000.webp' },
@@ -98,6 +99,12 @@ function party(p: MockPlace, night: string, n: number): Event {
     sources: n % 3 === 0 ? ['shotgun', 'resident_advisor', 'tiktok'] : ['shotgun'],
     posts: n % 3 === 0 ? tiles.slice(0, 1 + (i % 2)) : p.posts,
     actions: [{ kind: 'tickets', provider: 'shotgun', url: ticket }, ...mockActions(p)],
+    description: `${titles[i]} at ${p.name}. Resident DJs all night, doors early for the warm-up.`,
+    vibes: vibes[i],
+    priceBucket: club ? (i % 3 === 2 ? 'mid' : 'low') : 'free',
+    doorTime: club ? '23:00' : '21:00',
+    minAge: club ? 18 : null,
+    priceTiers: club ? [{ name: 'Early', price: 10 + (i % 3) * 5 }, { name: 'Regular', price: 20 + (i % 3) * 5 }] : [],
   }
 }
 
@@ -252,7 +259,8 @@ export function mockWhen(q: string): { from: string; to: string } | undefined {
   if (/ce soir|tonight/.test(t)) return { from: today, to: today }
   if (/demain|tomorrow/.test(t)) return { from: addDays(today, 1), to: addDays(today, 1) }
   const days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche']
-  const i = days.findIndex((d) => new RegExp(`\\b${d}\\b`).test(t))
+  const en = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+  const i = days.findIndex((d, k) => new RegExp(`\\b(${d}|${en[k]})\\b`).test(t))
   if (i >= 0) {
     const d = next(i + 1, /prochain/.test(t) && i + 1 === wd)
     return { from: d, to: d }

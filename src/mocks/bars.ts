@@ -51,7 +51,8 @@ export function toMapBar(p: MockPlace): MapBar {
 }
 
 export function mockBars(layer: Layer | null = null, venue: Venue = 'bar'): BarsResponse {
-  return { bars: places(layer, venue).map(toMapBar), updatedAt: new Date().toISOString(), ...(layer && { layer }) }
+  const mode = (b: MapBar): MapBar => (layer === 'dance' ? { ...b, danceMode: b.kinds.includes('club') ? 'club' : 'party_bar' } : b)
+  return { bars: places(layer, venue).map(toMapBar).map(mode), updatedAt: new Date().toISOString(), ...(layer && { layer }) }
 }
 
 export function mockLayers(): LayersResponse {

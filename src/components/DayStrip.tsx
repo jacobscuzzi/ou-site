@@ -9,7 +9,7 @@ type Props = {
   counts: Record<string, number> | null
   value: Night | null
   onPick: (n: Night) => void
-  onCalendar: () => void
+  onCalendar?: () => void
 }
 
 export default function DayStrip({ days, counts, value, onPick, onCalendar }: Props) {
@@ -47,9 +47,11 @@ export default function DayStrip({ days, counts, value, onPick, onCalendar }: Pr
           )
         })}
       </div>
-      <button type="button" className="strip-cal" aria-label={t.moreDates} onClick={onCalendar}>
-        <CalendarIcon />
-      </button>
+      {onCalendar && (
+        <button type="button" className="strip-cal" aria-label={t.moreDates} onClick={onCalendar}>
+          <CalendarIcon />
+        </button>
+      )}
     </div>
   )
 }

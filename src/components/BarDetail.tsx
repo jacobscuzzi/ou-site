@@ -7,7 +7,7 @@ import Dishes from './Dishes'
 import Menu from './Menu'
 import Photo from './Photo'
 import Actions from './Actions'
-import EventCard from './EventCard'
+import EventRow from './EventRow'
 import { openPhotos, thumbOf } from '../photos'
 import './BarDetail.css'
 
@@ -37,9 +37,9 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
         )}
         {(bar.events ?? []).length > 0 && (
           <section className="detail-events">
-            <h3 className="menu-title">{t.nextEvents}</h3>
+            <h3 className="menu-title">{t.comingUp}</h3>
             {bar.events.map((e) => (
-              <EventCard key={e.id} event={e} kinds={bar.kinds} showPlace={false} focusable={open} />
+              <EventRow key={e.id} event={e} kinds={bar.kinds} focusable={open} />
             ))}
           </section>
         )}

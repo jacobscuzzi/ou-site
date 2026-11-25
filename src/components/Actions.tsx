@@ -23,7 +23,7 @@ export function actionLabel(a: Action, kinds: string[], t: Strings) {
 
 type LinkProps = { action: Action; kinds: string[]; main?: boolean; focusable?: boolean }
 
-export function ActionLink({ action, kinds, main = false, focusable = true }: LinkProps) {
+export function ActionLink({ action, kinds, main = false, focusable = true, label }: LinkProps & { label?: string }) {
   const t = useT()
   return (
     <a
@@ -34,7 +34,7 @@ export function ActionLink({ action, kinds, main = false, focusable = true }: Li
       tabIndex={focusable ? 0 : -1}
       onClick={(e) => e.stopPropagation()}
     >
-      {actionLabel(action, kinds, t)}
+      {label ?? actionLabel(action, kinds, t)}
     </a>
   )
 }

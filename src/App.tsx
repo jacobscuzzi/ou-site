@@ -22,10 +22,11 @@ import EventList from './components/EventList'
 import Intro, { introWanted } from './components/Intro'
 import ModeChoice from './components/ModeChoice'
 import PhotoViewer from './components/PhotoViewer'
+import AgendaSheet from './components/AgendaSheet'
 import { onOpenPhotos } from './photos'
 import { useTheme } from './theme'
 import { initialDate, longDay, nights, sameNight, shortDate, STRIP_DAYS, tonight, weekend, writeDate, type Night } from './night'
-import { BackIcon, DownIcon, MapIcon, SearchIcon } from './components/icons'
+import { BackIcon, CalendarIcon, DownIcon, MapIcon, SearchIcon } from './components/icons'
 import { useSheetHistory } from './sheetHistory'
 
 type MapProps = ComponentProps<typeof import('./components/CityMap').default>
@@ -70,6 +71,8 @@ export default function App() {
   const [intro, setIntro] = useState(introWanted)
   const [asking, setAsking] = useState(modeWanted)
   const [mapLive, setMapLive] = useState(false)
+  const [agendaOpen, setAgendaOpen] = useState(false)
+  const [pendingShow, setPendingShow] = useState<string | null>(null)
   const theme = useTheme()
   const [viewer, setViewer] = useState<{ photos: string[]; index: number; title: string } | null>(null)
   const [layer, setLayer] = useState<Layer>(start.layer)
@@ -504,6 +507,17 @@ export default function App() {
   }, [layer, tonightEvents])
   const badgeIds = useMemo(() => (tonightOf.size > 0 ? new Set(tonightOf.keys()) : null), [tonightOf])
   const kindsOf = (id: string) => shownBars.find((b) => b.id === id)?.kinds ?? []
+  // while searching only the results carry the ring of their party
+  const ringIds = useMemo(
+    () => (hasResults && nightIds ? new Set(results.filter((b) => nightIds.has(b.id)).map((b) => b.id)) : nightIds),
+    [hasResults, nightIds, results],
+  )
+
+  useEffect(() => {
+    if (!pendingShow || !shownBars.some((b) => b.id === pendingShow)) return
+    setPendingShow(null)
+    pickFromMap(pendingShow)
+  }, [pendingShow, shownBars])
 
   const missingPosts = top
     .map((b) => b.id)
@@ -607,7 +621,18 @@ export default function App() {
 
   const heading = <h1 className="visually-hidden" tabIndex={-1}>où, {t.tagline}</h1>
   const offered = layers ?? [layer]
-  const layerSwitch = <LayerSwitch layer={layer} layers={offered} moved={moved} onChange={chooseLayer} />
+  const tonightCount = counts?.[stripStart] ?? 0
+  const layerSwitch = (
+    <>
+      {layer === 'dance' && hasEvents && (
+        <button type="button" className="agenda-fab" aria-label={t.agendaOpen(tonightCount)} onClick={() => setAgendaOpen(true)}>
+          <CalendarIcon />
+          {tonightCount > 0 && <span className="agenda-fab-count" aria-hidden="true">{tonightCount}</span>}
+        </button>
+      )}
+      <LayerSwitch layer={layer} layers={offered} moved={moved} onChange={chooseLayer} />
+    </>
+  )
   const searchBar = (onHome: () => void, homeLabel: string) => (
     <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={onHome} homeLabel={homeLabel}>
       {layerSwitch}
@@ -627,6 +652,7 @@ export default function App() {
       onSelect={pick}
       onFirst={pick && follow}
       onOpen={() => setPlaceOpened(true)}
+      night={layer === 'dance' && query !== null ? night : null}
     />
   )
 
@@ -681,7 +707,8 @@ export default function App() {
           onBounds={setBounds}
           onFail={() => setMapFailed(true)}
           padKey={`${sheet}:${query === null}:${layer}`}
-          night={nightIds}
+          night={ringIds}
+          boost={nightIds}
           badge={badgeIds}
         />
       </Suspense>
@@ -807,6 +834,23 @@ export default function App() {
           />
         )}
         <InstallHint placeOpened={placeOpened} />
+        {agendaOpen && (
+          <AgendaSheet
+            days={nights(stripStart, STRIP_DAYS)}
+            counts={counts}
+            day={night?.from ?? stripStart}
+            bounds={bounds}
+            kindsOf={kindsOf}
+            onDay={(d) => pickNight(one(d))}
+            onShow={(e) => {
+              setAgendaOpen(false)
+              if (e.night) pickNight(one(e.night))
+              setView('map')
+              setPendingShow(e.placeId)
+            }}
+            onClose={() => setAgendaOpen(false)}
+          />
+        )}
         {monthOpen && (
           <MonthSheet
             layer="dance"

@@ -2,7 +2,8 @@ import type { ReactNode } from 'react'
 import type { Event } from '../api/types'
 import { useLang, useT, type Strings } from '../i18n'
 import { labelFor } from '../tags'
-import { clockOf, shortDate } from '../night'
+import { clockOf, shortDate, shortDay } from '../night'
+import { genreLabel } from '../eventTags'
 import { ActionLink } from './Actions'
 import Photo from './Photo'
 import Posts from './Posts'
@@ -16,6 +17,11 @@ function euros(n: number) {
 export function eventPrice(e: Event, t: Strings) {
   if (e.priceMin === null) return null
   if (e.priceMin === 0 && !e.priceMax) return t.free
+  if (e.priceMin === 0) {
+    // a free student or early ticket: the price people pay is the cheapest paid one
+    const paid = (e.priceTiers ?? []).map((x) => x.price ?? 0).filter((p) => p > 0)
+    return t.fromPrice(euros(paid.length > 0 ? Math.min(...paid) : (e.priceMax as number)))
+  }
   return e.priceMax && e.priceMax > e.priceMin ? t.fromPrice(euros(e.priceMin)) : euros(e.priceMin)
 }
 
@@ -33,6 +39,23 @@ export function DealLine({ deal }: { deal: Event }) {
       <span className="deal-badge">{t.dealBadge}</span>
       <span className="deal-title">{deal.title}</span>
       <span className="deal-until">{deal.validUntil ? t.dealUntil(shortDate(deal.validUntil, lang)) : t.dealRecent}</span>
+    </p>
+  )
+}
+
+// The party a search result matched through: "Sat · title · hip-hop · from 15 EUR".
+export function EventLine({ event }: { event: Event }) {
+  const t = useT()
+  const lang = useLang()
+  const day = event.night ? shortDay(event.night, lang) : null
+  const genre = event.genres.find((g) => g !== 'other')
+  const cost = eventPrice(event, t)
+  return (
+    <p className="event-line">
+      {day && <span>{day}</span>}
+      <span className="event-line-title">{event.title}</span>
+      {genre && <span>{genreLabel(genre, lang)}</span>}
+      {cost && <span>{cost}</span>}
     </p>
   )
 }

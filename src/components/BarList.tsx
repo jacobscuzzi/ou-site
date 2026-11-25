@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import type { Bar } from '../api/types'
 import { useT } from '../i18n'
 import BarCard from './BarCard'
+import type { Night } from '../night'
 import Thinking from './Thinking'
 import './BarList.css'
 
@@ -18,12 +19,13 @@ type Props = {
   onSelect?: (id: string) => void
   onFirst?: (id: string) => void
   onOpen?: () => void
+  night?: Night | null
 }
 
 const FIRST_PAGE = 5
 const MOSTLY = 0.5
 
-export default function BarList({ bars, loading, error, onRetry, hasMore, loadingMore, moreError, onMore, selectedId, onSelect, onFirst, onOpen }: Props) {
+export default function BarList({ bars, loading, error, onRetry, hasMore, loadingMore, moreError, onMore, selectedId, onSelect, onFirst, onOpen, night }: Props) {
   const t = useT()
   const list = useRef<HTMLDivElement>(null)
 
@@ -87,6 +89,7 @@ export default function BarList({ bars, loading, error, onRetry, hasMore, loadin
           selected={bar.id === selectedId}
           onSelect={onSelect && (() => onSelect(bar.id))}
           onOpen={onOpen}
+          night={night}
         />
       ))}
       {moreError ? (

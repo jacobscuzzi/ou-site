@@ -1,6 +1,6 @@
 import type { Bar, Layer, SearchResponse, Venue } from '../api/types'
-import { available, inBox, places, toBar, wishLayer, type Box } from './catalog'
-import { mockWhen } from './events'
+import { available, catalog, inBox, places, toBar, wishLayer, type Box } from './catalog'
+import { mockWhen, placeEvents } from './events'
 import themes from './themes.json'
 
 type Theme = keyof typeof themes
@@ -85,11 +85,15 @@ export function mockSearch(
   const wish = layer && wishLayer(q)
   const switched = Boolean(wish && wish !== layer && available(wish))
   const searched = switched ? wish : layer
+  const range = night ?? mockWhen(q)
   const ranked = rank(q, searched, venue)
     .filter((b) => !box || inBox(b, box))
-    .map((b, i) => ({ ...b, rank: i + 1 }))
+    .map((b, i) => {
+      const place = range && catalog.find((p) => p.id === b.id)
+      return { ...b, rank: i + 1, ...(place && { events: placeEvents(place, range.from) }) }
+    })
   const searchId = Math.random().toString(36).slice(2)
-  const stored = { query: q, venue, layer: searched, switched, bars: ranked, range: night ?? mockWhen(q) }
+  const stored = { query: q, venue, layer: searched, switched, bars: ranked, range }
   searches.set(searchId, stored)
   return body(searchId, stored, ranked.slice(0, FIRST), ranked.length > FIRST)
 }

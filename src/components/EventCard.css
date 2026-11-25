@@ -190,3 +190,32 @@
   flex: 1;
   min-width: 0;
 }
+
+.event-line {
+  display: flex;
+  align-items: baseline;
+  margin: var(--space-2) 0 0;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--pink-soft);
+  color: var(--pink-text);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.event-line > span {
+  flex: none;
+}
+
+.event-line > span + span::before {
+  content: '\00b7';
+  margin: 0 var(--space-1);
+}
+
+.event-line > .event-line-title {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

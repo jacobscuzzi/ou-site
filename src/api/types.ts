@@ -130,7 +130,17 @@ export type Event = {
   sources: string[]
   posts: Post[]
   actions: Action[]
+  description?: string | null
+  vibes?: string[]
+  priceBucket?: PriceBucket | null
+  doorTime?: string | null
+  minAge?: number | null
+  priceTiers?: { name: string; price: number | null }[]
 }
+
+export type PriceBucket = 'free' | 'low' | 'mid' | 'high'
+
+export type DanceMode = 'club' | 'party_bar' | 'event_venue'
 
 export type EventsResponse = {
   events: Event[]
@@ -183,6 +193,7 @@ export type MapBar = {
   pricePerPerson?: number
   deal?: boolean
   action?: Action
+  danceMode?: DanceMode
 }
 
 export type BarsResponse = {

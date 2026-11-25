@@ -22,6 +22,7 @@ import { assignTiers, type Tier } from '../map/tiers'
 import { useTheme } from '../theme'
 import { thumbOf } from '../photos'
 import { recolorMetro } from '../map/metro'
+import { RingLayer, type RingStyle } from '../map/rings'
 import { focusOn, fitTo, glideTo, inView, lngLatBounds, padding, type CameraTiming } from '../map/camera'
 import { applyTheme, styleFont } from '../map/theme'
 import { useMetro } from '../map/useMetro'
@@ -55,6 +56,7 @@ type Props = {
   onFail: () => void
   onLive?: () => void
   padKey?: string
+  // places with a party on the chosen night: a turning dashed ring around their marker
   night?: ReadonlySet<string> | null
   // places that are at least a circle (party tonight, liked, deal) and places that stay a dot (disliked)
   boost?: ReadonlySet<string> | null
@@ -101,6 +103,14 @@ function readTokens() {
     max1: num('--tier-max-1'),
     max2: num('--tier-max-2'),
     gap2: num('--tier-gap-2'),
+    ring: str('--ring'),
+    ringWidth: num('--ring-width'),
+    ringDash: num('--ring-dash'),
+    ringSpace: num('--ring-space'),
+    ringGap: num('--ring-gap'),
+    ringPeriod: num('--ring-period'),
+    bubbleMd: num('--bubble-md'),
+    bubbleLg: num('--bubble-lg'),
     bubbleGap: num('--bubble-gap'),
     bubbleOut: num('--bubble-out'),
     bubbleStep: num('--bubble-stagger'),
@@ -140,6 +150,10 @@ function readTokens() {
     stationWidth: num('--metro-station-width'),
     metroLabelSize: num('--metro-label-size'),
   }
+}
+
+function ringStyle(tk: Tokens): RingStyle {
+  return { color: tk.ring, width: tk.ringWidth, dash: tk.ringDash, gap: tk.ringSpace, period: tk.ringPeriod }
 }
 
 function widen(b: Bounds, m: number): Bounds {
@@ -303,6 +317,29 @@ export default function CityMap(props: Props) {
   const fades = useRef(new Map<string, number>())
   const grow = useRef(0)
   const theme = useTheme()
+  const rings = useRef<RingLayer | null>(null)
+
+  function ringRadius(id: string) {
+    const map = mapRef.current
+    const tk = tokens.current
+    if (!map || !tk) return 0
+    if (bubbles.current?.ids().includes(id)) {
+      const big = latest.current.results.find((b) => b.id === id && b.rank <= tk.max1)
+      return (big ? tk.bubbleLg : tk.bubbleMd) / 2 + tk.ringGap
+    }
+    const k = Math.min(1, Math.max(0, (map.getZoom() - 11) / 5))
+    const tier = tiers.current.get(id) ?? 3
+    const r = tier === 2 ? tk.r2Min + (tk.r2Max - tk.r2Min) * k : tk.r3Min + (tk.r3Max - tk.r3Min) * k
+    return r + tk.ringGap
+  }
+
+  function placeRings() {
+    const p = latest.current
+    if (!rings.current) return
+    const spots = new Map<string, { lng: number; lat: number }>()
+    if (p.night) for (const b of p.bars) if (p.night.has(b.id)) spots.set(b.id, b)
+    rings.current.set(spots)
+  }
 
   function capture() {
     const map = mapRef.current
@@ -384,7 +421,7 @@ export default function CityMap(props: Props) {
       const loose = { ...pad, left: 0, right: 0 }
       const kept = new Set(exploreIds.current)
       const none = { top: 0, bottom: 0, left: 0, right: 0 }
-      const visible = p.bars.filter((bar) => passes(bar, p.chips) && (!p.night || p.night.has(bar.id)) && inView(map, bar, none))
+      const visible = p.bars.filter((bar) => passes(bar, p.chips) && inView(map, bar, none))
       const clear = new Set(visible.filter((bar) => inView(map, bar, kept.has(bar.id) ? loose : pad)).map((bar) => bar.id))
       next = assignTiers(
         visible.map((bar) => ({ id: bar.id, name: bar.name, quality: bar.quality, ...at(bar) })),
@@ -492,7 +529,9 @@ export default function CityMap(props: Props) {
       latest.current.onLive?.()
       const p = latest.current
       applyTheme(map, tk)
-      addLayers(map, tk, p.bars, p.night ?? null, p.badge ?? null)
+      addLayers(map, tk, p.bars, null, p.badge ?? null)
+      rings.current = new RingLayer(map, ringRadius, ringStyle(tk))
+      placeRings()
       ready.current = true
       names()
       setLoaded(true)
@@ -532,6 +571,8 @@ export default function CityMap(props: Props) {
       ready.current = false
       bubbles.current?.destroy()
       bubbles.current = null
+      rings.current?.destroy()
+      rings.current = null
       me.current = null
       mapRef.current = null
       map.remove()
@@ -540,8 +581,9 @@ export default function CityMap(props: Props) {
 
   useEffect(() => {
     const map = mapRef.current
-    if (map && ready.current) applyData(map, bars, latest.current.night ?? null, latest.current.badge ?? null)
+    if (map && ready.current) applyData(map, bars, null, latest.current.badge ?? null)
     refreshBubbles()
+    placeRings()
   }, [bars, props.night, props.badge])
 
   useEffect(() => {
@@ -561,6 +603,7 @@ export default function CityMap(props: Props) {
     tokens.current = tk
     applyTheme(map, tk)
     recolorMetro(map, tk)
+    rings.current?.setStyle(ringStyle(tk))
     applyLook(map, tk, latest.current.results.length > 0, lookOf(latest.current))
   }, [theme])
 

@@ -7,20 +7,22 @@ import Hours from './Hours'
 import Photo from './Photo'
 import Posts from './Posts'
 import { ActionLink } from './Actions'
-import EventCard, { DealLine, TonightLine } from './EventCard'
+import EventCard, { DealLine, EventLine, TonightLine } from './EventCard'
 import { useLayer } from '../mode'
-import { tonight } from '../night'
+import { tonight, type Night } from '../night'
 import { openPhotos, thumbOf } from '../photos'
 import './BarCard.css'
 
-type Props = { bar: Bar; index: number; selected?: boolean; defaultOpen?: boolean; onSelect?: () => void; onOpen?: () => void }
+type Props = { bar: Bar; index: number; selected?: boolean; defaultOpen?: boolean; onSelect?: () => void; onOpen?: () => void; night?: Night | null }
 
-export default function BarCard({ bar, index, selected = false, defaultOpen = false, onSelect, onOpen }: Props) {
+export default function BarCard({ bar, index, selected = false, defaultOpen = false, onSelect, onOpen, night = null }: Props) {
   const [open, setOpen] = useState(defaultOpen)
   const [eventOpen, setEventOpen] = useState(false)
   const t = useT()
   const layer = useLayer()
   const party = layer === 'drink' ? bar.events?.find((e) => e.kind === 'party' && e.night === tonight()) : undefined
+  const matched =
+    layer === 'dance' && night ? bar.events?.find((e) => e.kind === 'party' && e.night !== null && e.night >= night.from && e.night <= night.to) : undefined
 
   function toggle() {
     if (!open) onOpen?.()
@@ -69,6 +71,7 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
         <CardChips bar={bar} open={open} />
 
         {bar.deal && <DealLine deal={bar.deal} />}
+        {matched && <EventLine event={matched} />}
         {party && <TonightLine event={party} open={eventOpen} onOpen={() => setEventOpen((v) => !v)} />}
         {party && eventOpen && (
           <div className="card-event" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>

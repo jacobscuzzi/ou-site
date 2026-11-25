@@ -273,3 +273,10 @@
 .spot[data-selected] .spot-name {
   display: block;
 }
+
+.citymap-rings {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}

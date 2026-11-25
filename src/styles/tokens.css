@@ -151,6 +151,12 @@
   --dot-dim-opacity: 0.25;
   --dot-hit: 22px;
   --dot-pale: #ffcfe4;
+  --ring: var(--pink);
+  --ring-width: 1.5px;
+  --ring-dash: 4px;
+  --ring-space: 3px;
+  --ring-gap: 4px;
+  --ring-period: 1600;
   --tier2-r-min: 5.5px;
   --tier2-r-max: 9px;
   --tier3-r-min: 2.5px;
@@ -256,6 +262,8 @@
   --panel-in-ms: 320ms;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --intro-bg: #0b0b0d;
+  --erow-when: 40px;
+  --erow-desc: 220px;
   --map-fade: 220ms;
   --map-start-w: 560px;
   --map-start-h: 1000px;
