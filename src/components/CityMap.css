@@ -36,6 +36,7 @@
 
 .spot {
   --bubble-size: var(--bubble-md);
+  position: relative;
   display: block;
   width: var(--bubble-size);
   height: var(--bubble-size);
@@ -73,10 +74,26 @@
   padding: var(--bubble-ring);
   border-radius: var(--radius-pill);
   background: var(--bubble-gradient);
-  box-shadow: var(--shadow-bubble-photo);
   animation: bubble-breathe var(--bubble-period) ease-in-out infinite;
   animation-delay: calc(var(--bubble-phase) * var(--bubble-delay-step) * -1);
   transition: box-shadow 0.25s var(--ease);
+}
+
+/* the glow is a gradient, not a blurred shadow: some Android GPUs draw a blurred shadow on an
+   animated layer as a hard, oversized pink disc */
+.spot::before {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--bubble-glow-spread));
+  translate: 0 var(--bubble-glow-drop);
+  border-radius: var(--radius-pill);
+  background: radial-gradient(closest-side, var(--bubble-glow) 55%, var(--bubble-glow-2) 75%, transparent);
+  pointer-events: none;
+  transition: scale 0.25s var(--ease);
+}
+
+.spot[data-selected]::before {
+  scale: var(--bubble-glow-selected);
 }
 
 .spot[data-kind='club'] .spot-body {

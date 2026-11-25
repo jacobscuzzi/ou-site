@@ -97,8 +97,12 @@
   --shadow-pink: 0 4px 12px rgba(255, 31, 142, 0.3);
   --shadow-send: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 6px 16px rgba(255, 31, 142, 0.45);
   --shadow-pin-selected: 0 0 0 5px rgba(255, 31, 142, 0.18), 0 6px 16px rgba(255, 31, 142, 0.4);
-  --shadow-bubble-photo: 0 6px 16px rgba(255, 31, 142, 0.38), 0 2px 6px rgba(255, 122, 92, 0.28);
-  --shadow-bubble-selected: 0 0 0 4px rgba(255, 31, 142, 0.2), 0 10px 24px rgba(255, 31, 142, 0.45);
+  --shadow-bubble-selected: 0 0 0 4px rgba(255, 31, 142, 0.2);
+  --bubble-glow: rgba(255, 31, 142, 0.36);
+  --bubble-glow-2: rgba(255, 122, 92, 0.16);
+  --bubble-glow-spread: 14px;
+  --bubble-glow-drop: 5px;
+  --bubble-glow-selected: 1.25;
   --focus-ring: 0 0 0 4px rgba(255, 31, 142, 0.14);
 
   --blur-1: blur(16px) saturate(1.7);
