@@ -1,5 +1,5 @@
 import type { Bounds } from '../map/geo'
-import type { Action, ApiError, Bar, BarsResponse, DaysResponse, EventsResponse, Layer, LayersResponse, PostsResponse, SearchResponse } from './types'
+import type { Action, ApiError, Bar, BarsResponse, DaysResponse, EventsResponse, Layer, LayersResponse, PostsResponse, SearchResponse, SignalKind, SignalsResponse } from './types'
 
 const useMock = import.meta.env.VITE_USE_MOCK === 'true'
 const baseUrl = useMock ? '' : (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
@@ -122,4 +122,35 @@ export function fetchDays(layer: Layer, from: string, to: string, signal?: Abort
 
 export function actionHref(a: Action) {
   return a.url.startsWith('/') ? `${baseUrl}${a.url}` : a.url
+}
+
+// My places: the device cookie travels with these same-origin calls; the mock keeps them on the device.
+export async function fetchSignals(signal?: AbortSignal): Promise<SignalsResponse> {
+  if (useMock) return { signals: [] }
+  const res = await fetch(`${baseUrl}/api/signals`, { signal, cache: 'no-store' })
+  if (!res.ok) throw new Error(`Signals failed (${res.status})`)
+  return res.json()
+}
+
+export async function putSignal(placeId: string, kind: SignalKind | null) {
+  if (useMock) return
+  const res = await fetch(`${baseUrl}/api/signals/${encodeURIComponent(placeId)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ kind }),
+  })
+  if (!res.ok && res.status !== 404) throw new Error(`Signal failed (${res.status})`)
+}
+
+export async function postReport(report: { placeId?: string; eventId?: string; message: string; context: Record<string, unknown> }) {
+  if (useMock) return
+  const res = await fetch(`${baseUrl}/api/reports`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(report),
+  })
+  if (!res.ok) {
+    const body: ApiError | null = await res.json().catch(() => null)
+    throw new Error(body?.error ?? `Report failed (${res.status})`)
+  }
 }

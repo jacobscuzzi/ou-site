@@ -24,6 +24,11 @@ import ModeChoice from './components/ModeChoice'
 import PhotoViewer from './components/PhotoViewer'
 import AgendaSheet from './components/AgendaSheet'
 import FocusToggle from './components/FocusToggle'
+import MyPlaces from './components/MyPlaces'
+import ReportSheet from './components/ReportSheet'
+import { idsOf, syncMarks, useMarks } from './signals'
+import { onOpenReport, onToast } from './toast'
+import { HeartIcon } from './components/icons'
 import { onOpenPhotos } from './photos'
 import { onTagSearch } from './tags'
 import { useTheme } from './theme'
@@ -75,6 +80,10 @@ export default function App() {
   const [mapLive, setMapLive] = useState(false)
   const [agendaOpen, setAgendaOpen] = useState(false)
   const [dealsOn, setDealsOn] = useState(false)
+  const [mineOpen, setMineOpen] = useState(false)
+  const [report, setReport] = useState<Parameters<Parameters<typeof onOpenReport>[0]>[0] | null>(null)
+  const [toastText, setToastText] = useState<string | null>(null)
+  const marks = useMarks()
   const [pendingShow, setPendingShow] = useState<string | null>(null)
   const theme = useTheme()
   const [viewer, setViewer] = useState<{ photos: string[]; index: number; title: string } | null>(null)
@@ -145,6 +154,24 @@ export default function App() {
   }, [])
 
   useEffect(() => onOpenPhotos(setViewer), [])
+  useEffect(() => onOpenReport(setReport), [])
+  useEffect(() => {
+    const ctrl = new AbortController()
+    syncMarks(ctrl.signal).catch(() => undefined)
+    return () => ctrl.abort()
+  }, [])
+  useEffect(() => {
+    let timer = 0
+    const off = onToast((text) => {
+      setToastText(text)
+      window.clearTimeout(timer)
+      timer = window.setTimeout(() => setToastText(null), 2600)
+    })
+    return () => {
+      off()
+      window.clearTimeout(timer)
+    }
+  }, [])
 
   const tagSearch = useRef<(label: string) => void>(() => undefined)
   useEffect(() => onTagSearch((label) => tagSearch.current(label)), [])
@@ -470,7 +497,13 @@ export default function App() {
     })
   }
 
-  const results = !loading && !error ? bars : NO_RESULTS
+  // this device's dislikes sink to the end of its own results, they are not removed
+  const results = useMemo(() => {
+    if (loading || error) return NO_RESULTS
+    const nope = idsOf(marks, 'dislike')
+    if (nope.size === 0 || !bars.some((b) => nope.has(b.id))) return bars
+    return [...bars.filter((b) => !nope.has(b.id)), ...bars.filter((b) => nope.has(b.id))]
+  }, [loading, error, bars, marks])
   const hasResults = results.length > 0
 
   const follow = useCallback((id: string) => {
@@ -526,6 +559,17 @@ export default function App() {
   }, [layer, tonightEvents])
   const badgeIds = useMemo(() => (tonightOf.size > 0 ? new Set(tonightOf.keys()) : null), [tonightOf])
   const kindsOf = (id: string) => shownBars.find((b) => b.id === id)?.kinds ?? []
+  const markMap = useMemo(() => new Map(Object.entries(marks).map(([id, m]) => [id, m.kind])), [marks])
+  // liked and want-to-go places are at least circles, disliked ones stay dots
+  const boostIds = useMemo(() => {
+    const base = dealIds ?? nightIds
+    const mine = [...idsOf(marks, 'like'), ...idsOf(marks, 'want')]
+    return mine.length === 0 ? base : new Set([...(base ?? []), ...mine])
+  }, [dealIds, nightIds, marks])
+  const sinkIds = useMemo(() => {
+    const nope = idsOf(marks, 'dislike')
+    return nope.size === 0 ? noDealIds : new Set([...(noDealIds ?? []), ...nope])
+  }, [noDealIds, marks])
   // while searching only the results carry the ring of their party
   const ringIds = useMemo(
     () => (hasResults && nightIds ? new Set(results.filter((b) => nightIds.has(b.id)).map((b) => b.id)) : nightIds),
@@ -693,6 +737,9 @@ export default function App() {
         )}
         <Chips bars={mapBars} value={chips} onToggle={toggleChip} />
         {query === null && suggesting && <Suggestions single onPick={search} />}
+        <button type="button" className="mine-fab" aria-label={t.myPlaces} onClick={() => setMineOpen(true)}>
+          <HeartIcon size={20} />
+        </button>
         {query !== null && stray && !loading && (
           <button type="button" className="search-here" onClick={searchHere}>
             <SearchIcon />
@@ -727,8 +774,9 @@ export default function App() {
           onFail={() => setMapFailed(true)}
           padKey={`${sheet}:${query === null}:${layer}`}
           night={dealIds ?? ringIds}
-          boost={dealIds ?? nightIds}
-          sink={noDealIds}
+          boost={boostIds}
+          sink={sinkIds}
+          marks={markMap}
           dealMode={dealsShown}
           badge={badgeIds}
         />
@@ -858,6 +906,23 @@ export default function App() {
           />
         )}
         <InstallHint placeOpened={placeOpened} />
+        {mineOpen && (
+          <MyPlaces
+            onClose={() => setMineOpen(false)}
+            onOpen={(id, snap) => {
+              setMineOpen(false)
+              setView('map')
+              if (snap.layer !== layer) chooseLayer(snap.layer)
+              setPendingShow(id)
+            }}
+          />
+        )}
+        {report && <ReportSheet {...report} onClose={() => setReport(null)} />}
+        {toastText && (
+          <p className="toast" role="status">
+            {toastText}
+          </p>
+        )}
         {agendaOpen && (
           <AgendaSheet
             days={nights(stripStart, STRIP_DAYS)}

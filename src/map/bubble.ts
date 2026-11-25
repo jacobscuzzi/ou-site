@@ -154,6 +154,15 @@ export class BubbleLayer {
     }
   }
 
+  // this device's heart or bookmark on the photo bubbles
+  marks(marks: ReadonlyMap<string, string> | null) {
+    for (const [id, item] of this.items) {
+      const kind = marks?.get(id)
+      if (kind === 'like' || kind === 'want') item.el.dataset.mark = kind
+      else delete item.el.dataset.mark
+    }
+  }
+
   mark(selectedId: string | null) {
     for (const [id, item] of this.items) item.el.toggleAttribute('data-selected', id === selectedId)
   }

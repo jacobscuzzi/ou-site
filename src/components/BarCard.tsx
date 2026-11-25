@@ -11,6 +11,7 @@ import EventCard, { DealStrip, EventLine, TonightLine } from './EventCard'
 import { useLayer } from '../mode'
 import { tonight, type Night } from '../night'
 import { openPhotos, thumbOf } from '../photos'
+import Marks from './Marks'
 import './BarCard.css'
 
 type Props = { bar: Bar; index: number; selected?: boolean; defaultOpen?: boolean; onSelect?: () => void; onOpen?: () => void; night?: Night | null }
@@ -59,6 +60,7 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
           openLabel={t.photosOf(bar.name)}
         />
         {bar.rank > 0 && <span className="card-rank">{bar.rank}</span>}
+        <Marks bar={bar} />
       </div>
 
       <div className="card-body">

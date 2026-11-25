@@ -295,3 +295,29 @@
   line-height: 1.5;
   white-space: nowrap;
 }
+
+.spot[data-mark] .spot-body::before {
+  position: absolute;
+  bottom: calc(-1 * var(--space-1));
+  right: calc(-1 * var(--space-1));
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--mark-badge);
+  height: var(--mark-badge);
+  border-radius: var(--radius-pill);
+  border: var(--bubble-badge-border) solid var(--surface);
+  color: var(--mark-ink);
+  font-size: var(--text-chip);
+  line-height: 1;
+}
+
+.spot[data-mark='like'] .spot-body::before {
+  content: '';
+  background: var(--mark-like) var(--mark-heart) center / 70% no-repeat;
+}
+
+.spot[data-mark='want'] .spot-body::before {
+  content: '';
+  background: var(--mark-want) var(--mark-bookmark) center / 60% no-repeat;
+}

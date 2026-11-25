@@ -8,6 +8,7 @@ import { ActionLink } from './Actions'
 import { eventPrice, eventTime } from './EventCard'
 import Photo from './Photo'
 import Posts from './Posts'
+import { openReport } from '../toast'
 import './EventRow.css'
 
 type Props = {
@@ -78,6 +79,13 @@ export default function EventRow({ event, kinds, showPlace = false, showDate = t
           {event.description && <p className="erow-desc">{event.description}</p>}
           <div className="erow-actions">
             {tickets && <ActionLink action={tickets} kinds={kinds} main focusable={focusable} label={t.getTickets} />}
+            <button
+              type="button"
+              className="erow-report"
+              onClick={() => openReport({ placeId: event.placeId, eventId: event.id, title: event.title, context: { from: 'event' } })}
+            >
+              {t.reportWrong}
+            </button>
             {onShowOnMap && (
               <button type="button" className="erow-map" onClick={onShowOnMap}>
                 {t.showOnMap}

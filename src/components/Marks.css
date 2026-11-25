@@ -1,0 +1,96 @@
+.marks {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 1;
+  display: flex;
+  gap: var(--space-1);
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: var(--mark-size);
+  height: var(--mark-size);
+  border-radius: var(--radius-pill);
+  background: var(--glass-lens);
+  -webkit-backdrop-filter: var(--blur-lens);
+  backdrop-filter: var(--blur-lens);
+  border: var(--border-1) solid var(--glass-border-strong);
+  box-shadow: var(--glass-lens-edge), var(--shadow-lens);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.mark[aria-pressed='true'][data-kind='like'] {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: var(--on-pink);
+}
+
+.mark[aria-pressed='true'][data-kind='like'] svg {
+  fill: currentColor;
+}
+
+.mark[aria-pressed='true'][data-kind='want'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+.mark[aria-pressed='true'][data-kind='want'] svg {
+  fill: currentColor;
+}
+
+.mark[aria-pressed='true'][data-kind='dislike'] {
+  background: var(--ink-2);
+  border-color: var(--ink-2);
+  color: var(--surface);
+}
+
+.mark[data-pop] {
+  animation: mark-pop var(--mark-pop-ms) var(--ease);
+}
+
+.marks-more {
+  position: relative;
+}
+
+.marks-menu {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  right: 0;
+  z-index: 2;
+  min-width: var(--marks-menu);
+  padding: var(--space-1);
+  border-radius: var(--radius-tile);
+  background: var(--surface);
+  box-shadow: var(--shadow-3);
+}
+
+.marks-menu button {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-photo);
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.marks-menu button:hover {
+  background: var(--fill);
+}
+
+@keyframes mark-pop {
+  40% {
+    scale: 1.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mark[data-pop] {
+    animation: none;
+  }
+}

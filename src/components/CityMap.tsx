@@ -63,6 +63,8 @@ type Props = {
   sink?: ReadonlySet<string> | null
   // deals focus: gold rings instead of pink ones and the deal badges on the markers
   dealMode?: boolean
+  // this device's marks: a heart or bookmark badge, disliked places greyed
+  marks?: ReadonlyMap<string, 'like' | 'want' | 'dislike'> | null
   // places with a party tonight, marked by a small badge on the pin (drink layer)
   badge?: ReadonlySet<string> | null
 }
@@ -118,6 +120,12 @@ function readTokens() {
     onGold: str('--on-gold'),
     dealSize: num('--deal-tag-size'),
     dealHalo: num('--deal-tag-halo'),
+    markSize: num('--mark-badge'),
+    markShift: num('--mark-badge-shift'),
+    markLike: str('--mark-like'),
+    markWant: str('--mark-want'),
+    markDislike: str('--mark-dislike'),
+    markInk: str('--mark-ink'),
     bubbleGap: num('--bubble-gap'),
     bubbleOut: num('--bubble-out'),
     bubbleStep: num('--bubble-stagger'),
@@ -178,9 +186,17 @@ function widen(b: Bounds, m: number): Bounds {
   return { minLng: b.minLng - m, minLat: b.minLat - m, maxLng: b.maxLng + m, maxLat: b.maxLat + m }
 }
 
-function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[], night: ReadonlySet<string> | null, badge: ReadonlySet<string> | null) {
+function addLayers(
+  map: MaplibreMap,
+  tk: Tokens,
+  bars: MapBar[],
+  night: ReadonlySet<string> | null,
+  badge: ReadonlySet<string> | null,
+  marks: ReadonlyMap<string, string> | null,
+) {
   const font = styleFont(map)
-  map.addSource('bars', { type: 'geojson', data: barsToGeoJSON(bars, night, badge), promoteId: 'id' })
+  map.addSource('bars', { type: 'geojson', data: barsToGeoJSON(bars, night, badge, marks), promoteId: 'id' })
+  addMarkImages(map, tk)
   map.addLayer({ id: 'dots', type: 'circle', source: 'bars' })
   map.addLayer({
     id: 'badges',
@@ -227,6 +243,19 @@ function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[], night: Readonly
     paint: { 'text-color': tk.onGold, 'text-halo-color': tk.gold, 'text-halo-width': tk.dealHalo },
   })
   map.addLayer({
+    id: 'mark-icons',
+    type: 'symbol',
+    source: 'bars',
+    filter: ['!=', ['get', 'sg'], ''],
+    layout: {
+      'icon-image': ['concat', 'mk-', ['get', 'sg']],
+      'icon-anchor': 'bottom-left',
+      'icon-offset': [tk.markShift, -tk.markShift],
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+    },
+  })
+  map.addLayer({
     id: 'labels',
     type: 'symbol',
     source: 'bars',
@@ -248,8 +277,47 @@ function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[], night: Readonly
   })
 }
 
-function applyData(map: MaplibreMap, bars: MapBar[], night: ReadonlySet<string> | null, badge: ReadonlySet<string> | null) {
-  map.getSource<GeoJSONSource>('bars')?.setData(barsToGeoJSON(bars, night, badge))
+function applyData(map: MaplibreMap, bars: MapBar[], badge: ReadonlySet<string> | null, marks: ReadonlyMap<string, string> | null) {
+  map.getSource<GeoJSONSource>('bars')?.setData(barsToGeoJSON(bars, null, badge, marks))
+}
+
+// heart, bookmark and strike badges for the circles and dots, drawn once on a canvas
+const MARK_PATHS: Record<string, string> = {
+  like: 'M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z',
+  want: 'M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z',
+  dislike: 'M6 6l12 12',
+}
+
+function addMarkImages(map: MaplibreMap, tk: Tokens) {
+  const size = tk.markSize * 2
+  for (const [kind, path] of Object.entries(MARK_PATHS)) {
+    const c = document.createElement('canvas')
+    c.width = c.height = size
+    const ctx = c.getContext('2d')
+    if (!ctx) continue
+    ctx.beginPath()
+    ctx.arc(size / 2, size / 2, size / 2 - 1, 0, Math.PI * 2)
+    ctx.fillStyle = kind === 'dislike' ? tk.markDislike : kind === 'like' ? tk.markLike : tk.markWant
+    ctx.fill()
+    ctx.strokeStyle = tk.badgeStroke
+    ctx.lineWidth = 2
+    ctx.stroke()
+    ctx.translate(size * 0.2, size * 0.2)
+    ctx.scale((size * 0.6) / 24, (size * 0.6) / 24)
+    const p = new Path2D(path)
+    ctx.strokeStyle = tk.markInk
+    ctx.lineWidth = 3
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+    if (kind !== 'dislike') {
+      ctx.fillStyle = tk.markInk
+      ctx.fill(p)
+    }
+    ctx.stroke(p)
+    const name = `mk-${kind}`
+    if (map.hasImage(name)) map.removeImage(name)
+    map.addImage(name, ctx.getImageData(0, 0, size, size), { pixelRatio: 2 })
+  }
 }
 
 function applyFilter(map: MaplibreMap, chips: ReadonlySet<ChipKey>, bubbled: string[] = []) {
@@ -286,6 +354,8 @@ function applyLook(map: MaplibreMap, tk: Tokens, dimmed: boolean, selectedId: st
   map.setPaintProperty('dots', 'circle-radius', ['interpolate', ['linear'], ['zoom'], 11, radius(false), 16, radius(true)])
   map.setPaintProperty('dots', 'circle-color', [
     'case',
+    ['==', ['get', 'sg'], 'dislike'],
+    tk.markDislike,
     ['all', two, ['==', ['get', 'club'], 1]],
     tk.dotClub,
     two,
@@ -497,6 +567,7 @@ export default function CityMap(props: Props) {
     else picks.current[p.dealMode ? 'deal' : 'plain'] = ones
     layer.party(p.badge ?? null)
     layer.deal(p.dealMode ? dealLabels(p.bars) : null)
+    layer.marks(p.marks ?? null)
     if (p.sink) for (const id of p.sink) if (next.get(id)?.tier === 3) next.set(id, { tier: 3, fade: 1 })
     setTiers(map, next)
     applyFilter(map, p.chips, layer.ids())
@@ -583,7 +654,7 @@ export default function CityMap(props: Props) {
       latest.current.onLive?.()
       const p = latest.current
       applyTheme(map, tk)
-      addLayers(map, tk, p.bars, null, p.badge ?? null)
+      addLayers(map, tk, p.bars, null, p.badge ?? null, p.marks ?? null)
       rings.current = new RingLayer(map, ringRadius, ringStyle(tk))
       placeRings()
       ready.current = true
@@ -635,10 +706,10 @@ export default function CityMap(props: Props) {
 
   useEffect(() => {
     const map = mapRef.current
-    if (map && ready.current) applyData(map, bars, null, latest.current.badge ?? null)
+    if (map && ready.current) applyData(map, bars, latest.current.badge ?? null, latest.current.marks ?? null)
     refreshBubbles()
     placeRings()
-  }, [bars, props.night, props.badge])
+  }, [bars, props.night, props.badge, props.marks])
 
   useEffect(() => {
     const map = mapRef.current
@@ -666,6 +737,7 @@ export default function CityMap(props: Props) {
     tokens.current = tk
     applyTheme(map, tk)
     recolorMetro(map, tk)
+    addMarkImages(map, tk)
     rings.current?.setStyle(ringStyle(tk, latest.current.dealMode))
     applyLook(map, tk, latest.current.results.length > 0, lookOf(latest.current))
   }, [theme])

@@ -1,0 +1,123 @@
+.report-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--sheet-scrim);
+}
+
+.report {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: var(--app-width-phone);
+  padding: var(--space-4) var(--space-4) calc(var(--space-5) + env(safe-area-inset-bottom));
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background: var(--surface);
+  box-shadow: var(--shadow-sheet);
+  animation: report-in var(--panel-in-ms) var(--ease);
+}
+
+.report-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.report-q {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.report-about {
+  margin: var(--space-1) 0 0;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.report-close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--control-size);
+  height: var(--control-size);
+  border-radius: var(--radius-pill);
+  background: var(--fill);
+  color: var(--ink);
+}
+
+.report-text {
+  width: 100%;
+  padding: var(--space-3);
+  border-radius: var(--radius-tile);
+  border: var(--border-1) solid var(--line);
+  background: var(--fill);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-input);
+  resize: none;
+}
+
+.report-text:focus {
+  outline: none;
+  border-color: var(--pink);
+  box-shadow: var(--focus-ring);
+}
+
+.report-error {
+  margin: 0;
+  color: var(--closed);
+  font-size: var(--text-sm);
+}
+
+.report-send {
+  align-self: stretch;
+}
+
+@keyframes report-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .report {
+    animation: none;
+  }
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--sheet-peek) + var(--space-7) + env(safe-area-inset-bottom));
+  z-index: 80;
+  translate: -50% 0;
+  max-width: calc(100% - 2 * var(--space-5));
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--surface);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  box-shadow: var(--shadow-3);
+  animation: toast-in var(--bubble-in) var(--ease);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    translate: -50% var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}

@@ -117,6 +117,7 @@ export function barsToGeoJSON(
   bars: MapBar[],
   night: ReadonlySet<string> | null = null,
   badge: ReadonlySet<string> | null = null,
+  marks: ReadonlyMap<string, string> | null = null,
 ): GeoJSON.FeatureCollection<GeoJSON.Point> {
   const ranked = bars.map((bar) => bar.quality).sort((a, b) => b - a)
   const threshold = ranked[Math.ceil(ranked.length / 4) - 1] ?? Infinity
@@ -136,6 +137,7 @@ export function barsToGeoJSON(
         pty: flag(badge !== null && badge.has(bar.id)),
         dl: bar.deal && bar.dealPct ? `-${bar.dealPct}%` : '',
         dd: flag(bar.deal === true && !bar.dealPct),
+        sg: marks?.get(bar.id) ?? '',
       },
     })),
   }

@@ -211,3 +211,9 @@ export type LayersResponse = {
 export type ApiError = {
   error: string
 }
+
+export type SignalKind = 'like' | 'want' | 'dislike'
+
+export type SignalsResponse = {
+  signals: { placeId: string; kind: SignalKind; updatedAt: string }[]
+}

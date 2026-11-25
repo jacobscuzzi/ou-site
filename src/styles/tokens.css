@@ -270,6 +270,17 @@
   --panel-in-ms: 320ms;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --intro-bg: #0b0b0d;
+  --mark-size: 36px;
+  --mark-badge: 16px;
+  --mark-badge-shift: 5px;
+  --mark-like: var(--pink);
+  --mark-want: var(--ink);
+  --mark-dislike: #9a9aa2;
+  --mark-ink: var(--surface);
+  --mark-heart: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z'/%3E%3C/svg%3E");
+  --mark-bookmark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z'/%3E%3C/svg%3E");
+  --mark-pop-ms: 260ms;
+  --marks-menu: 180px;
   --erow-when: 40px;
   --erow-desc: 220px;
   --map-fade: 220ms;
@@ -398,4 +409,7 @@
   --post-bg: #000000;
   --post-ink: #ffffff;
   --dot-pale: #7d3a5c;
+  --mark-dislike: #5c5c64;
+  --mark-want: #3a3a42;
+  --mark-ink: #ffffff;
 }

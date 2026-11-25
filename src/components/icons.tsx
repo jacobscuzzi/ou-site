@@ -166,3 +166,27 @@ export function SoundIcon({ on, size = 18 }: IconProps & { on: boolean }) {
     </svg>
   )
 }
+
+export function BookmarkIcon({ size = 18 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z" />
+    </svg>
+  )
+}
+
+export function ThumbDownIcon({ size = 18 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M17 14V4h3v10h-3zM17 4H8.5a2 2 0 0 0-2 1.6l-1.4 7A2 2 0 0 0 7 15h4l-.8 3.6A1.6 1.6 0 0 0 11.8 20l5.2-6" />
+    </svg>
+  )
+}
+
+export function MoreIcon({ size = 18 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M6 12h.01M12 12h.01M18 12h.01" strokeWidth={3} />
+    </svg>
+  )
+}
