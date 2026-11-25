@@ -29,6 +29,26 @@ export function BeerIcon({ size = 10 }: IconProps) {
   )
 }
 
+export function CupIcon({ size = 10 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z" />
+      <path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16" />
+      <path d="M9 3v2M12 3v2" />
+    </svg>
+  )
+}
+
+export function PlateIcon({ size = 10 }: IconProps) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <circle cx="12" cy="13" r="7" />
+      <circle cx="12" cy="13" r="3.5" />
+      <path d="M12 3v3" />
+    </svg>
+  )
+}
+
 export function CocktailIcon({ size = 10 }: IconProps) {
   return (
     <svg {...base} width={size} height={size}>

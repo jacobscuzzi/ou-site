@@ -10,6 +10,7 @@ import Photo from './Photo'
 import { ActionLink } from './Actions'
 import { TonightLine } from './EventCard'
 import Posts from './Posts'
+import { Dish, Espresso } from './PriceChips'
 import './ExploreList.css'
 
 type Props = {
@@ -58,8 +59,8 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
             </span>
           )}
           {eat && bar.cuisine && <span className="chip">{cuisineLabel(bar.cuisine, lang)}</span>}
-          {eat && bar.pricePerPerson !== undefined && <span className="chip chip-pink">{t.perPerson(price(bar.pricePerPerson))}</span>}
-          {layer === 'coffee' && bar.coffeePrice !== undefined && <span className="chip chip-pink">{t.coffeePrice(price(bar.coffeePrice))}</span>}
+          {eat && bar.dishPrice !== undefined && <Dish value={bar.dishPrice} kinds={[...(bar.cuisines ?? []), ...bar.tags]} />}
+          {layer === 'coffee' && bar.coffeePrice !== undefined && <Espresso value={bar.coffeePrice} />}
           {(layer === 'drink' || layer === 'dance') && bar.pintPrice !== null && (
             <span className="chip chip-pink">
               <span className="chip-icon"><BeerIcon /></span>

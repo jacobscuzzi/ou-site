@@ -30,19 +30,22 @@ type MusicChip = keyof typeof musicGroups
 const tagChips = { laptop: ['laptop_friendly'], quiet: ['quiet'], bakery: ['bakery'] }
 type TagChip = keyof typeof tagChips
 
-export type ChipKey = 'open' | 'terrace' | 'dancing' | 'cheap' | 'budget' | 'clubs' | 'dancebars' | 'deal' | CuisineChip | MusicChip | TagChip
+export type ChipKey = 'open' | 'terrace' | 'dancing' | 'cheap' | 'meal' | 'fastfood' | 'espresso' | 'clubs' | 'dancebars' | 'deal' | CuisineChip | MusicChip | TagChip
 
 export const CHEAP_PINT = 5
 export const CHEAP_MEAL = 15
+export const CHEAP_FAST_FOOD = 10
+export const CHEAP_ESPRESSO = 2
+const FAST_FOOD = ['kebab', 'burger', 'street_food', 'fast_food', 'sandwich', 'tacos', 'fried_chicken']
 
 const cuisineChips = Object.keys(cuisineGroups) as CuisineChip[]
 const musicChips = Object.keys(musicGroups) as MusicChip[]
 
 export const layerChips: Record<Layer, ChipKey[]> = {
   drink: ['open', 'terrace', 'dancing', 'cheap'],
-  eat: ['open', 'terrace', 'budget', ...cuisineChips],
+  eat: ['open', 'terrace', 'meal', 'fastfood', ...cuisineChips],
   dance: ['open', 'clubs', 'dancebars', ...musicChips, 'cheap'],
-  coffee: ['open', 'terrace', 'laptop', 'quiet', 'bakery'],
+  coffee: ['open', 'terrace', 'espresso', 'laptop', 'quiet', 'bakery'],
 }
 
 // Chips of one family exclude each other (Italian replaces Burgers, Techno replaces Afro);
@@ -65,7 +68,10 @@ const checks: Record<ChipKey, (bar: MapBar) => boolean> = {
   terrace: (bar) => bar.terrace === true,
   dancing: (bar) => bar.dancing === true,
   cheap: (bar) => bar.pintPrice !== null && bar.pintPrice < CHEAP_PINT,
-  budget: (bar) => bar.pricePerPerson !== undefined && bar.pricePerPerson < CHEAP_MEAL,
+  meal: (bar) => bar.dishPrice !== undefined && bar.dishPrice < CHEAP_MEAL,
+  fastfood: (bar) =>
+    bar.dishPrice !== undefined && bar.dishPrice < CHEAP_FAST_FOOD && [...(bar.cuisines ?? []), ...(bar.tags ?? [])].some((v) => FAST_FOOD.includes(v)),
+  espresso: (bar) => bar.coffeePrice !== undefined && bar.coffeePrice < CHEAP_ESPRESSO,
   clubs: (bar) => bar.kinds?.includes('club') === true,
   dancebars: (bar) => bar.kinds?.includes('bar') === true && !bar.kinds.includes('club'),
   deal: (bar) => bar.deal === true,

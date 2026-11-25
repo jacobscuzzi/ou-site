@@ -1,6 +1,6 @@
 import { useT } from '../i18n'
 import type { MapBar } from '../api/types'
-import { CHEAP_MEAL, CHEAP_PINT, offeredChips, type ChipKey } from '../map/geo'
+import { CHEAP_ESPRESSO, CHEAP_FAST_FOOD, CHEAP_MEAL, CHEAP_PINT, offeredChips, type ChipKey } from '../map/geo'
 import { useLayer } from '../mode'
 import './Chips.css'
 
@@ -13,7 +13,9 @@ export default function Chips({ bars, value, onToggle }: Props) {
     terrace: t.chipTerrace,
     dancing: t.chipDancing,
     cheap: t.chipCheap(CHEAP_PINT),
-    budget: t.chipBudget(CHEAP_MEAL),
+    meal: t.chipMeal(CHEAP_MEAL),
+    fastfood: t.chipFastFood(CHEAP_FAST_FOOD),
+    espresso: t.chipEspresso(CHEAP_ESPRESSO),
     ...t.chipGroups,
   }
   const items = offeredChips(useLayer(), bars, value).map((key) => [key, labels[key]] as const)

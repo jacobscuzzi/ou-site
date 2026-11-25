@@ -5,6 +5,7 @@ import { price } from '../price'
 import { searchTag, tagLabel, tagsIn } from '../tags'
 import { BeerIcon, ClockIcon } from './icons'
 import KindBadge from './KindBadge'
+import { Dish, Espresso } from './PriceChips'
 
 const coffeeItem = /espresso|expresso|caf[eé]|coffee|filtre|filter|flat white|cappuccino|latte/
 
@@ -40,10 +41,8 @@ export default function CardChips({ bar, open }: { bar: Bar; open: boolean }) {
           {t.till(bar.openUntil)}
         </span>
       )}
-      {layer === 'eat' && facts.pricePerPerson !== undefined && (
-        <span className="chip chip-pink">{t.perPerson(price(facts.pricePerPerson))}</span>
-      )}
-      {cup !== null && <span className="chip chip-pink">{t.coffeePrice(price(cup))}</span>}
+      {layer === 'eat' && facts.dishPrice !== undefined && <Dish value={facts.dishPrice} kinds={[...(facts.cuisine ?? []), ...(bar.tags ?? [])]} />}
+      {cup !== null && <Espresso value={cup} />}
       {(layer === 'drink' || layer === 'dance') && bar.pintPrice !== null && <Pint value={bar.pintPrice} />}
       {tags.map((id) =>
         open ? (
