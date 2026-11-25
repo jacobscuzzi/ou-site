@@ -2,7 +2,7 @@ import type { Event, MapBar, Post } from '../api/types'
 import { cuisineLabel, useLang, useT } from '../i18n'
 import { useLayer } from '../mode'
 import { price } from '../price'
-import { labelFor } from '../tags'
+import { tagLabel, tagsIn } from '../tags'
 import { BeerIcon, ClockIcon } from './icons'
 import KindBadge from './KindBadge'
 import Photo from './Photo'
@@ -63,8 +63,8 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
               {price(bar.pintPrice)}
             </span>
           )}
-          {bar.tags.slice(0, 3).map((tag) => (
-            <span key={tag} className="chip">{labelFor(tag, lang)}</span>
+          {tagsIn(bar.tags, layer, 3).map((tag) => (
+            <span key={tag} className="chip">{tagLabel(tag, lang)}</span>
           ))}
         </span>
       </span>

@@ -573,3 +573,13 @@ html.locked body {
   pointer-events: none;
   user-select: none;
 }
+
+.chip-tag {
+  cursor: pointer;
+  border: var(--border-1) solid var(--line);
+  transition: background var(--tap-ms) var(--ease);
+}
+
+.chip-tag:active {
+  background: var(--pink-soft);
+}

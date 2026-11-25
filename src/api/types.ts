@@ -77,6 +77,7 @@ export type Bar = {
   lng: number
   photos: string[]
   thumbs?: string[]
+  tags?: string[]
   whyHere: string
   pintPrice: number | null
   happyHour: HappyHour | null

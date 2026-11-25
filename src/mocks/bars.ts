@@ -4,6 +4,11 @@ import { available, catalog, inLayer, kindOf, LAYERS, opening, places, toBar, ty
 
 const vibes = ['lively', 'cosy', 'chic', 'party', 'laid_back']
 const musics = ['dj', 'jazz', 'techno', 'rock']
+// the mock's facts as tag ids of the catalogue (src/tagCatalog.json)
+const asTag: Record<string, string> = {
+  lively: 'lively', party: 'lively', cosy: 'cosy', chic: 'chic', laid_back: 'laid_back', dj: 'dj', jazz: 'live_music',
+  rock: 'live_music', techno: 'techno', terrace: 'terrace', dancing: 'dance_floor', live_band: 'live_music',
+}
 
 function fromFacts(p: MockPlace) {
   const f = p.facts ?? {}
@@ -28,6 +33,7 @@ export function toMapBar(p: MockPlace): MapBar {
     .slice(0, 3)
   const cover = i % 20 === 7 ? undefined : p.photos[0]
   const music = faked ? tags.filter((m) => musics.includes(m)) : (p.facts?.music ?? [])
+  const tagIds = tags.map((t) => asTag[t]).filter((t): t is string => Boolean(t))
   return {
     id: p.id,
     name: p.name,
@@ -38,7 +44,7 @@ export function toMapBar(p: MockPlace): MapBar {
     pintPrice: i % 15 === 4 ? null : p.pintPrice,
     openUntil: opening(p).openUntil,
     kinds: [kindOf(p)],
-    tags,
+    tags: tagIds,
     ...(terrace && { terrace: true }),
     ...(dancing && { dancing: true }),
     ...(cover && { cover }),

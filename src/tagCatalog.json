@@ -1,0 +1,1194 @@
+{
+ "version": 1,
+ "tags": [
+  {
+   "id": "strict_door",
+   "en": "Strict door",
+   "fr": "Sélection à l'entrée",
+   "group": "door",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "easy_door",
+   "en": "Easy door",
+   "fr": "Entrée facile",
+   "group": "door",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "guest_list",
+   "en": "Guest list",
+   "fr": "Guest list",
+   "group": "door",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "bottle_service",
+   "en": "Bottle service",
+   "fr": "Service bouteille",
+   "group": "service",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "cloakroom",
+   "en": "Cloakroom",
+   "fr": "Vestiaire",
+   "group": "service",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "smoking_area",
+   "en": "Smoking area",
+   "fr": "Fumoir",
+   "group": "service",
+   "layers": [
+    "drink",
+    "dance"
+   ]
+  },
+  {
+   "id": "techno",
+   "en": "Techno",
+   "fr": "Techno",
+   "group": "music",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "hard_techno",
+   "en": "Hard techno",
+   "fr": "Hard techno",
+   "group": "music",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "house",
+   "en": "House",
+   "fr": "House",
+   "group": "music",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "disco",
+   "en": "Disco",
+   "fr": "Disco",
+   "group": "music",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "hip_hop",
+   "en": "Hip-hop",
+   "fr": "Hip-hop",
+   "group": "music",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "afro",
+   "en": "Afro",
+   "fr": "Afro",
+   "group": "music",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "latin",
+   "en": "Latin",
+   "fr": "Latino",
+   "group": "music",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "pop",
+   "en": "Pop & hits",
+   "fr": "Pop & tubes",
+   "group": "music",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "dnb",
+   "en": "DnB & bass",
+   "fr": "DnB & bass",
+   "group": "music",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "rnb",
+   "en": "R&B",
+   "fr": "R&B",
+   "group": "music",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "electro",
+   "en": "Electro",
+   "fr": "Électro",
+   "group": "music",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "live_music",
+   "en": "Live music",
+   "fr": "Concerts",
+   "group": "music",
+   "layers": [
+    "dance",
+    "drink"
+   ]
+  },
+  {
+   "id": "dj",
+   "en": "DJ sets",
+   "fr": "DJ",
+   "group": "music",
+   "layers": [
+    "drink",
+    "dance"
+   ]
+  },
+  {
+   "id": "karaoke",
+   "en": "Karaoke",
+   "fr": "Karaoké",
+   "group": "music",
+   "layers": [
+    "drink",
+    "dance"
+   ]
+  },
+  {
+   "id": "students",
+   "en": "Students",
+   "fr": "Étudiants",
+   "group": "crowd",
+   "layers": [
+    "dance",
+    "drink",
+    "coffee"
+   ]
+  },
+  {
+   "id": "queer",
+   "en": "Queer",
+   "fr": "Queer",
+   "group": "crowd",
+   "layers": [
+    "dance",
+    "drink"
+   ]
+  },
+  {
+   "id": "thirty_plus",
+   "en": "30+",
+   "fr": "30 ans et +",
+   "group": "crowd",
+   "layers": [
+    "dance",
+    "drink"
+   ]
+  },
+  {
+   "id": "internationals",
+   "en": "Internationals",
+   "fr": "International",
+   "group": "crowd",
+   "layers": [
+    "dance",
+    "drink"
+   ]
+  },
+  {
+   "id": "open_air",
+   "en": "Open air",
+   "fr": "Plein air",
+   "group": "format",
+   "layers": [
+    "dance",
+    "drink"
+   ]
+  },
+  {
+   "id": "rooftop",
+   "en": "Rooftop",
+   "fr": "Rooftop",
+   "group": "format",
+   "layers": [
+    "dance",
+    "drink",
+    "eat"
+   ]
+  },
+  {
+   "id": "afterparty",
+   "en": "Afterparty",
+   "fr": "After",
+   "group": "format",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "big_room",
+   "en": "Big room",
+   "fr": "Grande salle",
+   "group": "format",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "intimate",
+   "en": "Intimate",
+   "fr": "Intimiste",
+   "group": "format",
+   "layers": [
+    "dance",
+    "drink"
+   ]
+  },
+  {
+   "id": "underground",
+   "en": "Underground",
+   "fr": "Underground",
+   "group": "format",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "dance_floor",
+   "en": "Dance floor",
+   "fr": "Piste de danse",
+   "group": "format",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "free_entry",
+   "en": "Free entry",
+   "fr": "Entrée gratuite",
+   "group": "price",
+   "layers": [
+    "dance"
+   ]
+  },
+  {
+   "id": "cheap_drinks",
+   "en": "Cheap drinks",
+   "fr": "Verres pas chers",
+   "group": "price",
+   "layers": [
+    "dance",
+    "drink"
+   ]
+  },
+  {
+   "id": "pricey",
+   "en": "Pricey",
+   "fr": "Cher",
+   "group": "price",
+   "layers": [
+    "dance",
+    "drink",
+    "eat",
+    "coffee"
+   ],
+   "generic": true
+  },
+  {
+   "id": "open_late",
+   "en": "Open late",
+   "fr": "Ouvert tard",
+   "group": "practical",
+   "layers": [
+    "drink",
+    "eat",
+    "dance"
+   ]
+  },
+  {
+   "id": "darts",
+   "en": "Darts",
+   "fr": "Fléchettes",
+   "group": "games",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "quiz",
+   "en": "Quiz nights",
+   "fr": "Soirées quiz",
+   "group": "games",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "board_games",
+   "en": "Board games",
+   "fr": "Jeux de société",
+   "group": "games",
+   "layers": [
+    "drink",
+    "coffee"
+   ]
+  },
+  {
+   "id": "billiards",
+   "en": "Pool table",
+   "fr": "Billard",
+   "group": "games",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "table_football",
+   "en": "Table football",
+   "fr": "Baby-foot",
+   "group": "games",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "beer_pong",
+   "en": "Beer pong",
+   "fr": "Beer pong",
+   "group": "games",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "arcade",
+   "en": "Arcade",
+   "fr": "Arcade",
+   "group": "games",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "match_nights",
+   "en": "Match nights",
+   "fr": "Soirs de match",
+   "group": "games",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "cocktails",
+   "en": "Cocktails",
+   "fr": "Cocktails",
+   "group": "drinks",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "happy_hour",
+   "en": "Happy hour",
+   "fr": "Happy hour",
+   "group": "drinks",
+   "layers": [
+    "drink",
+    "dance"
+   ]
+  },
+  {
+   "id": "cheap_pints",
+   "en": "Cheap pints",
+   "fr": "Pintes pas chères",
+   "group": "drinks",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "craft_beer",
+   "en": "Craft beer",
+   "fr": "Bières craft",
+   "group": "drinks",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "natural_wine",
+   "en": "Natural wine",
+   "fr": "Vin nature",
+   "group": "drinks",
+   "layers": [
+    "drink",
+    "eat"
+   ]
+  },
+  {
+   "id": "wine_bar",
+   "en": "Wine bar",
+   "fr": "Bar à vin",
+   "group": "drinks",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "speakeasy",
+   "en": "Speakeasy",
+   "fr": "Speakeasy",
+   "group": "place",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "terrace",
+   "en": "Terrace",
+   "fr": "Terrasse",
+   "group": "place",
+   "layers": [
+    "drink",
+    "eat",
+    "coffee"
+   ]
+  },
+  {
+   "id": "good_for_groups",
+   "en": "Good for groups",
+   "fr": "Pour les groupes",
+   "group": "occasion",
+   "layers": [
+    "drink",
+    "eat"
+   ]
+  },
+  {
+   "id": "first_date",
+   "en": "First date",
+   "fr": "Premier date",
+   "group": "occasion",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "afterwork",
+   "en": "Afterwork",
+   "fr": "Afterwork",
+   "group": "occasion",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "dive_bar",
+   "en": "Dive bar",
+   "fr": "Rade",
+   "group": "place",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "hookah",
+   "en": "Shisha",
+   "fr": "Chicha",
+   "group": "place",
+   "layers": [
+    "drink"
+   ]
+  },
+  {
+   "id": "italian",
+   "en": "Italian",
+   "fr": "Italien",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "japanese",
+   "en": "Japanese",
+   "fr": "Japonais",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "french",
+   "en": "French",
+   "fr": "Français",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "chinese",
+   "en": "Chinese",
+   "fr": "Chinois",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "korean",
+   "en": "Korean",
+   "fr": "Coréen",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "lebanese",
+   "en": "Lebanese",
+   "fr": "Libanais",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "middle_eastern",
+   "en": "Middle Eastern",
+   "fr": "Moyen-Orient",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "mexican",
+   "en": "Mexican",
+   "fr": "Mexicain",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "indian",
+   "en": "Indian",
+   "fr": "Indien",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "north_african",
+   "en": "North African",
+   "fr": "Maghrébin",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "african",
+   "en": "African",
+   "fr": "Africain",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "pizza",
+   "en": "Pizza",
+   "fr": "Pizza",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "greek",
+   "en": "Greek",
+   "fr": "Grec",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "seafood",
+   "en": "Seafood",
+   "fr": "Fruits de mer",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "vietnamese",
+   "en": "Vietnamese",
+   "fr": "Vietnamien",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "thai",
+   "en": "Thai",
+   "fr": "Thaï",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "burger",
+   "en": "Burgers",
+   "fr": "Burgers",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "street_food",
+   "en": "Street food",
+   "fr": "Street food",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "steakhouse",
+   "en": "Steakhouse",
+   "fr": "Viandes",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "spanish",
+   "en": "Spanish",
+   "fr": "Espagnol",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "fusion",
+   "en": "Fusion",
+   "fr": "Fusion",
+   "group": "cuisine",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "brunch",
+   "en": "Brunch",
+   "fr": "Brunch",
+   "group": "menu",
+   "layers": [
+    "eat",
+    "coffee"
+   ]
+  },
+  {
+   "id": "sharing_plates",
+   "en": "Sharing plates",
+   "fr": "Assiettes à partager",
+   "group": "menu",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "handmade_pasta",
+   "en": "Handmade pasta",
+   "fr": "Pâtes fraîches",
+   "group": "menu",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "vegetarian",
+   "en": "Vegetarian friendly",
+   "fr": "Végétarien",
+   "group": "diet",
+   "layers": [
+    "eat",
+    "coffee"
+   ]
+  },
+  {
+   "id": "vegan",
+   "en": "Vegan options",
+   "fr": "Options vegan",
+   "group": "diet",
+   "layers": [
+    "eat",
+    "coffee"
+   ]
+  },
+  {
+   "id": "halal",
+   "en": "Halal",
+   "fr": "Halal",
+   "group": "diet",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "gluten_free",
+   "en": "Gluten-free options",
+   "fr": "Sans gluten",
+   "group": "diet",
+   "layers": [
+    "eat",
+    "coffee"
+   ]
+  },
+  {
+   "id": "date_night",
+   "en": "Date night",
+   "fr": "Dîner en amoureux",
+   "group": "occasion",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "solo_counter",
+   "en": "Solo at the counter",
+   "fr": "Seul au comptoir",
+   "group": "occasion",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "quick_lunch",
+   "en": "Quick lunch",
+   "fr": "Déjeuner rapide",
+   "group": "occasion",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "family",
+   "en": "Family friendly",
+   "fr": "En famille",
+   "group": "occasion",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "book_ahead",
+   "en": "Book ahead",
+   "fr": "Réserver",
+   "group": "practical",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "walk_in_only",
+   "en": "Walk-in only",
+   "fr": "Sans réservation",
+   "group": "practical",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "queue",
+   "en": "Expect a queue",
+   "fr": "File d'attente",
+   "group": "practical",
+   "layers": [
+    "eat",
+    "coffee"
+   ]
+  },
+  {
+   "id": "takeaway",
+   "en": "Takeaway",
+   "fr": "À emporter",
+   "group": "practical",
+   "layers": [
+    "eat",
+    "coffee"
+   ]
+  },
+  {
+   "id": "cheap_eats",
+   "en": "Under 15 EUR",
+   "fr": "Moins de 15 EUR",
+   "group": "price",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
+   "id": "great_value",
+   "en": "Great value",
+   "fr": "Bon rapport qualité-prix",
+   "group": "price",
+   "layers": [
+    "eat"
+   ],
+   "generic": true
+  },
+  {
+   "id": "specialty_coffee",
+   "en": "Specialty coffee",
+   "fr": "Café de spécialité",
+   "group": "menu",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "oat_milk",
+   "en": "Oat milk",
+   "fr": "Lait d'avoine",
+   "group": "menu",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "matcha",
+   "en": "Matcha",
+   "fr": "Matcha",
+   "group": "menu",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "banana_bread",
+   "en": "Banana bread",
+   "fr": "Banana bread",
+   "group": "menu",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "homemade_pastries",
+   "en": "Homemade pastries",
+   "fr": "Pâtisseries maison",
+   "group": "menu",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "laptop_friendly",
+   "en": "Laptop friendly",
+   "fr": "Pour bosser",
+   "group": "use",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "plugs",
+   "en": "Plugs",
+   "fr": "Prises",
+   "group": "use",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "no_laptops",
+   "en": "No laptops",
+   "fr": "Pas d'ordis",
+   "group": "use",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "wifi",
+   "en": "Wi-Fi",
+   "fr": "Wi-Fi",
+   "group": "use",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "good_for_a_date",
+   "en": "Good for a date",
+   "fr": "Pour un date",
+   "group": "use",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "takeaway_only",
+   "en": "Takeaway only",
+   "fr": "À emporter seulement",
+   "group": "use",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "quiet",
+   "en": "Quiet",
+   "fr": "Calme",
+   "group": "place",
+   "layers": [
+    "coffee",
+    "eat"
+   ]
+  },
+  {
+   "id": "tiny",
+   "en": "Tiny",
+   "fr": "Tout petit",
+   "group": "place",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "dog_friendly",
+   "en": "Dog friendly",
+   "fr": "Chiens acceptés",
+   "group": "place",
+   "layers": [
+    "coffee",
+    "drink"
+   ]
+  },
+  {
+   "id": "bakery",
+   "en": "Bakery",
+   "fr": "Boulangerie",
+   "group": "place",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "tea_room",
+   "en": "Tea room",
+   "fr": "Salon de thé",
+   "group": "place",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "cold_brew",
+   "en": "Cold brew",
+   "fr": "Cold brew",
+   "group": "menu",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "chai",
+   "en": "Chai",
+   "fr": "Chai",
+   "group": "menu",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "light_lunch",
+   "en": "Light lunch",
+   "fr": "Déjeuner léger",
+   "group": "menu",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "open_early",
+   "en": "Open early",
+   "fr": "Ouvert tôt",
+   "group": "practical",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "open_sunday",
+   "en": "Open on Sunday",
+   "fr": "Ouvert le dimanche",
+   "group": "practical",
+   "layers": [
+    "coffee",
+    "eat"
+   ]
+  },
+  {
+   "id": "roastery",
+   "en": "Roastery",
+   "fr": "Torréfacteur",
+   "group": "place",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "spacious",
+   "en": "Spacious",
+   "fr": "Spacieux",
+   "group": "place",
+   "layers": [
+    "coffee",
+    "eat"
+   ]
+  },
+  {
+   "id": "cheap_coffee",
+   "en": "Coffee under 3 EUR",
+   "fr": "Café à moins de 3 EUR",
+   "group": "price",
+   "layers": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "photogenic",
+   "en": "Photogenic",
+   "fr": "Instagrammable",
+   "group": "place",
+   "layers": [
+    "coffee",
+    "eat",
+    "drink"
+   ],
+   "generic": true
+  },
+  {
+   "id": "cosy",
+   "en": "Cosy",
+   "fr": "Cosy",
+   "group": "vibe",
+   "layers": [
+    "drink",
+    "eat",
+    "dance",
+    "coffee"
+   ],
+   "generic": true
+  },
+  {
+   "id": "lively",
+   "en": "Lively",
+   "fr": "Animé",
+   "group": "vibe",
+   "layers": [
+    "drink",
+    "eat",
+    "dance",
+    "coffee"
+   ],
+   "generic": true
+  },
+  {
+   "id": "chic",
+   "en": "Chic",
+   "fr": "Chic",
+   "group": "vibe",
+   "layers": [
+    "drink",
+    "eat",
+    "dance",
+    "coffee"
+   ],
+   "generic": true
+  },
+  {
+   "id": "laid_back",
+   "en": "Laid-back",
+   "fr": "Détendu",
+   "group": "vibe",
+   "layers": [
+    "drink",
+    "eat",
+    "dance",
+    "coffee"
+   ],
+   "generic": true
+  },
+  {
+   "id": "locals",
+   "en": "Locals",
+   "fr": "Habitués",
+   "group": "vibe",
+   "layers": [
+    "drink",
+    "eat",
+    "dance",
+    "coffee"
+   ],
+   "generic": true
+  },
+  {
+   "id": "touristy",
+   "en": "Touristy",
+   "fr": "Touristique",
+   "group": "vibe",
+   "layers": [
+    "drink",
+    "eat",
+    "dance",
+    "coffee"
+   ],
+   "generic": true
+  }
+ ]
+}

@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import type { Event } from '../api/types'
 import { useLang, useT, type Strings } from '../i18n'
-import { labelFor } from '../tags'
 import { clockOf, shortDate, shortDay } from '../night'
 import { genreLabel } from '../eventTags'
 import { focusOf } from '../mode'
@@ -153,7 +152,7 @@ export default function EventCard({ event, kinds, selected = false, onSelect, sh
           {(event.genres.length > 0 || event.lineup.length > 0) && (
             <span className="ev-tags">
               {event.genres.slice(0, 2).map((g) => (
-                <span key={g} className="chip">{labelFor(g, lang)}</span>
+                <span key={g} className="chip">{genreLabel(g, lang)}</span>
               ))}
               {event.lineup.length > 0 && <span className="ev-lineup">{event.lineup.slice(0, 3).join(', ')}</span>}
             </span>

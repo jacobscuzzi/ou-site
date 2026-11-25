@@ -25,6 +25,7 @@ import PhotoViewer from './components/PhotoViewer'
 import AgendaSheet from './components/AgendaSheet'
 import FocusToggle from './components/FocusToggle'
 import { onOpenPhotos } from './photos'
+import { onTagSearch } from './tags'
 import { useTheme } from './theme'
 import { initialDate, longDay, nights, sameNight, shortDate, STRIP_DAYS, tonight, weekend, writeDate, type Night } from './night'
 import { BackIcon, CalendarIcon, DownIcon, MapIcon, SearchIcon } from './components/icons'
@@ -144,6 +145,9 @@ export default function App() {
   }, [])
 
   useEffect(() => onOpenPhotos(setViewer), [])
+
+  const tagSearch = useRef<(label: string) => void>(() => undefined)
+  useEffect(() => onTagSearch((label) => tagSearch.current(label)), [])
 
   useEffect(() => {
     const ctrl = new AbortController()
@@ -422,6 +426,12 @@ export default function App() {
     setReveal(null)
     setSheet('peek')
     window.scrollTo({ top: 0 })
+  }
+
+  // a tapped tag: the same search, kept to the part of the map in view
+  tagSearch.current = (label: string) => {
+    search(label)
+    if (bounds && mode === 'map') setArea(bounds)
   }
 
   function searchHere() {
