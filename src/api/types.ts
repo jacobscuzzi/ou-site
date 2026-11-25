@@ -192,6 +192,7 @@ export type MapBar = {
   music?: string[]
   pricePerPerson?: number
   deal?: boolean
+  dealPct?: number
   action?: Action
   danceMode?: DanceMode
 }

@@ -14,7 +14,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Bar, MapBar } from '../api/types'
 import { useT } from '../i18n'
 import { danceKind } from '../kind'
-import { useLayer } from '../mode'
+import { focusOf, useLayer } from '../mode'
 import { barsToGeoJSON, boundsOf, chipFilter, passes, PARIS, type Bounds, type ChipKey } from '../map/geo'
 import { BubbleLayer, resultSpecs, type BubbleSpec } from '../map/bubble'
 import { still } from '../motion'
@@ -61,6 +61,8 @@ type Props = {
   // places that are at least a circle (party tonight, liked, deal) and places that stay a dot (disliked)
   boost?: ReadonlySet<string> | null
   sink?: ReadonlySet<string> | null
+  // deals focus: gold rings instead of pink ones and the deal badges on the markers
+  dealMode?: boolean
   // places with a party tonight, marked by a small badge on the pin (drink layer)
   badge?: ReadonlySet<string> | null
 }
@@ -111,6 +113,11 @@ function readTokens() {
     ringPeriod: num('--ring-period'),
     bubbleMd: num('--bubble-md'),
     bubbleLg: num('--bubble-lg'),
+    ringDeal: str('--ring-deal'),
+    gold: str('--gold'),
+    onGold: str('--on-gold'),
+    dealSize: num('--deal-tag-size'),
+    dealHalo: num('--deal-tag-halo'),
     bubbleGap: num('--bubble-gap'),
     bubbleOut: num('--bubble-out'),
     bubbleStep: num('--bubble-stagger'),
@@ -152,8 +159,19 @@ function readTokens() {
   }
 }
 
-function ringStyle(tk: Tokens): RingStyle {
-  return { color: tk.ring, width: tk.ringWidth, dash: tk.ringDash, gap: tk.ringSpace, period: tk.ringPeriod }
+function ringStyle(tk: Tokens, deal = false): RingStyle {
+  return { color: deal ? tk.ringDeal : tk.ring, width: tk.ringWidth, dash: tk.ringDash, gap: tk.ringSpace, period: tk.ringPeriod }
+}
+
+function showDeals(map: MaplibreMap, on: boolean) {
+  for (const id of ['deal-dots', 'deal-tags']) map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none')
+}
+
+function dealLabels(bars: MapBar[]) {
+  const out = new Map<string, string>()
+  const emoji = focusOf.eat?.emoji ?? ''
+  for (const b of bars) if (b.deal) out.set(b.id, b.dealPct ? `-${b.dealPct}%` : emoji)
+  return out
 }
 
 function widen(b: Bounds, m: number): Bounds {
@@ -176,6 +194,37 @@ function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[], night: Readonly
       'circle-stroke-width': tk.strokeWidth,
       'circle-translate': [tk.badgeShift, -tk.badgeShift],
     },
+  })
+  map.addLayer({
+    id: 'deal-dots',
+    type: 'circle',
+    source: 'bars',
+    filter: ['==', ['get', 'dd'], 1],
+    layout: { visibility: 'none' },
+    paint: {
+      'circle-color': tk.gold,
+      'circle-radius': tk.badgeR,
+      'circle-stroke-color': tk.badgeStroke,
+      'circle-stroke-width': tk.strokeWidth,
+      'circle-translate': [tk.badgeShift, -tk.badgeShift],
+    },
+  })
+  map.addLayer({
+    id: 'deal-tags',
+    type: 'symbol',
+    source: 'bars',
+    filter: ['!=', ['get', 'dl'], ''],
+    layout: {
+      visibility: 'none',
+      'text-field': ['get', 'dl'],
+      'text-size': tk.dealSize,
+      'text-anchor': 'bottom-left',
+      'text-offset': [0.5, -0.4],
+      'text-allow-overlap': true,
+      'text-ignore-placement': true,
+      ...(font && { 'text-font': font }),
+    },
+    paint: { 'text-color': tk.onGold, 'text-halo-color': tk.gold, 'text-halo-width': tk.dealHalo },
   })
   map.addLayer({
     id: 'labels',
@@ -304,7 +353,8 @@ export default function CityMap(props: Props) {
   const latestKind = useRef(kindOf)
   latestKind.current = kindOf
   const bubbles = useRef<BubbleLayer | null>(null)
-  const exploreIds = useRef<string[]>([])
+  // the bubbles picked last, per mode, so a focus switched off brings the earlier ones back
+  const picks = useRef<{ plain: string[]; deal: string[] }>({ plain: [], deal: [] })
   const pressed = useRef(new Set<number>())
   const waiting = useRef(false)
   const me = useRef<Marker | null>(null)
@@ -419,13 +469,14 @@ export default function CityMap(props: Props) {
     } else {
       const pad = padding(map)
       const loose = { ...pad, left: 0, right: 0 }
-      const kept = new Set(exploreIds.current)
+      const mode = p.dealMode ? 'deal' : 'plain'
+      const kept = new Set(picks.current[mode])
       const none = { top: 0, bottom: 0, left: 0, right: 0 }
       const visible = p.bars.filter((bar) => passes(bar, p.chips) && inView(map, bar, none))
       const clear = new Set(visible.filter((bar) => inView(map, bar, kept.has(bar.id) ? loose : pad)).map((bar) => bar.id))
       next = assignTiers(
         visible.map((bar) => ({ id: bar.id, name: bar.name, quality: bar.quality, ...at(bar) })),
-        { previous: exploreIds.current, max1: tk.max1, max2: tk.max2, gap1: tk.bubbleGap, gap2: tk.gap2, boost: p.boost, sink: p.sink, clear },
+        { previous: picks.current[mode], max1: tk.max1, max2: tk.max2, gap1: tk.bubbleGap, gap2: tk.gap2, boost: p.boost, sink: p.sink, clear },
       )
       specs = visible
         .filter((bar) => next.get(bar.id)?.tier === 1)
@@ -442,8 +493,11 @@ export default function CityMap(props: Props) {
       }
     }
     layer.sync(specs, look)
-    exploreIds.current = p.results.length === 0 ? ones : []
+    if (p.results.length > 0) picks.current = { plain: [], deal: [] }
+    else picks.current[p.dealMode ? 'deal' : 'plain'] = ones
     layer.party(p.badge ?? null)
+    layer.deal(p.dealMode ? dealLabels(p.bars) : null)
+    if (p.sink) for (const id of p.sink) if (next.get(id)?.tier === 3) next.set(id, { tier: 3, fade: 1 })
     setTiers(map, next)
     applyFilter(map, p.chips, layer.ids())
   }
@@ -598,12 +652,21 @@ export default function CityMap(props: Props) {
 
   useEffect(() => {
     const map = mapRef.current
+    const tk = tokens.current
+    if (!map || !ready.current || !tk) return
+    showDeals(map, props.dealMode === true)
+    rings.current?.setStyle(ringStyle(tk, props.dealMode))
+    refreshBubbles()
+  }, [props.dealMode])
+
+  useEffect(() => {
+    const map = mapRef.current
     if (!map || !ready.current) return
     const tk = readTokens()
     tokens.current = tk
     applyTheme(map, tk)
     recolorMetro(map, tk)
-    rings.current?.setStyle(ringStyle(tk))
+    rings.current?.setStyle(ringStyle(tk, latest.current.dealMode))
     applyLook(map, tk, latest.current.results.length > 0, lookOf(latest.current))
   }, [theme])
 

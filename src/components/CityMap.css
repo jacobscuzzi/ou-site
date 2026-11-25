@@ -280,3 +280,18 @@
   left: 0;
   pointer-events: none;
 }
+
+.spot-deal {
+  position: absolute;
+  top: calc(-1 * var(--space-1));
+  right: calc(-1 * var(--space-2));
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-pill);
+  border: var(--bubble-badge-border) solid var(--surface);
+  background: var(--gold);
+  color: var(--on-gold);
+  font-size: var(--text-chip);
+  font-weight: 800;
+  line-height: 1.5;
+  white-space: nowrap;
+}

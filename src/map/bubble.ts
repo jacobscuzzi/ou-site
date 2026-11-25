@@ -135,6 +135,25 @@ export class BubbleLayer {
     for (const [id, item] of this.items) item.el.toggleAttribute('data-party', ids?.has(id) === true)
   }
 
+  // the deal of the place in the deals focus: "-30%" or the money emoji
+  deal(labels: ReadonlyMap<string, string> | null) {
+    for (const [id, item] of this.items) {
+      const body = item.el.firstElementChild!
+      let tag = body.querySelector<HTMLElement>('.spot-deal')
+      const text = labels?.get(id)
+      if (!text) {
+        tag?.remove()
+        continue
+      }
+      if (!tag) {
+        tag = document.createElement('span')
+        tag.className = 'spot-deal'
+        body.appendChild(tag)
+      }
+      tag.textContent = text
+    }
+  }
+
   mark(selectedId: string | null) {
     for (const [id, item] of this.items) item.el.toggleAttribute('data-selected', id === selectedId)
   }

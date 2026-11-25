@@ -1,9 +1,10 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import type { Event } from '../api/types'
 import { useLang, useT, type Strings } from '../i18n'
 import { labelFor } from '../tags'
 import { clockOf, shortDate, shortDay } from '../night'
 import { genreLabel } from '../eventTags'
+import { focusOf } from '../mode'
 import { ActionLink } from './Actions'
 import Photo from './Photo'
 import Posts from './Posts'
@@ -31,15 +32,36 @@ export function eventTime(e: Event) {
   return start && end ? `${start} – ${end}` : start
 }
 
-export function DealLine({ deal }: { deal: Event }) {
+const SOURCES: Record<string, string> = { thefork: 'TheFork', dealabs: 'Dealabs', editorial: 'Presse', profile: 'où' }
+
+// The deal of a restaurant right under its name: what, where it comes from, until when; conditions on tap.
+export function DealStrip({ deal }: { deal: Event }) {
   const t = useT()
   const lang = useLang()
+  const [open, setOpen] = useState(false)
+  const source = deal.sources.map((s) => SOURCES[s]).find(Boolean)
   return (
-    <p className="deal-line">
-      <span className="deal-badge">{t.dealBadge}</span>
-      <span className="deal-title">{deal.title}</span>
-      <span className="deal-until">{deal.validUntil ? t.dealUntil(shortDate(deal.validUntil, lang)) : t.dealRecent}</span>
-    </p>
+    <div className="deal-strip" data-open={open || undefined}>
+      <button
+        type="button"
+        className="deal-strip-head"
+        aria-expanded={deal.conditions ? open : undefined}
+        onClick={(e) => {
+          e.stopPropagation()
+          if (deal.conditions) setOpen((o) => !o)
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        {deal.discountPct ? <span className="deal-strip-pct">-{deal.discountPct}%</span> : <span className="deal-strip-pct">{focusOf.eat?.emoji}</span>}
+        <span className="deal-strip-what">{deal.title}</span>
+        <span className="deal-strip-meta">
+          {source && <span>{t.dealVia(source)}</span>}
+          <span>{deal.validUntil ? t.dealUntil(shortDate(deal.validUntil, lang)) : t.dealRecent}</span>
+          {deal.conditions && <span className="deal-strip-more">{t.dealConditions}</span>}
+        </span>
+      </button>
+      {open && deal.conditions && <p className="deal-strip-conditions">{deal.conditions}</p>}
+    </div>
   )
 }
 

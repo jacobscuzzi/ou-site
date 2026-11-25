@@ -10,6 +10,13 @@ export const layerEmoji: Record<Layer, string> = {
   coffee: '\u{2615}',
 }
 
+// The focus toggle on the side of a layer's map (deals in eat for now; drink happy hours and coffee
+// can use the same toggle later). The money emoji is the only other emoji the UI uses.
+export type Focus = 'deals'
+export const focusOf: Partial<Record<Layer, { focus: Focus; emoji: string }>> = {
+  eat: { focus: 'deals', emoji: '\u{1F4B0}' },
+}
+
 const KEY = 'ou-layer'
 const DANCE_NIGHTS = ['Thu', 'Fri', 'Sat']
 const MORNING_AFTER = ['Fri', 'Sat', 'Sun']

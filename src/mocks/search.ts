@@ -86,8 +86,10 @@ export function mockSearch(
   const switched = Boolean(wish && wish !== layer && available(wish))
   const searched = switched ? wish : layer
   const range = night ?? mockWhen(q)
+  const dealsOnly = /\b(deals?|bons? plans?|promos?|discounts?|r[ée]ductions?)\b/i.test(q)
   const ranked = rank(q, searched, venue)
     .filter((b) => !box || inBox(b, box))
+    .filter((b) => !dealsOnly || b.deal)
     .map((b, i) => {
       const place = range && catalog.find((p) => p.id === b.id)
       return { ...b, rank: i + 1, ...(place && { events: placeEvents(place, range.from) }) }

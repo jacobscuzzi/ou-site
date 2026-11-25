@@ -19,6 +19,7 @@ type Props = {
   onSelect: (id: string) => void
   onRetry: () => void
   title?: string
+  empty?: string
   // drink layer: the party a bar has tonight, and what a tap on its line does
   eventOf?: (id: string) => Event | undefined
   onEvent?: (e: Event) => void
@@ -71,7 +72,7 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
   )
 }
 
-export default function ExploreList({ bars, state, warming, selectedId, onSelect, onRetry, title, eventOf, onEvent, postsOf }: Props) {
+export default function ExploreList({ bars, state, warming, selectedId, onSelect, onRetry, title, empty, eventOf, onEvent, postsOf }: Props) {
   const t = useT()
 
   return (
@@ -115,7 +116,7 @@ export default function ExploreList({ bars, state, warming, selectedId, onSelect
       )}
       {state === 'empty' && (
         <div className="explore-note">
-          <p className="explore-note-title">{t.exploreEmpty}</p>
+          <p className="explore-note-title">{empty ?? t.exploreEmpty}</p>
           <p className="explore-note-hint">{t.exploreEmptyHint}</p>
         </div>
       )}

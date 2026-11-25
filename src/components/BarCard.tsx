@@ -7,7 +7,7 @@ import Hours from './Hours'
 import Photo from './Photo'
 import Posts from './Posts'
 import { ActionLink } from './Actions'
-import EventCard, { DealLine, EventLine, TonightLine } from './EventCard'
+import EventCard, { DealStrip, EventLine, TonightLine } from './EventCard'
 import { useLayer } from '../mode'
 import { tonight, type Night } from '../night'
 import { openPhotos, thumbOf } from '../photos'
@@ -21,6 +21,7 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
   const t = useT()
   const layer = useLayer()
   const party = layer === 'drink' ? bar.events?.find((e) => e.kind === 'party' && e.night === tonight()) : undefined
+  const dealAction = bar.deal?.actions.find((a) => a.kind === 'offer' || a.kind === 'booking')
   const matched =
     layer === 'dance' && night ? bar.events?.find((e) => e.kind === 'party' && e.night !== null && e.night >= night.from && e.night <= night.to) : undefined
 
@@ -70,7 +71,7 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
 
         <CardChips bar={bar} open={open} />
 
-        {bar.deal && <DealLine deal={bar.deal} />}
+        {bar.deal && <DealStrip deal={bar.deal} />}
         {matched && <EventLine event={matched} />}
         {party && <TonightLine event={party} open={eventOpen} onOpen={() => setEventOpen((v) => !v)} />}
         {party && eventOpen && (
@@ -78,10 +79,16 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
             <EventCard event={party} kinds={bar.kinds} showPlace={false} />
           </div>
         )}
-        {bar.actions?.[0] && (
+        {dealAction ? (
           <div className="card-cta">
-            <ActionLink action={bar.actions[0]} kinds={bar.kinds} main />
+            <ActionLink action={dealAction} kinds={bar.kinds} main label={t.bookWithDeal} />
           </div>
+        ) : (
+          bar.actions?.[0] && (
+            <div className="card-cta">
+              <ActionLink action={bar.actions[0]} kinds={bar.kinds} main />
+            </div>
+          )
         )}
 
         {!bar.compliant && bar.constraintsNotMet.length > 0 && (

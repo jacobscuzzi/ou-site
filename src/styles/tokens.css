@@ -152,6 +152,14 @@
   --dot-hit: 22px;
   --dot-pale: #ffcfe4;
   --ring: var(--pink);
+  --ring-deal: var(--gold);
+  --deal-tag-size: 10px;
+  --deal-tag-halo: 3px;
+  --gold: #f4b400;
+  --gold-deep: #c98a00;
+  --on-gold: #2a1d00;
+  --gold-soft: rgba(244, 180, 0, 0.12);
+  --shadow-gold: 0 4px 14px rgba(244, 180, 0, 0.45);
   --ring-width: 1.5px;
   --ring-dash: 4px;
   --ring-space: 3px;

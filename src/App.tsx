@@ -23,6 +23,7 @@ import Intro, { introWanted } from './components/Intro'
 import ModeChoice from './components/ModeChoice'
 import PhotoViewer from './components/PhotoViewer'
 import AgendaSheet from './components/AgendaSheet'
+import FocusToggle from './components/FocusToggle'
 import { onOpenPhotos } from './photos'
 import { useTheme } from './theme'
 import { initialDate, longDay, nights, sameNight, shortDate, STRIP_DAYS, tonight, weekend, writeDate, type Night } from './night'
@@ -72,6 +73,7 @@ export default function App() {
   const [asking, setAsking] = useState(modeWanted)
   const [mapLive, setMapLive] = useState(false)
   const [agendaOpen, setAgendaOpen] = useState(false)
+  const [dealsOn, setDealsOn] = useState(false)
   const [pendingShow, setPendingShow] = useState<string | null>(null)
   const theme = useTheme()
   const [viewer, setViewer] = useState<{ photos: string[]; index: number; title: string } | null>(null)
@@ -434,6 +436,7 @@ export default function App() {
 
   function applyLayer(next: Layer) {
     setLayer(next)
+    setDealsOn(false)
     setEventView(null)
     setNight((n) => (next === 'dance' ? (n && n.from === n.to ? n : one(asked ?? tonight())) : null))
     setChips((prev) => new Set([...prev].filter((c) => layerChips[next].includes(c))))
@@ -486,7 +489,13 @@ export default function App() {
     if (query === null) setSheet('half')
   }
 
-  const top = useMemo(() => topInView(mapBars, bounds, chips), [mapBars, bounds, chips])
+  const dealsShown = dealsOn && query === null
+  const dealIds = useMemo(() => (dealsShown ? new Set(mapBars.filter((b) => b.deal).map((b) => b.id)) : null), [dealsShown, mapBars])
+  const noDealIds = useMemo(() => (dealIds ? new Set(mapBars.filter((b) => !dealIds.has(b.id)).map((b) => b.id)) : null), [dealIds, mapBars])
+  const top = useMemo(
+    () => topInView(dealIds ? mapBars.filter((b) => dealIds.has(b.id)) : mapBars, bounds, chips),
+    [mapBars, bounds, chips, dealIds],
+  )
   const hasEvents = layer !== 'dance' || (counts !== null && Object.values(counts).some((n) => n > 0))
   const showNight = night !== null && nightLayer(layer) && hasEvents
   const nightIds = useMemo(
@@ -707,11 +716,14 @@ export default function App() {
           onBounds={setBounds}
           onFail={() => setMapFailed(true)}
           padKey={`${sheet}:${query === null}:${layer}`}
-          night={ringIds}
-          boost={nightIds}
+          night={dealIds ?? ringIds}
+          boost={dealIds ?? nightIds}
+          sink={noDealIds}
+          dealMode={dealsShown}
           badge={badgeIds}
         />
       </Suspense>
+      {query === null && <FocusToggle on={dealsOn} onToggle={() => setDealsOn((v) => !v)} />}
       {sheet !== 'peek' && (
         <button type="button" className="sheet-down" onClick={() => setSheet('peek')} aria-label={t.backToMap}>
           <DownIcon />
@@ -760,6 +772,8 @@ export default function App() {
               selectedId={selectedId}
               onSelect={pickFromList}
               onRetry={() => setBarsAttempt((n) => n + 1)}
+              title={dealsShown ? t.dealsTitle(top.length) : undefined}
+              empty={dealsShown ? t.dealsEmpty : undefined}
               eventOf={(id) => tonightOf.get(id)}
               postsOf={(id) => rowPosts.get(id)}
               onEvent={layer === 'drink' ? openEvent : undefined}

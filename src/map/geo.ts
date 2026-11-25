@@ -35,7 +35,7 @@ const musicChips = Object.keys(musicGroups) as MusicChip[]
 
 export const layerChips: Record<Layer, ChipKey[]> = {
   drink: ['open', 'terrace', 'dancing', 'cheap'],
-  eat: ['deal', 'open', 'terrace', 'budget', ...cuisineChips],
+  eat: ['open', 'terrace', 'budget', ...cuisineChips],
   dance: ['open', 'clubs', 'dancebars', ...musicChips, 'cheap'],
   coffee: ['deal', 'open', 'terrace'],
 }
@@ -134,6 +134,8 @@ export function barsToGeoJSON(
         club: flag(bar.kinds?.includes('club') === true),
         ev: flag(night === null || night.has(bar.id)),
         pty: flag(badge !== null && badge.has(bar.id)),
+        dl: bar.deal && bar.dealPct ? `-${bar.dealPct}%` : '',
+        dd: flag(bar.deal === true && !bar.dealPct),
       },
     })),
   }

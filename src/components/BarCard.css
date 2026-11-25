@@ -162,10 +162,6 @@
   margin-top: var(--space-2);
 }
 
-.card .deal-line {
-  margin-top: var(--space-2);
-}
-
 .card .tonight-line {
   align-self: flex-start;
 }
