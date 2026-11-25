@@ -83,6 +83,7 @@ const en = {
   chipBudget: (n: number) => `Under ${n} EUR`,
   chipGroups: {
     asian: 'Asian',
+    kebab: 'Kebab',
     street: 'Burgers & street food',
     italian: 'Italian & pizza',
     brunch: 'Brunch',
@@ -319,6 +320,7 @@ const fr: typeof en = {
   chipBudget: (n: number) => `Moins de ${n} €`,
   chipGroups: {
     asian: 'Asiatique',
+    kebab: 'Kebab',
     street: 'Burgers & street food',
     italian: 'Italien & pizza',
     brunch: 'Brunch',

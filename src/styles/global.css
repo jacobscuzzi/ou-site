@@ -246,8 +246,6 @@ html.locked body {
   z-index: 10;
   display: flex;
   flex-direction: column;
-  max-width: var(--app-width);
-  margin: 0 auto;
   pointer-events: none;
   touch-action: none;
 }
@@ -382,15 +380,25 @@ html.locked body {
     display: none;
   }
 
+  /* the bar runs to the window's right edge like the map: the pill keeps a reading width,
+     the layer switch, the agenda and my places sit at the edge, level with the map controls */
   .top {
     left: calc(var(--panel-width) + var(--space-2));
-    max-width: calc(var(--reading-width) + 2 * var(--space-5));
+    max-width: none;
     margin: 0;
   }
 
   .top .search {
     max-width: none;
     margin: 0;
+  }
+
+  .top .search-pill {
+    max-width: var(--reading-width);
+  }
+
+  .top .search-pill + * {
+    margin-left: auto;
   }
 
   .top .chips {

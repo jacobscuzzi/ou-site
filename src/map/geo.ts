@@ -5,6 +5,7 @@ export type Bounds = { minLng: number; minLat: number; maxLng: number; maxLat: n
 
 const cuisineGroups = {
   asian: ['japanese', 'chinese', 'korean', 'vietnamese', 'thai'],
+  kebab: ['kebab'],
   street: ['burger', 'street_food', 'american', 'mexican', 'latin_american'],
   italian: ['italian', 'pizza'],
   brunch: ['brunch'],
@@ -64,7 +65,8 @@ const checks: Record<ChipKey, (bar: MapBar) => boolean> = {
   clubs: (bar) => bar.kinds?.includes('club') === true,
   dancebars: (bar) => bar.kinds?.includes('bar') === true && !bar.kinds.includes('club'),
   deal: (bar) => bar.deal === true,
-  ...group(cuisineGroups, (bar) => bar.cuisines ?? (bar.cuisine ? [bar.cuisine] : [])),
+  // a cuisine from the profile, or a cuisine tag with its evidence (kebab comes from the tags only)
+  ...group(cuisineGroups, (bar) => [...(bar.cuisines ?? (bar.cuisine ? [bar.cuisine] : [])), ...(bar.tags ?? [])]),
   ...group(musicGroups, (bar) => bar.music ?? bar.tags),
 }
 
