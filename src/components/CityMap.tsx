@@ -346,6 +346,8 @@ function blendRadius(tk: Tokens, wide: boolean): ExpressionSpecification {
   return ['+', ['*', ['-', 1, grown], tierRadius(tk, tierWas, wide)], ['*', grown, tierRadius(tk, tierOf, wide)]]
 }
 
+const hl: ExpressionSpecification = ['coalesce', ['feature-state', 'hl'], '']
+
 function applyLook(map: MaplibreMap, tk: Tokens, dimmed: boolean, selectedId: string | null) {
   const selected: ExpressionSpecification = ['==', ['get', 'id'], selectedId ?? '']
   const faded: ExpressionSpecification = ['==', ['get', 'ev'], 0]
@@ -357,6 +359,10 @@ function applyLook(map: MaplibreMap, tk: Tokens, dimmed: boolean, selectedId: st
     'case',
     ['==', ['get', 'sg'], 'dislike'],
     tk.markDislike,
+    ['==', hl, 'party'],
+    tk.silver[1],
+    ['==', hl, 'deal'],
+    tk.goldMetal[1],
     ['all', two, ['==', ['get', 'club'], 1]],
     tk.dotClub,
     two,
@@ -365,8 +371,8 @@ function applyLook(map: MaplibreMap, tk: Tokens, dimmed: boolean, selectedId: st
   ])
   map.setPaintProperty('dots', 'circle-opacity', opacity)
   map.setPaintProperty('dots', 'circle-stroke-opacity', opacity)
-  map.setPaintProperty('dots', 'circle-stroke-color', tk.stroke2)
-  map.setPaintProperty('dots', 'circle-stroke-width', ['case', two, tk.stroke2Width, 0])
+  map.setPaintProperty('dots', 'circle-stroke-color', ['match', hl, 'party', tk.silver[2], 'deal', tk.goldMetal[2], tk.stroke2])
+  map.setPaintProperty('dots', 'circle-stroke-width', ['case', ['!=', hl, ''], tk.stroke2Width, two, tk.stroke2Width, 0])
   map.setLayoutProperty('dots', 'circle-sort-key', ['get', 'quality'])
   map.setPaintProperty('labels', 'text-opacity', ['step', ['zoom'], ['case', two, dimmed ? tk.dim : 1, 0], ALL_LABELS_ZOOM, dimmed ? tk.dim : 1])
   map.setPaintProperty('labels', 'text-color', tk.label)
@@ -443,19 +449,16 @@ export default function CityMap(props: Props) {
   langRef.current = lang
   const dealTextOf = (b: MapBar) => dealLabel(b.dealKind ?? (b.dealPct ? 'pct' : undefined), b.dealValue ?? b.dealPct, langRef.current)
   const rings = useRef<RingLayer | null>(null)
+  const shine = useRef(new Set<string>())
 
   function ringRadius(id: string) {
     const map = mapRef.current
     const tk = tokens.current
     if (!map || !tk) return 0
-    if (bubbles.current?.ids().includes(id)) {
-      const big = latest.current.results.find((b) => b.id === id && b.rank <= tk.max1)
-      return (big ? tk.bubbleLg : tk.bubbleMd) / 2 + tk.ringGap
-    }
-    const k = Math.min(1, Math.max(0, (map.getZoom() - 11) / 5))
-    const tier = tiers.current.get(id) ?? 3
-    const r = tier === 2 ? tk.r2Min + (tk.r2Max - tk.r2Min) * k : tk.r3Min + (tk.r3Max - tk.r3Min) * k
-    return r + tk.ringGap
+    // only the photo bubbles wear the ring; circles and dots are filled silver or gold instead
+    if (!bubbles.current?.ids().includes(id)) return 0
+    const big = latest.current.results.find((b) => b.id === id && b.rank <= tk.max1)
+    return (big ? tk.bubbleLg : tk.bubbleMd) / 2 + tk.ringGap
   }
 
   function placeRings() {
@@ -464,6 +467,12 @@ export default function CityMap(props: Props) {
     const spots = new Map<string, { lng: number; lat: number }>()
     if (p.night) for (const b of p.bars) if (p.night.has(b.id)) spots.set(b.id, b)
     rings.current.set(spots)
+    const map = mapRef.current
+    if (!map || !map.getSource('bars')) return
+    const tone = p.dealMode ? 'deal' : 'party'
+    for (const id of shine.current) if (!spots.has(id)) map.setFeatureState({ source: 'bars', id }, { hl: '' })
+    for (const id of spots.keys()) map.setFeatureState({ source: 'bars', id }, { hl: tone })
+    shine.current = new Set(spots.keys())
   }
 
   function capture() {
@@ -732,6 +741,7 @@ export default function CityMap(props: Props) {
     if (!map || !ready.current || !tk) return
     showDeals(map, props.dealMode === true)
     rings.current?.setStyle(ringStyle(tk, props.dealMode))
+    placeRings()
     refreshBubbles()
   }, [props.dealMode])
 
