@@ -12,9 +12,10 @@ import {
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Bar, MapBar } from '../api/types'
-import { useT } from '../i18n'
+import { useLang, useT, type Lang } from '../i18n'
 import { danceKind } from '../kind'
-import { focusOf, useLayer } from '../mode'
+import { useLayer } from '../mode'
+import { dealLabel } from '../deals'
 import { barsToGeoJSON, boundsOf, chipFilter, passes, PARIS, type Bounds, type ChipKey } from '../map/geo'
 import { BubbleLayer, resultSpecs, type BubbleSpec } from '../map/bubble'
 import { still } from '../motion'
@@ -107,15 +108,16 @@ function readTokens() {
     max1: num('--tier-max-1'),
     max2: num('--tier-max-2'),
     gap2: num('--tier-gap-2'),
-    ring: str('--ring'),
     ringWidth: num('--ring-width'),
-    ringDash: num('--ring-dash'),
-    ringSpace: num('--ring-space'),
     ringGap: num('--ring-gap'),
     ringPeriod: num('--ring-period'),
+    silver: [str('--ring-silver-hi'), str('--ring-silver'), str('--ring-silver-lo')] as [string, string, string],
+    goldMetal: [str('--ring-gold-hi'), str('--ring-gold'), str('--ring-gold-lo')] as [string, string, string],
+    ringEdge: str('--ring-edge'),
+    ringEdgeGold: str('--ring-edge-gold'),
+    ringSpark: str('--ring-spark'),
     bubbleMd: num('--bubble-md'),
     bubbleLg: num('--bubble-lg'),
-    ringDeal: str('--ring-deal'),
     gold: str('--gold'),
     onGold: str('--on-gold'),
     dealSize: num('--deal-tag-size'),
@@ -168,17 +170,23 @@ function readTokens() {
 }
 
 function ringStyle(tk: Tokens, deal = false): RingStyle {
-  return { color: deal ? tk.ringDeal : tk.ring, width: tk.ringWidth, dash: tk.ringDash, gap: tk.ringSpace, period: tk.ringPeriod }
+  return {
+    sparkles: !deal,
+    metal: deal ? tk.goldMetal : tk.silver,
+    edge: deal ? tk.ringEdgeGold : tk.ringEdge,
+    spark: tk.ringSpark,
+    width: tk.ringWidth,
+    period: tk.ringPeriod,
+  }
 }
 
 function showDeals(map: MaplibreMap, on: boolean) {
-  for (const id of ['deal-dots', 'deal-tags']) map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none')
+  map.setLayoutProperty('deal-tags', 'visibility', on ? 'visible' : 'none')
 }
 
-function dealLabels(bars: MapBar[]) {
+function dealLabels(bars: MapBar[], lang: Lang) {
   const out = new Map<string, string>()
-  const emoji = focusOf.eat?.emoji ?? ''
-  for (const b of bars) if (b.deal) out.set(b.id, b.dealPct ? `-${b.dealPct}%` : emoji)
+  for (const b of bars) if (b.deal) out.set(b.id, dealLabel(b.dealKind ?? (b.dealPct ? 'pct' : undefined), b.dealValue ?? b.dealPct, lang))
   return out
 }
 
@@ -193,9 +201,10 @@ function addLayers(
   night: ReadonlySet<string> | null,
   badge: ReadonlySet<string> | null,
   marks: ReadonlyMap<string, string> | null,
+  dealText: (bar: MapBar) => string,
 ) {
   const font = styleFont(map)
-  map.addSource('bars', { type: 'geojson', data: barsToGeoJSON(bars, night, badge, marks), promoteId: 'id' })
+  map.addSource('bars', { type: 'geojson', data: barsToGeoJSON(bars, night, badge, marks, dealText), promoteId: 'id' })
   addMarkImages(map, tk)
   map.addLayer({ id: 'dots', type: 'circle', source: 'bars' })
   map.addLayer({
@@ -205,20 +214,6 @@ function addLayers(
     filter: ['==', ['get', 'pty'], 1],
     paint: {
       'circle-color': tk.badge,
-      'circle-radius': tk.badgeR,
-      'circle-stroke-color': tk.badgeStroke,
-      'circle-stroke-width': tk.strokeWidth,
-      'circle-translate': [tk.badgeShift, -tk.badgeShift],
-    },
-  })
-  map.addLayer({
-    id: 'deal-dots',
-    type: 'circle',
-    source: 'bars',
-    filter: ['==', ['get', 'dd'], 1],
-    layout: { visibility: 'none' },
-    paint: {
-      'circle-color': tk.gold,
       'circle-radius': tk.badgeR,
       'circle-stroke-color': tk.badgeStroke,
       'circle-stroke-width': tk.strokeWidth,
@@ -277,8 +272,14 @@ function addLayers(
   })
 }
 
-function applyData(map: MaplibreMap, bars: MapBar[], badge: ReadonlySet<string> | null, marks: ReadonlyMap<string, string> | null) {
-  map.getSource<GeoJSONSource>('bars')?.setData(barsToGeoJSON(bars, null, badge, marks))
+function applyData(
+  map: MaplibreMap,
+  bars: MapBar[],
+  badge: ReadonlySet<string> | null,
+  marks: ReadonlyMap<string, string> | null,
+  dealText: (bar: MapBar) => string,
+) {
+  map.getSource<GeoJSONSource>('bars')?.setData(barsToGeoJSON(bars, null, badge, marks, dealText))
 }
 
 // heart, bookmark and strike badges for the circles and dots, drawn once on a canvas
@@ -437,6 +438,10 @@ export default function CityMap(props: Props) {
   const fades = useRef(new Map<string, number>())
   const grow = useRef(0)
   const theme = useTheme()
+  const lang = useLang()
+  const langRef = useRef(lang)
+  langRef.current = lang
+  const dealTextOf = (b: MapBar) => dealLabel(b.dealKind ?? (b.dealPct ? 'pct' : undefined), b.dealValue ?? b.dealPct, langRef.current)
   const rings = useRef<RingLayer | null>(null)
 
   function ringRadius(id: string) {
@@ -566,7 +571,7 @@ export default function CityMap(props: Props) {
     if (p.results.length > 0) picks.current = { plain: [], deal: [] }
     else picks.current[p.dealMode ? 'deal' : 'plain'] = ones
     layer.party(p.badge ?? null)
-    layer.deal(p.dealMode ? dealLabels(p.bars) : null)
+    layer.deal(p.dealMode ? dealLabels(p.bars, langRef.current) : null)
     layer.marks(p.marks ?? null)
     if (p.sink) for (const id of p.sink) if (next.get(id)?.tier === 3) next.set(id, { tier: 3, fade: 1 })
     setTiers(map, next)
@@ -654,7 +659,7 @@ export default function CityMap(props: Props) {
       latest.current.onLive?.()
       const p = latest.current
       applyTheme(map, tk)
-      addLayers(map, tk, p.bars, null, p.badge ?? null, p.marks ?? null)
+      addLayers(map, tk, p.bars, null, p.badge ?? null, p.marks ?? null, dealTextOf)
       rings.current = new RingLayer(map, ringRadius, ringStyle(tk))
       placeRings()
       ready.current = true
@@ -706,7 +711,7 @@ export default function CityMap(props: Props) {
 
   useEffect(() => {
     const map = mapRef.current
-    if (map && ready.current) applyData(map, bars, latest.current.badge ?? null, latest.current.marks ?? null)
+    if (map && ready.current) applyData(map, bars, latest.current.badge ?? null, latest.current.marks ?? null, dealTextOf)
     refreshBubbles()
     placeRings()
   }, [bars, props.night, props.badge, props.marks])

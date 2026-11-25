@@ -12,6 +12,7 @@ import { useLayer } from '../mode'
 import { tonight, type Night } from '../night'
 import { openPhotos, thumbOf } from '../photos'
 import Marks from './Marks'
+import { useDealsShown } from '../deals'
 import './BarCard.css'
 
 type Props = { bar: Bar; index: number; selected?: boolean; defaultOpen?: boolean; onSelect?: () => void; onOpen?: () => void; night?: Night | null }
@@ -22,7 +23,9 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
   const t = useT()
   const layer = useLayer()
   const party = layer === 'drink' ? bar.events?.find((e) => e.kind === 'party' && e.night === tonight()) : undefined
-  const dealAction = bar.deal?.actions.find((a) => a.kind === 'offer' || a.kind === 'booking')
+  const deals = useDealsShown()
+  const deal = deals ? bar.deal : undefined
+  const dealAction = deal?.actions.find((a) => a.kind === 'offer' || a.kind === 'booking')
   const matched =
     layer === 'dance' && night ? bar.events?.find((e) => e.kind === 'party' && e.night !== null && e.night >= night.from && e.night <= night.to) : undefined
 
@@ -73,7 +76,7 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
 
         <CardChips bar={bar} open={open} />
 
-        {bar.deal && <DealStrip deal={bar.deal} />}
+        {deal && <DealStrip deal={deal} />}
         {matched && <EventLine event={matched} />}
         {party && <TonightLine event={party} open={eventOpen} onOpen={() => setEventOpen((v) => !v)} />}
         {party && eventOpen && (

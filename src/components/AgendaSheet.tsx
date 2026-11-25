@@ -77,6 +77,8 @@ export default function AgendaSheet({ days, counts, day, bounds, kindsOf, onDay,
       (filters.vibes.size === 0 || (e.vibes ?? []).some((v) => filters.vibes.has(v))) &&
       (!filters.area || !bounds || inBounds(e, bounds)),
   )
+  // the most popular parties first (venue quality, then reach), start time breaks ties
+  shown.sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0) || (a.startsAt ?? '').localeCompare(b.startsAt ?? ''))
   const active = filters.genres.size + filters.buckets.size + filters.vibes.size + (filters.area ? 1 : 0)
 
   const chip = (on: boolean, label: string, onClick: () => void, key: string) => (

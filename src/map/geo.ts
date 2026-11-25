@@ -37,7 +37,7 @@ export const layerChips: Record<Layer, ChipKey[]> = {
   drink: ['open', 'terrace', 'dancing', 'cheap'],
   eat: ['open', 'terrace', 'budget', ...cuisineChips],
   dance: ['open', 'clubs', 'dancebars', ...musicChips, 'cheap'],
-  coffee: ['deal', 'open', 'terrace'],
+  coffee: ['open', 'terrace'],
 }
 
 // Chips of one family widen each other (Asian or Italian); everything else narrows.
@@ -118,6 +118,7 @@ export function barsToGeoJSON(
   night: ReadonlySet<string> | null = null,
   badge: ReadonlySet<string> | null = null,
   marks: ReadonlyMap<string, string> | null = null,
+  dealText: (bar: MapBar) => string = () => '',
 ): GeoJSON.FeatureCollection<GeoJSON.Point> {
   const ranked = bars.map((bar) => bar.quality).sort((a, b) => b - a)
   const threshold = ranked[Math.ceil(ranked.length / 4) - 1] ?? Infinity
@@ -135,8 +136,7 @@ export function barsToGeoJSON(
         club: flag(bar.kinds?.includes('club') === true),
         ev: flag(night === null || night.has(bar.id)),
         pty: flag(badge !== null && badge.has(bar.id)),
-        dl: bar.deal && bar.dealPct ? `-${bar.dealPct}%` : '',
-        dd: flag(bar.deal === true && !bar.dealPct),
+        dl: bar.deal ? dealText(bar) : '',
         sg: marks?.get(bar.id) ?? '',
       },
     })),

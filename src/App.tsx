@@ -28,6 +28,7 @@ import MyPlaces from './components/MyPlaces'
 import ReportSheet from './components/ReportSheet'
 import { idsOf, syncMarks, useMarks } from './signals'
 import { onOpenReport, onToast } from './toast'
+import { DEAL_WORDS, DealsContext } from './deals'
 import { HeartIcon } from './components/icons'
 import { onOpenPhotos } from './photos'
 import { onTagSearch } from './tags'
@@ -891,6 +892,7 @@ export default function App() {
   return (
     <LangContext.Provider value={lang}>
       <LayerContext.Provider value={layer}>
+        <DealsContext.Provider value={dealsShown || (query !== null && DEAL_WORDS.test(query))}>
         {stage}
         {classic}
         {viewer && <PhotoViewer photos={viewer.photos} start={viewer.index} title={viewer.title} onClose={() => setViewer(null)} />}
@@ -951,6 +953,7 @@ export default function App() {
             onClose={closeMonth}
           />
         )}
+        </DealsContext.Provider>
       </LayerContext.Provider>
     </LangContext.Provider>
   )

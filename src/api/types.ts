@@ -137,7 +137,12 @@ export type Event = {
   doorTime?: string | null
   minAge?: number | null
   priceTiers?: { name: string; price: number | null }[]
+  dealKind?: DealKind
+  dealValue?: number
+  popularity?: number
 }
+
+export type DealKind = 'pct' | 'bogo' | 'off' | 'menu' | 'free' | 'other'
 
 export type PriceBucket = 'free' | 'low' | 'mid' | 'high'
 
@@ -194,6 +199,8 @@ export type MapBar = {
   pricePerPerson?: number
   deal?: boolean
   dealPct?: number
+  dealKind?: DealKind
+  dealValue?: number
   action?: Action
   danceMode?: DanceMode
 }

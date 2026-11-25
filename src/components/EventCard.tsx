@@ -3,7 +3,7 @@ import type { Event } from '../api/types'
 import { useLang, useT, type Strings } from '../i18n'
 import { clockOf, shortDate, shortDay } from '../night'
 import { genreLabel } from '../eventTags'
-import { focusOf } from '../mode'
+import { dealLabel } from '../deals'
 import { ActionLink } from './Actions'
 import Photo from './Photo'
 import Posts from './Posts'
@@ -51,7 +51,7 @@ export function DealStrip({ deal }: { deal: Event }) {
         }}
         onKeyDown={(e) => e.stopPropagation()}
       >
-        {deal.discountPct ? <span className="deal-strip-pct">-{deal.discountPct}%</span> : <span className="deal-strip-pct">{focusOf.eat?.emoji}</span>}
+        <span className="deal-strip-pct">{dealLabel(deal.dealKind ?? (deal.discountPct ? 'pct' : undefined), deal.dealValue ?? deal.discountPct, lang)}</span>
         <span className="deal-strip-what">{deal.title}</span>
         <span className="deal-strip-meta">
           {source && <span>{t.dealVia(source)}</span>}

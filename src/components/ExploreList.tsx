@@ -3,6 +3,7 @@ import { cuisineLabel, useLang, useT } from '../i18n'
 import { useLayer } from '../mode'
 import { price } from '../price'
 import { tagLabel, tagsIn } from '../tags'
+import { dealLabel, useDealsShown } from '../deals'
 import { BeerIcon, ClockIcon } from './icons'
 import KindBadge from './KindBadge'
 import Photo from './Photo'
@@ -31,6 +32,7 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
   const lang = useLang()
   const layer = useLayer()
   const eat = layer === 'eat'
+  const deals = useDealsShown()
 
   return (
     <button
@@ -47,7 +49,7 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
           <span className="xrow-arr">{bar.arrondissement}</span>
         </span>
         <span className="xrow-chips">
-          {bar.deal && <span className="chip chip-deal">{t.dealBadge}</span>}
+          {bar.deal && deals && <span className="chip chip-deal">{dealLabel(bar.dealKind ?? (bar.dealPct ? 'pct' : undefined), bar.dealValue ?? bar.dealPct, lang)}</span>}
           <KindBadge kinds={bar.kinds} />
           {bar.openUntil && (
             <span className="chip">

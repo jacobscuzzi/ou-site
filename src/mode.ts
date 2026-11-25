@@ -15,6 +15,7 @@ export const layerEmoji: Record<Layer, string> = {
 export type Focus = 'deals'
 export const focusOf: Partial<Record<Layer, { focus: Focus; emoji: string }>> = {
   eat: { focus: 'deals', emoji: '\u{1F4B0}' },
+  coffee: { focus: 'deals', emoji: '\u{1F4B0}' },
 }
 
 const KEY = 'ou-layer'

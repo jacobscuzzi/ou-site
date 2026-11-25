@@ -151,8 +151,15 @@
   --dot-dim-opacity: 0.25;
   --dot-hit: 22px;
   --dot-pale: #ffcfe4;
-  --ring: var(--pink);
-  --ring-deal: var(--gold);
+  --ring-silver-hi: #ffffff;
+  --ring-silver: #d4d7df;
+  --ring-silver-lo: #7d8392;
+  --ring-gold-hi: #fff4c2;
+  --ring-gold: #f4b400;
+  --ring-gold-lo: #9a6500;
+  --ring-edge: rgba(17, 17, 20, 0.28);
+  --ring-edge-gold: rgba(80, 50, 0, 0.3);
+  --ring-spark: #ffffff;
   --deal-tag-size: 10px;
   --deal-tag-halo: 3px;
   --gold: #f4b400;
@@ -160,11 +167,9 @@
   --on-gold: #2a1d00;
   --gold-soft: rgba(244, 180, 0, 0.12);
   --shadow-gold: 0 4px 14px rgba(244, 180, 0, 0.45);
-  --ring-width: 1.5px;
-  --ring-dash: 4px;
-  --ring-space: 3px;
+  --ring-width: 3px;
   --ring-gap: 4px;
-  --ring-period: 1600;
+  --ring-period: 3200;
   --tier2-r-min: 5.5px;
   --tier2-r-max: 9px;
   --tier3-r-min: 2.5px;
@@ -411,5 +416,6 @@
   --dot-pale: #7d3a5c;
   --mark-dislike: #5c5c64;
   --mark-want: #3a3a42;
+  --ring-edge: rgba(0, 0, 0, 0.55);
   --mark-ink: #ffffff;
 }

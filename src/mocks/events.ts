@@ -105,6 +105,7 @@ function party(p: MockPlace, night: string, n: number): Event {
     doorTime: club ? '23:00' : '21:00',
     minAge: club ? 18 : null,
     priceTiers: club ? [{ name: 'Early', price: 10 + (i % 3) * 5 }, { name: 'Regular', price: 20 + (i % 3) * 5 }] : [],
+    popularity: Math.round(((catalog.indexOf(p) * 37) % 100) / 10) / 10,
   }
 }
 
