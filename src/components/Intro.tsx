@@ -3,7 +3,8 @@ import { useT } from '../i18n'
 import Logo from './Logo'
 import './Intro.css'
 
-const KEY = 'ou-intro-seen'
+// The intro plays on every page load (Jakob, 25 Nov: it is part of the brand); tests switch it off with ou-intro-off.
+const OFF = 'ou-intro-off'
 const FONT_WAIT = 400
 const LIFT_AT = 1800
 const LIFT_MS = 400
@@ -11,17 +12,9 @@ const SKIP_MS = 200
 
 export function introWanted(): boolean {
   try {
-    return localStorage.getItem(KEY) === null && !new URLSearchParams(location.search).has('layer')
+    return localStorage.getItem(OFF) === null
   } catch {
-    return false
-  }
-}
-
-function seen() {
-  try {
-    localStorage.setItem(KEY, '1')
-  } catch {
-    // storage unavailable, the intro may show again next time
+    return true
   }
 }
 
@@ -47,7 +40,6 @@ export default function Intro({ onDone }: { onDone: () => void }) {
     void fontsReady().then((ok) => {
       if (!live) return
       if (!ok) return done.current()
-      seen()
       setPhase('play')
       timers.current.push(window.setTimeout(() => setPhase('lift'), LIFT_AT))
       timers.current.push(window.setTimeout(() => done.current(), LIFT_AT + LIFT_MS))

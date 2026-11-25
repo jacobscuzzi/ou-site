@@ -21,7 +21,7 @@
         set()
         q.addEventListener ? q.addEventListener('change', set) : q.addListener(set)
         try {
-          if (!localStorage.getItem('ou-intro-seen') && !/[?&]layer=/.test(location.search)) {
+          if (!localStorage.getItem('ou-intro-off')) {
             ;['rubik-spray-intro', 'rubik-wet-intro'].forEach(function (f) {
               var l = document.createElement('link')
               l.rel = 'preload'
