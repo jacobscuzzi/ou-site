@@ -4,7 +4,7 @@ import type { Bar, Event, Layer, MapBar, Post } from './api/types'
 import { initialLang, LangContext, strings } from './i18n'
 import { initialLayer, LayerContext, modeWanted, rememberLayer } from './mode'
 import { tick } from './haptic'
-import { layerChips, topInView, type Bounds, type ChipKey } from './map/geo'
+import { layerChips, topInView, withChip, type Bounds, type ChipKey } from './map/geo'
 import Logo from './components/Logo'
 import LayerSwitch from './components/LayerSwitch'
 import SearchBar from './components/SearchBar'
@@ -491,11 +491,7 @@ export default function App() {
   }
 
   function toggleChip(key: ChipKey) {
-    setChips((prev) => {
-      const next = new Set(prev)
-      if (!next.delete(key)) next.add(key)
-      return next
-    })
+    setChips((prev) => withChip(prev, key))
   }
 
   // this device's dislikes sink to the end of its own results, they are not removed

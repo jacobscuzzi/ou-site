@@ -40,8 +40,18 @@ export const layerChips: Record<Layer, ChipKey[]> = {
   coffee: ['open', 'terrace'],
 }
 
-// Chips of one family widen each other (Asian or Italian); everything else narrows.
+// Chips of one family exclude each other (Italian replaces Burgers, Techno replaces Afro);
+// chips outside a family (open now, terrace…) combine with anything.
 const families: ChipKey[][] = [cuisineChips, musicChips, ['clubs', 'dancebars']]
+
+export function withChip(active: ReadonlySet<ChipKey>, key: ChipKey): Set<ChipKey> {
+  const next = new Set(active)
+  if (next.delete(key)) return next
+  const family = families.find((f) => f.includes(key))
+  for (const other of family ?? []) next.delete(other)
+  next.add(key)
+  return next
+}
 
 export const PARIS: Bounds = { minLng: 2.224, minLat: 48.815, maxLng: 2.47, maxLat: 48.903 }
 
