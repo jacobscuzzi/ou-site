@@ -690,6 +690,11 @@ export default function App() {
     <>
       {layer === 'dance' && hasEvents && (
         <button type="button" className="agenda-fab" aria-label={t.agendaOpen(tonightCount)} onClick={() => setAgendaOpen(true)}>
+          {tonightCount > 0 && (
+            <span className="agenda-ring" aria-hidden="true">
+              <span className="agenda-spark" />
+            </span>
+          )}
           <CalendarIcon />
           {tonightCount > 0 && <span className="agenda-fab-count" aria-hidden="true">{tonightCount}</span>}
         </button>

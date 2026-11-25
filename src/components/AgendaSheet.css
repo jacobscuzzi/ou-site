@@ -148,7 +148,67 @@
   color: var(--ink);
 }
 
+.agenda-ring {
+  position: absolute;
+  inset: calc(-1 * var(--ring-gap));
+  border-radius: var(--radius-pill);
+  background: conic-gradient(
+    var(--ring-silver-hi),
+    var(--ring-silver) 10%,
+    var(--ring-silver-lo) 24%,
+    var(--ring-silver) 38%,
+    var(--ring-silver-hi) 50%,
+    var(--ring-silver) 60%,
+    var(--ring-silver-lo) 74%,
+    var(--ring-silver) 88%,
+    var(--ring-silver-hi)
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--ring-width)), #000 calc(100% - var(--ring-width) + 0.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--ring-width)), #000 calc(100% - var(--ring-width) + 0.5px));
+  filter: drop-shadow(0 0 1px var(--ring-edge));
+  animation: agenda-ring-turn calc(var(--ring-period) * 1ms) linear infinite;
+  pointer-events: none;
+}
+
+.agenda-spark {
+  position: absolute;
+  top: calc(-1 * var(--space-1));
+  left: 50%;
+  width: var(--space-3);
+  height: var(--space-3);
+  translate: -50% 0;
+  background: var(--ring-spark);
+  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+  animation: agenda-spark 1.4s ease-in-out infinite;
+}
+
+@keyframes agenda-ring-turn {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@keyframes agenda-spark {
+  0%,
+  100% {
+    opacity: 0.2;
+    scale: 0.5;
+  }
+  50% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agenda-ring,
+  .agenda-spark {
+    animation: none;
+  }
+}
+
 .agenda-fab-count {
+  z-index: 1;
   position: absolute;
   top: calc(-1 * var(--space-1));
   right: calc(-1 * var(--space-1));
