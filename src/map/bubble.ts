@@ -1,7 +1,8 @@
 import { Marker, type Map as MaplibreMap } from 'maplibre-gl'
-import type { Bar, MapBar } from '../api/types'
+import type { Bar } from '../api/types'
 import type { DanceKind } from '../kind'
-import { cleanName, stablePick } from './geo'
+import { cleanName } from './geo'
+import { still } from '../motion'
 
 export type BubbleSize = 'lg' | 'md' | 'sm'
 
@@ -19,16 +20,11 @@ export type BubbleSpec = {
 type Item = { marker: Marker; el: HTMLButtonElement; photo: HTMLSpanElement; name: HTMLSpanElement }
 
 const TOP_RANKS = 5
-const EXPLORE_MAX = 6
 const PHASES = 5
 const STAGGER_MAX = 8
 const LEAVE_SLACK = 30
 
 export type BubbleTiming = { out: number; step: number }
-
-function still() {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches || 'lite' in document.documentElement.dataset
-}
 
 export function resultSpecs(results: Bar[], kindOf: (kinds: string[] | undefined) => DanceKind | null): BubbleSpec[] {
   return results.map((bar) => ({
@@ -36,27 +32,11 @@ export function resultSpecs(results: Bar[], kindOf: (kinds: string[] | undefined
     name: bar.name,
     lat: bar.lat,
     lng: bar.lng,
-    photo: bar.photos[0],
+    photo: bar.thumbs?.[0] || bar.photos[0],
     rank: bar.rank,
     size: bar.rank <= TOP_RANKS ? 'lg' : 'sm',
     kind: kindOf(bar.kinds),
   }))
-}
-
-export function exploreSpecs(
-  map: MaplibreMap,
-  visible: MapBar[],
-  previous: readonly string[],
-  gap: number,
-  kindOf: (kinds: string[] | undefined) => DanceKind | null,
-): BubbleSpec[] {
-  const at = (bar: MapBar) => map.project([bar.lng, bar.lat])
-  const byId = new Map(visible.map((bar) => [bar.id, bar]))
-  return stablePick(visible, previous, at, EXPLORE_MAX, gap).flatMap((id) => {
-    const bar = byId.get(id)
-    if (!bar) return []
-    return { id, name: bar.name, lat: bar.lat, lng: bar.lng, photo: bar.cover, size: 'md' as const, kind: kindOf(bar.kinds) }
-  })
 }
 
 function phase(id: string) {

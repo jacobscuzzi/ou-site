@@ -149,7 +149,18 @@
   --dot-opacity-min: 0.8;
   --dot-opacity-max: 1;
   --dot-dim-opacity: 0.25;
-  --dot-hit: 12px;
+  --dot-hit: 22px;
+  --dot-pale: #ffcfe4;
+  --tier2-r-min: 5.5px;
+  --tier2-r-max: 9px;
+  --tier3-r-min: 2.5px;
+  --tier3-r-max: 4.5px;
+  --tier2-stroke: var(--surface);
+  --tier2-stroke-width: 1.5px;
+  --tier-ms: 180ms;
+  --tier-max-1: 6;
+  --tier-max-2: 15;
+  --tier-gap-2: 22px;
   --label: var(--map-ink);
   --label-halo: var(--map-land);
   --label-size: var(--text-xs);
@@ -244,6 +255,28 @@
   --camera-fit-ms: 700ms;
   --panel-in-ms: 320ms;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --intro-bg: #0b0b0d;
+  --map-fade: 220ms;
+  --map-start-w: 560px;
+  --map-start-h: 1000px;
+  --viewer-bg: #000000;
+  --viewer-bg-drop: rgba(0, 0, 0, 0.7);
+  --viewer-ink: #ffffff;
+  --mode-scrim: rgba(11, 11, 13, 0.42);
+  --mode-ink: #ffffff;
+  --mode-text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+  --mode-width: 340px;
+  --mode-option: 112px;
+  --mode-emoji: 40px;
+  --mode-in: 240ms;
+  --mode-fly: 380ms;
+  --mode-fly-scale: 0.55;
+  --tap-ms: 90ms;
+  --intro-ink: #ffffff;
+  --intro-snap: 90ms;
+  --intro-rise: 300ms;
+  --intro-lift: 400ms;
+  --intro-ease: cubic-bezier(0.7, 0, 0.2, 1);
   --app-width: 430px;
   --reading-width: 720px;
 }
@@ -261,4 +294,92 @@
     --sheet-peek: 0px;
     --map-pad-left: calc(var(--panel-width) + var(--space-7));
   }
+}
+
+:root {
+  color-scheme: light;
+  --logo-bg: #f7f6f4;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --logo-bg: #0b0b0d;
+  --glow-pink: rgba(255, 31, 142, 0.22);
+  --glow-pink-2: rgba(255, 31, 142, 0.16);
+  --glow-orange: rgba(255, 120, 60, 0.12);
+  --glow-violet: rgba(120, 80, 255, 0.14);
+  --veil: rgba(11, 11, 13, 0.55);
+  --pink-text: #ff5cab;
+  --pink-tint: #3a1027;
+  --pink-soft: rgba(255, 31, 142, 0.2);
+  --pink-rim: rgba(255, 255, 255, 0.3);
+  --pink-bounce: rgba(255, 255, 255, 0.25);
+
+  --bg: #0b0b0d;
+  --bg-desktop: #060607;
+  --surface: #18181c;
+  --fill: #222227;
+  --map-grid: rgba(255, 255, 255, 0.06);
+  --skeleton: repeating-linear-gradient(135deg, #1d1d22 0 6px, #25252b 6px 12px);
+
+  --glass: rgba(28, 28, 33, 0.58);
+  --glass-pill: rgba(28, 28, 33, 0.5);
+  --glass-lite: rgba(24, 24, 28, 0.9);
+  --glass-bubble-bg: rgba(24, 24, 28, 0.72);
+  --glass-card: rgba(28, 28, 33, 0.45);
+  --glass-badge: rgba(36, 36, 42, 0.62);
+  --glass-bubble: rgba(24, 24, 28, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-strong: rgba(255, 255, 255, 0.18);
+  --glass-edge: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.04), inset 0 0 22px rgba(255, 255, 255, 0.03);
+  --hairline: 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+  --glass-lens: radial-gradient(120% 120% at 30% 12%, rgba(64, 64, 72, 0.92) 0%, rgba(32, 32, 38, 0.74) 48%, rgba(42, 42, 48, 0.82) 100%);
+  --glass-lens-label: linear-gradient(180deg, rgba(46, 46, 52, 0.96) 0%, rgba(30, 30, 36, 0.88) 100%);
+  --glass-lens-shine: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.03) 60%, rgba(255, 255, 255, 0) 100%);
+  --glass-lens-edge: inset 0 1.5px 1px rgba(255, 255, 255, 0.18), inset 0 -3px 6px rgba(255, 31, 142, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-lens: 0 6px 18px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-emoji: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.5));
+  --blur-lens: blur(14px) saturate(1.5) brightness(0.9);
+  --glass-glare: linear-gradient(115deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, 0) 62%, rgba(255, 255, 255, 0.06) 100%);
+
+  --ink: #f4f4f6;
+  --ink-2: #a8a8b0;
+  --ink-3: #d4d4da;
+  --chip: rgba(44, 44, 50, 0.72);
+  --open: #3ccf7f;
+  --open-soft: rgba(60, 207, 127, 0.16);
+  --closed: #ff7461;
+  --closed-soft: rgba(255, 116, 97, 0.16);
+  --line: rgba(255, 255, 255, 0.08);
+  --outline: rgba(255, 255, 255, 0.06);
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-3: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-badge: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-bubble: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sheet: 0 -8px 32px rgba(0, 0, 0, 0.5);
+  --sheet-scrim: rgba(0, 0, 0, 0.55);
+  --blur-1: blur(16px) saturate(1.4);
+  --blur-2: blur(24px) saturate(1.4);
+  --blur-3: blur(32px) saturate(1.5) brightness(0.9);
+
+  --map-land: #141418;
+  --map-water: #1b2550;
+  --map-water-edge: #172046;
+  --map-water-ink: #93a5ff;
+  --map-water-halo: #141418;
+  --map-park: #15302a;
+  --map-building: #1c1c22;
+  --map-building-edge: #26262d;
+  --map-road: #2b2b32;
+  --map-road-case: #1e1e24;
+  --map-road-main: #3b3138;
+  --map-road-main-case: #2a2329;
+  --map-path: #2a2329;
+  --map-ink: #dcd2d8;
+  --post-bg: #000000;
+  --post-ink: #ffffff;
+  --dot-pale: #7d3a5c;
 }

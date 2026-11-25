@@ -5,13 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>où</title>
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#D3227A" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f6f4" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0b0d" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      ;(function () {
+        var q = window.matchMedia('(prefers-color-scheme: dark)')
+        var set = function () {
+          if (document.documentElement.dataset.themeLock) return
+          document.documentElement.dataset.theme = q.matches ? 'dark' : 'light'
+        }
+        set()
+        q.addEventListener ? q.addEventListener('change', set) : q.addListener(set)
+        try {
+          if (!localStorage.getItem('ou-intro-seen') && !/[?&]layer=/.test(location.search)) {
+            ;['rubik-spray-intro', 'rubik-wet-intro'].forEach(function (f) {
+              var l = document.createElement('link')
+              l.rel = 'preload'
+              l.as = 'font'
+              l.type = 'font/woff2'
+              l.crossOrigin = 'anonymous'
+              l.href = '/fonts/' + f + '.woff2'
+              document.head.appendChild(l)
+            })
+          }
+        } catch (e) {}
+      })()
+    </script>
+    <meta property="og:title" content="où" />
+    <meta property="og:description" content="Where to go out in Paris: bars, restaurants, clubs and cafés." />
+    <meta property="og:image" content="https://oup.wtf/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="où" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin />
+    <link rel="preconnect" href="https://tiles.basemaps.cartocdn.com" crossorigin />
+    <link rel="preload" href="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json" as="fetch" crossorigin />
+    <link rel="preload" href="/map-start-light.webp" as="image" media="(prefers-color-scheme: light)" />
+    <link rel="preload" href="/map-start-dark.webp" as="image" media="(prefers-color-scheme: dark)" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />

@@ -1,0 +1,112 @@
+@font-face {
+  font-family: 'ou intro spray';
+  src: url('/fonts/rubik-spray-intro.woff2') format('woff2');
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'ou intro wet';
+  src: url('/fonts/rubik-wet-intro.woff2') format('woff2');
+  font-display: block;
+}
+
+.intro {
+  --u: calc(min(100vw, 46.2vh) / 390);
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--intro-bg);
+  color: var(--intro-ink);
+  transition: translate var(--intro-lift) var(--intro-ease);
+  touch-action: none;
+  outline: none;
+}
+
+.intro[data-phase='lift'] {
+  translate: 0 -100%;
+}
+
+.intro-words {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(4 * var(--u));
+}
+
+.intro-line {
+  display: block;
+  font-family: 'ou intro spray', sans-serif;
+  line-height: 0.95;
+  white-space: nowrap;
+  animation: intro-snap var(--intro-snap) var(--ease) both;
+}
+
+.intro-where {
+  font-size: calc(92 * var(--u));
+  rotate: -5deg;
+}
+
+.intro-the {
+  font-size: calc(70 * var(--u));
+  rotate: 3deg;
+  margin-left: calc(120 * var(--u));
+  animation-delay: 200ms;
+}
+
+.intro-fuck {
+  font-family: 'ou intro wet', sans-serif;
+  font-size: calc(132 * var(--u));
+  line-height: 1;
+  color: var(--pink);
+  rotate: -4deg;
+  animation-delay: 400ms;
+}
+
+.intro-paris {
+  font-size: calc(68 * var(--u));
+  line-height: 1;
+  rotate: 2deg;
+  animation-delay: 600ms;
+}
+
+.intro-logo {
+  margin-top: calc(52 * var(--u));
+  animation: intro-rise var(--intro-rise) var(--ease) 1000ms both;
+}
+
+.intro-logo .logo {
+  color: var(--intro-ink);
+}
+
+@keyframes intro-snap {
+  0% {
+    opacity: 0;
+    scale: 1.7;
+  }
+  65% {
+    opacity: 1;
+    scale: 0.96;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes intro-rise {
+  from {
+    opacity: 0;
+    translate: 0 calc(14 * var(--u));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro,
+  .intro-line,
+  .intro-logo {
+    animation: none;
+    transition: none;
+  }
+}

@@ -6,6 +6,7 @@ import { clockOf, shortDate } from '../night'
 import { ActionLink } from './Actions'
 import Photo from './Photo'
 import Posts from './Posts'
+import { openPhotos } from '../photos'
 import './EventCard.css'
 
 function euros(n: number) {
@@ -85,11 +86,17 @@ export default function EventCard({ event, kinds, selected = false, onSelect, sh
   const time = eventTime(event)
   const cost = eventPrice(event, t)
   const main = event.actions[0]
+  const pic = event.image ?? event.photo ?? undefined
 
   return (
     <article className={selected ? 'ev ev-selected' : 'ev'} data-id={event.placeId}>
       <div className="ev-head">
-        <Photo className="ev-photo" src={event.image ?? event.photo ?? undefined} />
+        <Photo
+          className="ev-photo"
+          src={pic}
+          onOpen={pic && !onSelect ? () => openPhotos([pic], 0, event.title) : undefined}
+          openLabel={t.photosOf(event.title)}
+        />
         <Main className="ev-main" onSelect={onSelect} focusable={focusable}>
           <span className="ev-when">
             {event.night && showDate && <span className="ev-date">{shortDate(event.night, lang)}</span>}

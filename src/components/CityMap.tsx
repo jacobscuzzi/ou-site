@@ -16,7 +16,12 @@ import { useT } from '../i18n'
 import { danceKind } from '../kind'
 import { useLayer } from '../mode'
 import { barsToGeoJSON, boundsOf, chipFilter, passes, PARIS, type Bounds, type ChipKey } from '../map/geo'
-import { BubbleLayer, exploreSpecs, resultSpecs } from '../map/bubble'
+import { BubbleLayer, resultSpecs, type BubbleSpec } from '../map/bubble'
+import { still } from '../motion'
+import { assignTiers, type Tier } from '../map/tiers'
+import { useTheme } from '../theme'
+import { thumbOf } from '../photos'
+import { recolorMetro } from '../map/metro'
 import { focusOn, fitTo, glideTo, inView, lngLatBounds, padding, type CameraTiming } from '../map/camera'
 import { applyTheme, styleFont } from '../map/theme'
 import { useMetro } from '../map/useMetro'
@@ -48,8 +53,12 @@ type Props = {
   onSelect: (id: string) => void
   onBounds: (b: Bounds) => void
   onFail: () => void
+  onLive?: () => void
   padKey?: string
   night?: ReadonlySet<string> | null
+  // places that are at least a circle (party tonight, liked, deal) and places that stay a dot (disliked)
+  boost?: ReadonlySet<string> | null
+  sink?: ReadonlySet<string> | null
   // places with a party tonight, marked by a small badge on the pin (drink layer)
   badge?: ReadonlySet<string> | null
 }
@@ -81,6 +90,17 @@ function readTokens() {
     badgeR: num('--dot-badge-r'),
     badgeShift: num('--dot-badge-shift'),
     hit: num('--dot-hit'),
+    pale: str('--dot-pale'),
+    r2Min: num('--tier2-r-min'),
+    r2Max: num('--tier2-r-max'),
+    r3Min: num('--tier3-r-min'),
+    r3Max: num('--tier3-r-max'),
+    stroke2: str('--tier2-stroke'),
+    stroke2Width: num('--tier2-stroke-width'),
+    tierMs: num('--tier-ms'),
+    max1: num('--tier-max-1'),
+    max2: num('--tier-max-2'),
+    gap2: num('--tier-gap-2'),
     bubbleGap: num('--bubble-gap'),
     bubbleOut: num('--bubble-out'),
     bubbleStep: num('--bubble-stagger'),
@@ -127,17 +147,9 @@ function widen(b: Bounds, m: number): Bounds {
 }
 
 function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[], night: ReadonlySet<string> | null, badge: ReadonlySet<string> | null) {
-  const top: ExpressionSpecification = ['==', ['get', 'top'], 1]
   const font = styleFont(map)
-  map.addSource('bars', { type: 'geojson', data: barsToGeoJSON(bars, night, badge) })
-  map.addLayer({
-    id: 'dots',
-    type: 'circle',
-    source: 'bars',
-    paint: {
-      'circle-color': ['case', ['==', ['get', 'club'], 1], tk.dotClub, top, tk.dotTop, tk.dot],
-    },
-  })
+  map.addSource('bars', { type: 'geojson', data: barsToGeoJSON(bars, night, badge), promoteId: 'id' })
+  map.addLayer({ id: 'dots', type: 'circle', source: 'bars' })
   map.addLayer({
     id: 'badges',
     type: 'circle',
@@ -157,7 +169,7 @@ function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[], night: Readonly
     source: 'bars',
     minzoom: LABEL_ZOOM,
     layout: {
-      'text-field': ['step', ['zoom'], ['case', top, ['get', 'name'], ''], ALL_LABELS_ZOOM, ['get', 'name']],
+      'text-field': ['get', 'name'],
       'text-size': tk.labelSize,
       'text-anchor': 'top',
       'text-offset': [0, tk.labelOffset],
@@ -190,27 +202,43 @@ function collapseAttribution(map: MaplibreMap) {
   map.getContainer().querySelector<HTMLElement>('.maplibregl-compact-show > .maplibregl-ctrl-attrib-button')?.click()
 }
 
+const tierOf: ExpressionSpecification = ['coalesce', ['feature-state', 't'], 3]
+const tierWas: ExpressionSpecification = ['coalesce', ['feature-state', 'p'], 3]
+const grown: ExpressionSpecification = ['coalesce', ['feature-state', 'g'], 1]
+
+function tierRadius(tk: Tokens, tier: ExpressionSpecification, wide: boolean): ExpressionSpecification {
+  return ['match', tier, 1, 0, 2, wide ? tk.r2Max : tk.r2Min, wide ? tk.r3Max : tk.r3Min]
+}
+
+function blendRadius(tk: Tokens, wide: boolean): ExpressionSpecification {
+  return ['+', ['*', ['-', 1, grown], tierRadius(tk, tierWas, wide)], ['*', grown, tierRadius(tk, tierOf, wide)]]
+}
+
 function applyLook(map: MaplibreMap, tk: Tokens, dimmed: boolean, selectedId: string | null) {
   const selected: ExpressionSpecification = ['==', ['get', 'id'], selectedId ?? '']
   const faded: ExpressionSpecification = ['==', ['get', 'ev'], 0]
-  const base: ExpressionSpecification | number = dimmed
-    ? tk.dim
-    : ['interpolate', ['linear'], ['get', 'quality'], 0, tk.opacityMin, 1, tk.opacityMax]
-  const opacity: ExpressionSpecification = ['case', selected, tk.opacityMax, faded, tk.faded, base]
-  map.setPaintProperty('dots', 'circle-radius', [
+  const two: ExpressionSpecification = ['==', tierOf, 2]
+  const radius = (wide: boolean): ExpressionSpecification => ['case', selected, 0, faded, tk.rFaded, blendRadius(tk, wide)]
+  const opacity: ExpressionSpecification = ['case', faded, tk.faded, ['==', tierOf, 3], dimmed ? tk.dim : tk.opacityMax, ['*', grown, tk.opacityMax]]
+  map.setPaintProperty('dots', 'circle-radius', ['interpolate', ['linear'], ['zoom'], 11, radius(false), 16, radius(true)])
+  map.setPaintProperty('dots', 'circle-color', [
     'case',
-    selected,
-    tk.rSelected,
-    faded,
-    tk.rFaded,
-    ['interpolate', ['linear'], ['get', 'quality'], 0, tk.rMin, 1, tk.rMax],
+    ['all', two, ['==', ['get', 'club'], 1]],
+    tk.dotClub,
+    two,
+    tk.dotTop,
+    ['interpolate-hcl', ['linear'], ['coalesce', ['feature-state', 'f'], 1], 0, tk.dotTop, 1, tk.pale],
   ])
   map.setPaintProperty('dots', 'circle-opacity', opacity)
   map.setPaintProperty('dots', 'circle-stroke-opacity', opacity)
-  map.setPaintProperty('dots', 'circle-stroke-color', ['case', selected, tk.selected, tk.stroke])
-  map.setPaintProperty('dots', 'circle-stroke-width', ['case', selected, tk.selectedWidth, tk.strokeWidth])
-  map.setLayoutProperty('dots', 'circle-sort-key', ['+', ['get', 'quality'], ['case', selected, 1, 0]])
-  map.setPaintProperty('labels', 'text-opacity', dimmed ? tk.dim : 1)
+  map.setPaintProperty('dots', 'circle-stroke-color', tk.stroke2)
+  map.setPaintProperty('dots', 'circle-stroke-width', ['case', two, tk.stroke2Width, 0])
+  map.setLayoutProperty('dots', 'circle-sort-key', ['get', 'quality'])
+  map.setPaintProperty('labels', 'text-opacity', ['step', ['zoom'], ['case', two, dimmed ? tk.dim : 1, 0], ALL_LABELS_ZOOM, dimmed ? tk.dim : 1])
+  map.setPaintProperty('labels', 'text-color', tk.label)
+  map.setPaintProperty('labels', 'text-halo-color', tk.halo)
+  map.setPaintProperty('badges', 'circle-color', tk.badge)
+  map.setPaintProperty('badges', 'circle-stroke-color', tk.badgeStroke)
 }
 
 function lookOf(p: Pick<Props, 'highlightId' | 'selectedId'>) {
@@ -268,8 +296,13 @@ export default function CityMap(props: Props) {
   const me = useRef<Marker | null>(null)
   const [locating, setLocating] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [live, setLive] = useState(false)
   const timing = useRef<CameraTiming | null>(null)
   const anchor = useRef<{ center: LngLat; zoom: number } | null>(null)
+  const tiers = useRef(new Map<string, Tier>())
+  const fades = useRef(new Map<string, number>())
+  const grow = useRef(0)
+  const theme = useTheme()
 
   function capture() {
     const map = mapRef.current
@@ -296,30 +329,85 @@ export default function CityMap(props: Props) {
     applyLook(map, tokens.current, latest.current.results.length > 0, lookOf(latest.current))
   }
 
+  function setTiers(map: MaplibreMap, next: Map<string, { tier: Tier; fade: number }>) {
+    const tk = tokens.current!
+    const prev = tiers.current
+    const moved: string[] = []
+    for (const [id, t] of prev) if (t !== 3 && !next.has(id)) next.set(id, { tier: 3, fade: 1 })
+    for (const [id, r] of next) {
+      const was = prev.get(id) ?? 3
+      const state: Record<string, number> = { f: Math.round(r.fade * 20) / 20 }
+      if (was !== r.tier) {
+        state.t = r.tier
+        state.p = was
+        state.g = 0
+        moved.push(id)
+      }
+      if (was !== r.tier || fades.current.get(id) !== state.f) map.setFeatureState({ source: 'bars', id }, state)
+      fades.current.set(id, state.f)
+      prev.set(id, r.tier)
+    }
+    window.cancelAnimationFrame(grow.current)
+    if (moved.length === 0) return
+    const done = () => moved.forEach((id) => map.setFeatureState({ source: 'bars', id }, { g: 1 }))
+    if (still()) return done()
+    const t0 = performance.now()
+    const step = (now: number) => {
+      const g = Math.min(1, (now - t0) / tk.tierMs)
+      for (const id of moved) map.setFeatureState({ source: 'bars', id }, { g })
+      if (g < 1) grow.current = window.requestAnimationFrame(step)
+    }
+    grow.current = window.requestAnimationFrame(step)
+  }
+
   function refreshBubbles() {
     const map = mapRef.current
     const layer = bubbles.current
-    if (!map || !layer || !ready.current || !tokens.current || !latest.current.active) return
+    const tk = tokens.current
+    if (!map || !layer || !ready.current || !tk || !latest.current.active) return
     const p = latest.current
-    if (p.results.length > 0) {
-      exploreIds.current = []
-      layer.sync(resultSpecs(p.results, latestKind.current), lookOf(p))
-      layer.party(p.badge ?? null)
-      return applyFilter(map, p.chips, layer.ids())
-    }
+    const look = lookOf(p)
     if (map.isMoving() || pressed.current.size > 0) {
       waiting.current = true
-      return layer.mark(lookOf(p))
+      return layer.mark(look)
     }
-    const pad = padding(map)
-    const loose = { ...pad, left: 0, right: 0 }
-    const kept = new Set(exploreIds.current)
-    const visible = p.bars.filter(
-      (bar) => passes(bar, p.chips) && (!p.night || p.night.has(bar.id)) && inView(map, bar, kept.has(bar.id) ? loose : pad),
-    )
-    layer.sync(exploreSpecs(map, visible, exploreIds.current, tokens.current.bubbleGap, latestKind.current), lookOf(p))
-    exploreIds.current = layer.ids()
+    const at = (bar: { lng: number; lat: number }) => map.project([bar.lng, bar.lat])
+    let specs: BubbleSpec[]
+    let next: Map<string, { tier: Tier; fade: number }>
+    if (p.results.length > 0) {
+      const top = resultSpecs(p.results, latestKind.current).slice(0, tk.max1)
+      const topIds = new Set(top.map((b) => b.id))
+      next = new Map(p.results.map((b) => [b.id, { tier: (topIds.has(b.id) ? 1 : 2) as Tier, fade: 0 }]))
+      specs = top.map((b) => ({ ...b, size: 'lg' as const }))
+    } else {
+      const pad = padding(map)
+      const loose = { ...pad, left: 0, right: 0 }
+      const kept = new Set(exploreIds.current)
+      const none = { top: 0, bottom: 0, left: 0, right: 0 }
+      const visible = p.bars.filter((bar) => passes(bar, p.chips) && (!p.night || p.night.has(bar.id)) && inView(map, bar, none))
+      const clear = new Set(visible.filter((bar) => inView(map, bar, kept.has(bar.id) ? loose : pad)).map((bar) => bar.id))
+      next = assignTiers(
+        visible.map((bar) => ({ id: bar.id, name: bar.name, quality: bar.quality, ...at(bar) })),
+        { previous: exploreIds.current, max1: tk.max1, max2: tk.max2, gap1: tk.bubbleGap, gap2: tk.gap2, boost: p.boost, sink: p.sink, clear },
+      )
+      specs = visible
+        .filter((bar) => next.get(bar.id)?.tier === 1)
+        .map((bar) => ({ id: bar.id, name: bar.name, lat: bar.lat, lng: bar.lng, photo: bar.cover, size: 'md' as const, kind: latestKind.current(bar.kinds) }))
+    }
+    const sel = p.selectedId
+    const ones = specs.map((b) => b.id)
+    if (sel && !specs.some((b) => b.id === sel)) {
+      const bar = p.results.find((b) => b.id === sel) ?? p.bars.find((b) => b.id === sel)
+      if (bar) {
+        const photo = 'photos' in bar ? thumbOf(bar.photos, bar.thumbs, 0) : bar.cover
+        specs.push({ id: bar.id, name: bar.name, lat: bar.lat, lng: bar.lng, photo, size: 'md', kind: latestKind.current(bar.kinds) })
+        next.set(bar.id, { tier: 1, fade: 0 })
+      }
+    }
+    layer.sync(specs, look)
+    exploreIds.current = p.results.length === 0 ? ones : []
     layer.party(p.badge ?? null)
+    setTiers(map, next)
     applyFilter(map, p.chips, layer.ids())
   }
 
@@ -346,6 +434,7 @@ export default function CityMap(props: Props) {
     }
     map.touchZoomRotate.disableRotation()
     mapRef.current = map
+    if (import.meta.env.DEV) Object.assign(window, { __ouMap: map, __ouTiers: tiers.current })
     let styled = false
     let failed = false
     let removed = false
@@ -387,10 +476,20 @@ export default function CityMap(props: Props) {
       if (from.sourceId === undefined && from.tile === undefined) fail()
     })
     map.on('style.load', () => {
+      performance.mark('map-style')
       styled = true
       window.clearTimeout(timer)
     })
+    const firstTiles = (e: { dataType?: string; tile?: unknown }) => {
+      if (e.dataType !== 'source' || !e.tile) return
+      map.off('data', firstTiles)
+      map.once('render', () => performance.mark('map-tiles'))
+    }
+    map.on('data', firstTiles)
     map.on('load', () => {
+      performance.mark('map-live')
+      setLive(true)
+      latest.current.onLive?.()
       const p = latest.current
       applyTheme(map, tk)
       addLayers(map, tk, p.bars, p.night ?? null, p.badge ?? null)
@@ -404,7 +503,10 @@ export default function CityMap(props: Props) {
     })
     const names = () => map.getContainer().classList.toggle('citymap-names', map.getZoom() >= LABEL_ZOOM)
     map.on('zoom', names)
-    map.on('movestart', () => window.clearTimeout(settleTimer))
+    map.on('movestart', (e) => {
+      window.clearTimeout(settleTimer)
+      if (e.originalEvent) setLive(true)
+    })
     map.on('moveend', queue)
     map.on('moveend', checkStray)
     map.on('click', (e) => {
@@ -450,7 +552,17 @@ export default function CityMap(props: Props) {
 
   useEffect(() => {
     refreshBubbles()
-  }, [chips])
+  }, [chips, props.boost, props.sink])
+
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !ready.current) return
+    const tk = readTokens()
+    tokens.current = tk
+    applyTheme(map, tk)
+    recolorMetro(map, tk)
+    applyLook(map, tk, latest.current.results.length > 0, lookOf(latest.current))
+  }, [theme])
 
   useEffect(() => {
     refreshBubbles()
@@ -522,7 +634,7 @@ export default function CityMap(props: Props) {
   }
 
   return (
-    <div className="citymap" role="region" aria-label={t.mapLabel}>
+    <div className="citymap" role="region" aria-label={t.mapLabel} data-live={live || undefined}>
       <div className="citymap-canvas" ref={el} />
       <div className="citymap-controls">
         <button

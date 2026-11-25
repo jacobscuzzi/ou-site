@@ -10,6 +10,7 @@ import { ActionLink } from './Actions'
 import EventCard, { DealLine, TonightLine } from './EventCard'
 import { useLayer } from '../mode'
 import { tonight } from '../night'
+import { openPhotos, thumbOf } from '../photos'
 import './BarCard.css'
 
 type Props = { bar: Bar; index: number; selected?: boolean; defaultOpen?: boolean; onSelect?: () => void; onOpen?: () => void }
@@ -48,7 +49,12 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
     >
       <span className="card-glare" />
       <div className="card-photo">
-        <Photo className="card-photo-img" src={bar.photos[0]} />
+        <Photo
+          className="card-photo-img"
+          src={thumbOf(bar.photos, bar.thumbs, 0)}
+          onOpen={open ? () => openPhotos(bar.photos, 0, bar.name) : undefined}
+          openLabel={t.photosOf(bar.name)}
+        />
         {bar.rank > 0 && <span className="card-rank">{bar.rank}</span>}
       </div>
 

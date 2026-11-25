@@ -8,6 +8,7 @@ import Menu from './Menu'
 import Photo from './Photo'
 import Actions from './Actions'
 import EventCard from './EventCard'
+import { openPhotos, thumbOf } from '../photos'
 import './BarDetail.css'
 
 function hour(t: string) {
@@ -27,10 +28,10 @@ export default function BarDetail({ bar, open }: { bar: Bar; open: boolean }) {
           <strong>{t.whyHere} </strong>
           {bar.description?.[lang] ?? bar.whyHere}
         </p>
-        {eat && bar.photos.length > 1 && (
+        {bar.photos.length > 1 && (
           <div className="detail-photos">
-            {bar.photos.slice(1).map((src) => (
-              <Photo key={src} className="detail-photo" src={src} />
+            {bar.photos.slice(1).map((src, i) => (
+              <Photo key={src} className="detail-photo" src={thumbOf(bar.photos, bar.thumbs, i + 1)} onOpen={() => openPhotos(bar.photos, i + 1, bar.name)} openLabel={t.photosOf(bar.name)} />
             ))}
           </div>
         )}

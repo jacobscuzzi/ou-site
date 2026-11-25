@@ -99,38 +99,6 @@ export function topInView(bars: MapBar[], b: Bounds | null, chips: ReadonlySet<C
     .slice(0, n)
 }
 
-export function spreadPick<T extends { quality: number; name: string }>(
-  items: T[],
-  at: (item: T) => { x: number; y: number },
-  n: number,
-  gap: number,
-  seed: T[] = [],
-): T[] {
-  const chosen = [...seed]
-  for (const item of [...items].sort(byQuality)) {
-    if (chosen.length >= n) break
-    const p = at(item)
-    const clear = chosen.every((c) => {
-      const q = at(c)
-      return Math.hypot(p.x - q.x, p.y - q.y) >= gap
-    })
-    if (clear) chosen.push(item)
-  }
-  return chosen
-}
-
-export function stablePick<T extends { id: string; quality: number; name: string }>(
-  candidates: T[],
-  previous: readonly string[],
-  at: (item: T) => { x: number; y: number },
-  n: number,
-  gap: number,
-): string[] {
-  const had = new Set(previous)
-  const kept = spreadPick(candidates.filter((c) => had.has(c.id)), at, n, gap)
-  return spreadPick(candidates.filter((c) => !had.has(c.id)), at, n, gap, kept).map((c) => c.id)
-}
-
 export function boundsOf(points: { lat: number; lng: number }[]): Bounds | null {
   if (points.length === 0) return null
   const lats = points.map((p) => p.lat)

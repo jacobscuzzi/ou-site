@@ -118,3 +118,12 @@ export async function setMetroVisible(map: MaplibreMap, on: boolean, tk: MetroTo
     return false
   }
 }
+
+export function recolorMetro(map: MaplibreMap, tk: MetroTokens) {
+  if (!map.getSource(SOURCE)) return
+  map.setPaintProperty(IDS[0], 'line-color', tk.casing)
+  map.setPaintProperty(IDS[2], 'circle-color', tk.stationFill)
+  map.setPaintProperty(IDS[2], 'circle-stroke-color', tk.stationInk)
+  map.setPaintProperty(IDS[3], 'text-color', tk.stationInk)
+  map.setPaintProperty(IDS[3], 'text-halo-color', tk.halo)
+}

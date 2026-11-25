@@ -2,7 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type
 import { fetchBars, fetchDays, fetchEvents, fetchLayers, fetchPosts, moreBars, searchBars } from './api/client'
 import type { Bar, Event, Layer, MapBar, Post } from './api/types'
 import { initialLang, LangContext, strings } from './i18n'
-import { initialLayer, LayerContext, rememberLayer } from './mode'
+import { initialLayer, LayerContext, modeWanted, rememberLayer } from './mode'
 import { tick } from './haptic'
 import { layerChips, topInView, type Bounds, type ChipKey } from './map/geo'
 import Logo from './components/Logo'
@@ -19,6 +19,11 @@ import DayStrip from './components/DayStrip'
 import EventCard from './components/EventCard'
 import MonthSheet from './components/MonthSheet'
 import EventList from './components/EventList'
+import Intro, { introWanted } from './components/Intro'
+import ModeChoice from './components/ModeChoice'
+import PhotoViewer from './components/PhotoViewer'
+import { onOpenPhotos } from './photos'
+import { useTheme } from './theme'
 import { initialDate, longDay, nights, sameNight, shortDate, STRIP_DAYS, tonight, weekend, writeDate, type Night } from './night'
 import { BackIcon, DownIcon, MapIcon, SearchIcon } from './components/icons'
 import { useSheetHistory } from './sheetHistory'
@@ -30,7 +35,9 @@ function MapUnavailable({ onFail }: MapProps) {
   return null
 }
 
-const CityMap = lazy<ComponentType<MapProps>>(() => import('./components/CityMap').catch(() => ({ default: MapUnavailable })))
+// started at load, not at first render, so the map chunk downloads alongside the app
+const cityMap = import('./components/CityMap').catch(() => ({ default: MapUnavailable }))
+const CityMap = lazy<ComponentType<MapProps>>(() => cityMap)
 
 type View = 'map' | 'search'
 
@@ -60,6 +67,11 @@ function initialView(): View {
 
 export default function App() {
   const [start] = useState(initialLayer)
+  const [intro, setIntro] = useState(introWanted)
+  const [asking, setAsking] = useState(modeWanted)
+  const [mapLive, setMapLive] = useState(false)
+  const theme = useTheme()
+  const [viewer, setViewer] = useState<{ photos: string[]; index: number; title: string } | null>(null)
   const [layer, setLayer] = useState<Layer>(start.layer)
   const [layers, setLayers] = useState<Layer[] | null>(null)
   const [moved, setMoved] = useState(0)
@@ -125,6 +137,8 @@ export default function App() {
   useEffect(() => {
     document.documentElement.lang = lang
   }, [])
+
+  useEffect(() => onOpenPhotos(setViewer), [])
 
   useEffect(() => {
     const ctrl = new AbortController()
@@ -641,8 +655,19 @@ export default function App() {
           </button>
         )}
       </div>
+      {!mapLive && (
+        <img
+          className="map-start"
+          src={theme === 'dark' ? '/map-start-dark.webp' : '/map-start-light.webp'}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          onLoad={() => performance.getEntriesByName('map-start').length === 0 && performance.mark('map-start')}
+        />
+      )}
       <Suspense fallback={null}>
         <CityMap
+          onLive={() => setMapLive(true)}
           bars={shownBars}
           results={results}
           chips={chips}
@@ -769,6 +794,18 @@ export default function App() {
       <LayerContext.Provider value={layer}>
         {stage}
         {classic}
+        {viewer && <PhotoViewer photos={viewer.photos} start={viewer.index} title={viewer.title} onClose={() => setViewer(null)} />}
+        {intro && <Intro onDone={() => setIntro(false)} />}
+        {!intro && asking && mode === 'map' && (
+          <ModeChoice
+            layers={offered}
+            onPick={(l) => {
+              rememberLayer(l)
+              chooseLayer(l)
+              setAsking(false)
+            }}
+          />
+        )}
         <InstallHint placeOpened={placeOpened} />
         {monthOpen && (
           <MonthSheet

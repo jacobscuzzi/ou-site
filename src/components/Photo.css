@@ -24,3 +24,9 @@
   width: var(--photo-icon);
   height: var(--photo-icon);
 }
+
+.photo-open {
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
+}

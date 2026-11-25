@@ -8,7 +8,9 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': process.env.API_PROXY ?? 'http://localhost:8000',
+      '/api': { target: process.env.API_PROXY ?? 'http://localhost:8000', changeOrigin: true },
+      '/static': { target: process.env.API_PROXY ?? 'http://localhost:8000', changeOrigin: true },
+      '/go': { target: process.env.API_PROXY ?? 'http://localhost:8000', changeOrigin: true },
     },
   },
 })

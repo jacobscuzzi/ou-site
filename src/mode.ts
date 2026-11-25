@@ -28,6 +28,36 @@ export function defaultLayer(now = new Date()): Layer {
   return danceNight ? 'dance' : 'drink'
 }
 
+// The layer a first visitor lands in when they skip the question.
+export function firstLayer(now = new Date()): Layer {
+  const parts = paris.formatToParts(now)
+  const hour = Number(parts.find((p) => p.type === 'hour')?.value)
+  const day = parts.find((p) => p.type === 'weekday')?.value ?? ''
+  if (hour >= 6 && hour < 11) return 'coffee'
+  if ((hour >= 11 && hour < 15) || (hour >= 18 && hour < 21)) return 'eat'
+  if ((hour >= 15 && hour < 18) || (hour >= 21 && hour < 23)) return 'drink'
+  const danceNight = hour >= 23 ? DANCE_NIGHTS.includes(day) : MORNING_AFTER.includes(day)
+  return danceNight ? 'dance' : 'drink'
+}
+
+const ASKED = 'ou-mode-asked'
+
+export function modeWanted(): boolean {
+  try {
+    return localStorage.getItem(ASKED) === null && stored() === null && fromUrl() === null
+  } catch {
+    return false
+  }
+}
+
+export function modeAsked() {
+  try {
+    localStorage.setItem(ASKED, '1')
+  } catch {
+    // storage unavailable, the question may come back next visit
+  }
+}
+
 export function isLayer(v: string | null): v is Layer {
   return v !== null && (LAYERS as string[]).includes(v)
 }
@@ -44,7 +74,7 @@ function fromUrl(): Layer | null {
 
 export function rememberLayer(layer: Layer) {
   try {
-    sessionStorage.setItem(KEY, layer)
+    localStorage.setItem(KEY, layer)
   } catch {
     // storage unavailable, the pick lasts until the page reloads
   }
@@ -52,7 +82,7 @@ export function rememberLayer(layer: Layer) {
 
 function stored(): Layer | null {
   try {
-    const v = sessionStorage.getItem(KEY)
+    const v = localStorage.getItem(KEY)
     return isLayer(v) ? v : null
   } catch {
     return null

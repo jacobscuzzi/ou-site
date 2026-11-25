@@ -561,3 +561,15 @@ html.locked body {
 .visually-hidden:focus {
   outline: none;
 }
+
+.map-start {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--map-start-w);
+  height: var(--map-start-h);
+  max-width: none;
+  translate: -50% -50%;
+  pointer-events: none;
+  user-select: none;
+}

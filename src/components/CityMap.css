@@ -1,12 +1,27 @@
 .citymap {
   position: absolute;
   inset: 0;
+}
+
+.citymap[data-live] {
   background: var(--map);
 }
 
 .citymap-canvas {
   position: absolute;
   inset: 0;
+  opacity: 0;
+  transition: opacity var(--map-fade) var(--ease);
+}
+
+.citymap[data-live] .citymap-canvas {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .citymap-canvas {
+    transition: none;
+  }
 }
 
 .citymap .maplibregl-ctrl-attrib {
@@ -253,4 +268,8 @@
   border-radius: var(--radius-pill);
   background: var(--dot-badge);
   box-sizing: border-box;
+}
+
+.spot[data-selected] .spot-name {
+  display: block;
 }
