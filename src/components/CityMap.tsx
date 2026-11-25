@@ -190,6 +190,24 @@ function dealLabels(bars: MapBar[], lang: Lang) {
   return out
 }
 
+// The circles in view become photo bubbles when the user zooms in: fetch their covers quietly now.
+const prefetched = new Set<string>()
+const PREFETCH_MAX = 15
+
+function prefetchCovers(bars: MapBar[], tiers: Map<string, { tier: Tier }>) {
+  let n = 0
+  for (const b of bars) {
+    if (n >= PREFETCH_MAX) break
+    if (!b.cover || prefetched.has(b.cover) || tiers.get(b.id)?.tier !== 2) continue
+    prefetched.add(b.cover)
+    const img = new Image()
+    img.decoding = 'async'
+    img.setAttribute('fetchpriority', 'low')
+    img.src = b.cover
+    n++
+  }
+}
+
 function widen(b: Bounds, m: number): Bounds {
   return { minLng: b.minLng - m, minLat: b.minLat - m, maxLng: b.maxLng + m, maxLat: b.maxLat + m }
 }
@@ -579,6 +597,7 @@ export default function CityMap(props: Props) {
     layer.sync(specs, look)
     if (p.results.length > 0) picks.current = { plain: [], deal: [] }
     else picks.current[p.dealMode ? 'deal' : 'plain'] = ones
+    prefetchCovers(p.bars, next)
     layer.party(p.badge ?? null)
     layer.deal(p.dealMode ? dealLabels(p.bars, langRef.current) : null)
     layer.marks(p.marks ?? null)

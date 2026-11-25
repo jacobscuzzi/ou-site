@@ -56,8 +56,10 @@ function fillPhoto(photo: HTMLSpanElement, spec: BubbleSpec) {
   if (!spec.photo) return letter()
   const img = document.createElement('img')
   img.alt = ''
-  img.loading = 'lazy'
+  // a bubble is on screen the moment it exists: no lazy loading, first in the queue
+  img.loading = 'eager'
   img.decoding = 'async'
+  img.setAttribute('fetchpriority', 'high')
   img.addEventListener('error', letter)
   img.src = spec.photo
   photo.appendChild(img)
