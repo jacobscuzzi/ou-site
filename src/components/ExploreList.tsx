@@ -59,6 +59,7 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
           )}
           {eat && bar.cuisine && <span className="chip">{cuisineLabel(bar.cuisine, lang)}</span>}
           {eat && bar.pricePerPerson !== undefined && <span className="chip chip-pink">{t.perPerson(price(bar.pricePerPerson))}</span>}
+          {layer === 'coffee' && bar.coffeePrice !== undefined && <span className="chip chip-pink">{t.coffeePrice(price(bar.coffeePrice))}</span>}
           {(layer === 'drink' || layer === 'dance') && bar.pintPrice !== null && (
             <span className="chip chip-pink">
               <span className="chip-icon"><BeerIcon /></span>

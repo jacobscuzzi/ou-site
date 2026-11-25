@@ -25,6 +25,7 @@ export type Facts = {
   crowdAge?: string
   cuisine?: string[]
   pricePerPerson?: number
+  coffeePrice?: number
   signatureDishes?: string[]
   dietary?: string[]
   goodFor?: string[]
@@ -197,6 +198,7 @@ export type MapBar = {
   cuisines?: string[]
   music?: string[]
   pricePerPerson?: number
+  coffeePrice?: number
   deal?: boolean
   dealPct?: number
   dealKind?: DealKind

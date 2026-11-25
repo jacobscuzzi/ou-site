@@ -29,7 +29,7 @@ export default function CardChips({ bar, open }: { bar: Bar; open: boolean }) {
   const layer = useLayer()
   const facts = bar.facts ?? {}
   const tags = tagsIn(bar.tags, layer, open ? 10 : 3)
-  const cup = layer === 'coffee' ? coffeePrice(bar) : null
+  const cup = layer === 'coffee' ? (facts.coffeePrice ?? coffeePrice(bar)) : null
 
   return (
     <div className="card-chips">

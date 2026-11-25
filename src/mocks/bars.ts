@@ -51,6 +51,7 @@ export function toMapBar(p: MockPlace): MapBar {
     ...(p.facts?.cuisine?.[0] && { cuisine: p.facts.cuisine[0], cuisines: p.facts.cuisine }),
     ...(music.length > 0 && { music }),
     ...(p.facts?.pricePerPerson !== undefined && { pricePerPerson: p.facts.pricePerPerson }),
+    ...(p.facts?.coffeePrice !== undefined && { coffeePrice: p.facts.coffeePrice }),
     ...(placeDeal(p) && { deal: true }),
     action: mockActions(p)[0],
   }
