@@ -10,7 +10,7 @@ function fromFacts(p: MockPlace) {
   return [...(f.music ?? []).slice(0, 1), ...(f.vibe ?? []).slice(0, 1), f.terrace ? 'terrace' : undefined, f.dancing ? 'dancing' : undefined]
 }
 
-function toMapBar(p: MockPlace): MapBar {
+export function toMapBar(p: MockPlace): MapBar {
   const i = catalog.indexOf(p)
   const faked = !p.facts
   const terrace = faked ? i % 3 === 0 : p.facts?.terrace === true

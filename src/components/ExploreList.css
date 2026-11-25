@@ -142,8 +142,26 @@
   position: relative;
 }
 
-.xrow-item-cta .xrow {
+.xrow-item-cta .xrow,
+.xrow-item-ev .xrow {
   padding-bottom: calc(var(--action-compact) + var(--space-3));
+}
+
+.xrow-ev {
+  position: absolute;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: var(--space-2);
+  display: flex;
+  pointer-events: none;
+}
+
+.xrow-item-cta .xrow-ev {
+  right: var(--xrow-ev-cta-room);
+}
+
+.xrow-ev .tonight-line {
+  pointer-events: auto;
 }
 
 .xrow-cta .action {

@@ -1,4 +1,5 @@
 import type { Action, DaysResponse, Event, EventsResponse, Layer, Post } from '../api/types'
+import { toMapBar } from './bars'
 import { catalog, inLayer, kindOf, type MockPlace } from './catalog'
 
 const DAY = 86_400_000
@@ -134,6 +135,9 @@ function partiesOn(night: string): Event[] {
   const busy = wd === 6 ? clubs.length : wd === 5 ? 3 : wd === 4 ? 2 : wd === 7 ? 1 : 0
   clubs.slice(0, busy).forEach((p, n) => out.push(party(p, night, n)))
   if (wd === 6) bars.slice(0, 3).forEach((p, n) => out.push(party(p, night, n + busy)))
+  // a bar outside the dance layer with a party: the dance map shows it that night, drink badges it
+  const pubs = inLayer('drink').filter((p) => !p.layers.includes('dance'))
+  pubs.slice(wd % 3, (wd % 3) + 2).forEach((p, n) => out.push(party(p, night, n + busy + 3)))
   const charbon = catalog.find((p) => p.id === 'cafe-charbon')
   if (charbon && (wd === 4 || wd === 5)) out.push(regular(charbon, night))
   return out.sort((a, b) => (a.startsAt ?? '').localeCompare(b.startsAt ?? '') || a.placeName.localeCompare(b.placeName))
@@ -206,7 +210,14 @@ export function mockEvents(layer: Layer | null, from: string | null, to: string 
       seen.add(e.id)
       return true
     })
-  return { events, from: a, to: b, ...(layer && { layer }) }
+  const places =
+    layer === 'dance'
+      ? [...new Set(events.map((e) => e.placeId))]
+          .map((id) => catalog.find((p) => p.id === id)!)
+          .filter((p) => !p.layers.includes('dance'))
+          .map(toMapBar)
+      : []
+  return { events, from: a, to: b, ...(layer && { layer }), places }
 }
 
 export function mockDays(layer: Layer | null, from: string | null, to: string | null): DaysResponse {

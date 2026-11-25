@@ -241,3 +241,16 @@
     opacity: 0.4;
   }
 }
+
+.spot[data-party] .spot-body::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: calc(2 * var(--dot-badge-r) + 2 * var(--bubble-badge-border));
+  height: calc(2 * var(--dot-badge-r) + 2 * var(--bubble-badge-border));
+  border: var(--bubble-badge-border) solid var(--dot-badge-stroke);
+  border-radius: var(--radius-pill);
+  background: var(--dot-badge);
+  box-sizing: border-box;
+}

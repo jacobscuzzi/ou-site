@@ -35,6 +35,30 @@ export function DealLine({ deal }: { deal: Event }) {
   )
 }
 
+// One line for a bar with a party tonight (drink layer): the tap opens the event card.
+export function TonightLine({ event, onOpen, open, focusable = true }: { event: Event; onOpen: () => void; open?: boolean; focusable?: boolean }) {
+  const t = useT()
+  const time = clockOf(event.startsAt)
+  return (
+    <button
+      type="button"
+      className="tonight-line"
+      aria-label={t.seeEvent(event.title)}
+      aria-expanded={open}
+      tabIndex={focusable ? 0 : -1}
+      onClick={(e) => {
+        e.stopPropagation()
+        onOpen()
+      }}
+      onKeyDown={(e) => e.stopPropagation()}
+    >
+      <span className="tonight-badge">{t.tonight}</span>
+      {time && <span className="tonight-time">{time}</span>}
+      <span className="tonight-title">{event.title}</span>
+    </button>
+  )
+}
+
 function Main({ className, onSelect, focusable, children }: { className: string; onSelect?: () => void; focusable: boolean; children: ReactNode }) {
   if (!onSelect) return <div className={className}>{children}</div>
   return (

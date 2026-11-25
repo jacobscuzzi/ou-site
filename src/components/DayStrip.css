@@ -27,8 +27,7 @@
   display: none;
 }
 
-.strip-day,
-.strip-opt {
+.strip-day {
   display: flex;
   flex: none;
   flex-direction: column;
@@ -44,12 +43,6 @@
   color: var(--ink-3);
   cursor: pointer;
   transition: background 0.2s var(--ease), color 0.2s var(--ease);
-}
-
-.strip-opt {
-  flex: 1;
-  font-size: var(--text-sm);
-  font-weight: 600;
 }
 
 .strip-name {
@@ -88,7 +81,6 @@
 }
 
 .strip-day:focus-visible,
-.strip-opt:focus-visible,
 .strip-cal:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
@@ -107,7 +99,3 @@
   cursor: pointer;
 }
 
-.strip-toggle {
-  align-self: flex-start;
-  min-width: var(--strip-toggle-width);
-}

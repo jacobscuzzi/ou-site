@@ -183,11 +183,15 @@
   --strip-day: 46px;
   --action-compact: 32px;
   --strip-height: 48px;
-  --strip-toggle-width: 240px;
   --strip-none-opacity: 0.5;
   --strip-clear: 0px;
   --dot-r-faded: 2.5px;
   --dot-faded-opacity: 0.3;
+  --dot-badge: var(--kind-club);
+  --dot-badge-stroke: var(--surface);
+  --dot-badge-r: 3.5px;
+  --dot-badge-shift: 6px;
+  --xrow-ev-cta-room: 45%;
   --sheet-scrim: rgba(17, 17, 20, 0.35);
   --cal-cell: 44px;
   --layer-emoji: 22px;

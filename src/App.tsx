@@ -15,7 +15,8 @@ import Sheet, { type SheetHeight } from './components/Sheet'
 import Chips from './components/Chips'
 import ExploreList from './components/ExploreList'
 import InstallHint from './components/InstallHint'
-import DayStrip, { NightToggle } from './components/DayStrip'
+import DayStrip from './components/DayStrip'
+import EventCard from './components/EventCard'
 import MonthSheet from './components/MonthSheet'
 import EventList from './components/EventList'
 import { initialDate, longDay, nights, sameNight, shortDate, STRIP_DAYS, tonight, weekend, writeDate, type Night } from './night'
@@ -34,7 +35,8 @@ const CityMap = lazy<ComponentType<MapProps>>(() => import('./components/CityMap
 type View = 'map' | 'search'
 
 const one = (day: string): Night => ({ from: day, to: day })
-const nightLayer = (l: Layer) => l === 'dance' || l === 'drink'
+// Nights and the day calendar belong to the dance layer only.
+const nightLayer = (l: Layer) => l === 'dance'
 
 const NO_RESULTS: Bar[] = []
 const VIEW_KEY = 'ou-view'
@@ -95,6 +97,9 @@ export default function App() {
   nightRef.current = night
   const [counts, setCounts] = useState<Record<string, number> | null>(null)
   const [nightEvents, setNightEvents] = useState<Event[]>([])
+  const [nightPlaces, setNightPlaces] = useState<MapBar[]>([])
+  const [tonightEvents, setTonightEvents] = useState<Event[]>([])
+  const [eventView, setEventView] = useState<Event | null>(null)
   const [eventsState, setEventsState] = useState<'loading' | 'ready' | 'error'>('loading')
   const [eventsAttempt, setEventsAttempt] = useState(0)
   const [monthOpen, setMonthOpen] = useState(false)
@@ -249,12 +254,6 @@ export default function App() {
         const range = res.meta.dateRange
         const searched = res.layer ?? layerRef.current
         if (range && searched === 'dance') setNight(one(range.from))
-        else if (range && searched === 'drink') {
-          const today = tonight()
-          const options = [one(today), weekend(today)]
-          const match = options.find((o) => sameNight(o, range))
-          if (match) setNight(match)
-        }
         setBars(res.results)
         setSearchId(res.searchId)
         setHasMore(res.hasMore)
@@ -289,6 +288,7 @@ export default function App() {
     fetchEvents(layer, night.from, night.to, ctrl.signal)
       .then((res) => {
         setNightEvents(res.events)
+        setNightPlaces(res.places ?? [])
         setEventsState('ready')
       })
       .catch((err: Error) => {
@@ -296,6 +296,17 @@ export default function App() {
       })
     return () => ctrl.abort()
   }, [layer, night?.from, night?.to, ready, eventsAttempt])
+
+  // Drink has no night picker: a bar with a party tonight only gets a badge and a line.
+  useEffect(() => {
+    if (!ready || layer !== 'drink') return
+    const ctrl = new AbortController()
+    const day = tonight()
+    fetchEvents('dance', day, day, ctrl.signal)
+      .then((res) => setTonightEvents(res.events))
+      .catch(() => undefined)
+    return () => ctrl.abort()
+  }, [layer, ready])
 
   useEffect(() => {
     if (layer === 'dance') writeDate(night && night.from === night.to && night.from !== tonight() ? night.from : null)
@@ -404,6 +415,7 @@ export default function App() {
 
   function applyLayer(next: Layer) {
     setLayer(next)
+    setEventView(null)
     setNight((n) => (next === 'dance' ? (n && n.from === n.to ? n : one(asked ?? tonight())) : null))
     setChips((prev) => new Set([...prev].filter((c) => layerChips[next].includes(c))))
   }
@@ -435,6 +447,7 @@ export default function App() {
 
   function choose(id: string) {
     quietUntil.current = performance.now() + QUIET_MS
+    setEventView(null)
     setHighlightId(null)
     setSelectedId(id)
     setPlaceOpened(true)
@@ -461,7 +474,28 @@ export default function App() {
     () => (showNight && eventsState === 'ready' ? new Set(nightEvents.map((e) => e.placeId)) : null),
     [showNight, eventsState, nightEvents],
   )
-  const kindsOf = (id: string) => mapBars.find((b) => b.id === id)?.kinds ?? []
+  // On a night of the dance layer the map also shows the bars outside the layer that have a party.
+  const shownBars = useMemo(() => {
+    if (!nightIds || nightPlaces.length === 0) return mapBars
+    const known = new Set(mapBars.map((b) => b.id))
+    const extra = nightPlaces.filter((b) => !known.has(b.id))
+    return extra.length > 0 ? [...mapBars, ...extra] : mapBars
+  }, [mapBars, nightIds, nightPlaces])
+  const tonightOf = useMemo(() => {
+    const byPlace = new Map<string, Event>()
+    if (layer === 'drink') for (const e of tonightEvents) if (!byPlace.has(e.placeId)) byPlace.set(e.placeId, e)
+    return byPlace
+  }, [layer, tonightEvents])
+  const badgeIds = useMemo(() => (tonightOf.size > 0 ? new Set(tonightOf.keys()) : null), [tonightOf])
+  const kindsOf = (id: string) => shownBars.find((b) => b.id === id)?.kinds ?? []
+
+  function openEvent(e: Event) {
+    quietUntil.current = performance.now() + QUIET_MS
+    setHighlightId(null)
+    setSelectedId(e.placeId)
+    setEventView(e)
+    setSheet((h) => (h === 'peek' ? 'half' : h))
+  }
   const stripDays = useMemo(() => {
     const days = nights(stripStart, STRIP_DAYS)
     return night && night.from === night.to && !days.includes(night.from) && night.from > stripStart ? [...days, night.from] : days
@@ -494,7 +528,7 @@ export default function App() {
   const previewId = selectedId && (query === null || !results.some((b) => b.id === selectedId)) ? selectedId : null
 
   useEffect(() => {
-    if (previewId) {
+    if (previewId || eventView) {
       document.querySelector<HTMLElement>('.sheet .back')?.focus({ preventScroll: true })
       return
     }
@@ -503,7 +537,7 @@ export default function App() {
     if (!id) return
     const row = document.querySelector<HTMLElement>(`.sheet [data-id="${CSS.escape(id)}"]`)
     ;(row ?? document.querySelector<HTMLElement>('.sheet'))?.focus({ preventScroll: true })
-  }, [previewId])
+  }, [previewId, eventView])
 
   function topFocus(e: FocusEvent<HTMLElement>) {
     if ((e.target as HTMLElement).matches('.search-input')) setSuggesting(true)
@@ -514,7 +548,8 @@ export default function App() {
   }
 
   function back() {
-    returnFocus.current = previewId
+    returnFocus.current = eventView?.placeId ?? previewId
+    setEventView(null)
     setSelectedId(null)
   }
 
@@ -569,7 +604,6 @@ export default function App() {
         {layer === 'dance' && night && hasEvents && (
           <DayStrip days={stripDays} counts={counts} value={night} onPick={pickNight} onCalendar={() => setMonthOpen(true)} />
         )}
-        {layer === 'drink' && <NightToggle value={night} onPick={pickNight} />}
         <Chips bars={mapBars} value={chips} onToggle={toggleChip} />
         {query === null && suggesting && <Suggestions single onPick={search} />}
         {query !== null && stray && !loading && (
@@ -581,7 +615,7 @@ export default function App() {
       </div>
       <Suspense fallback={null}>
         <CityMap
-          bars={mapBars}
+          bars={shownBars}
           results={results}
           chips={chips}
           selectedId={selectedId}
@@ -595,6 +629,7 @@ export default function App() {
           onFail={() => setMapFailed(true)}
           padKey={`${sheet}:${query === null}:${layer}`}
           night={nightIds}
+          badge={badgeIds}
         />
       </Suspense>
       {sheet !== 'peek' && (
@@ -605,9 +640,9 @@ export default function App() {
       <Sheet
         height={sheet}
         onHeight={setSheet}
-        scrollKey={`${query ?? ''}:${attempt}:${previewId ?? ''}`}
+        scrollKey={`${query ?? ''}:${attempt}:${previewId ?? ''}:${eventView?.id ?? ''}`}
         header={
-          previewId && (
+          (previewId || eventView) && (
             <button type="button" className="back" onClick={back}>
               <BackIcon />
               {t.back}
@@ -615,7 +650,11 @@ export default function App() {
           )
         }
       >
-        {previewId ? (
+        {eventView ? (
+          <div className="pane">
+            <EventCard event={eventView} kinds={kindsOf(eventView.placeId)} />
+          </div>
+        ) : previewId ? (
           <div className="pane">
             <BarPreview key={previewId} id={previewId} />
           </div>
@@ -641,6 +680,8 @@ export default function App() {
               selectedId={selectedId}
               onSelect={pickFromList}
               onRetry={() => setBarsAttempt((n) => n + 1)}
+              eventOf={(id) => tonightOf.get(id)}
+              onEvent={layer === 'drink' ? openEvent : undefined}
             />
           </div>
         ) : (

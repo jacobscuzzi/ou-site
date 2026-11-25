@@ -50,6 +50,8 @@ type Props = {
   onFail: () => void
   padKey?: string
   night?: ReadonlySet<string> | null
+  // places with a party tonight, marked by a small badge on the pin (drink layer)
+  badge?: ReadonlySet<string> | null
 }
 
 type Tokens = ReturnType<typeof readTokens>
@@ -74,6 +76,10 @@ function readTokens() {
     dim: num('--dot-dim-opacity'),
     rFaded: num('--dot-r-faded'),
     faded: num('--dot-faded-opacity'),
+    badge: str('--dot-badge'),
+    badgeStroke: str('--dot-badge-stroke'),
+    badgeR: num('--dot-badge-r'),
+    badgeShift: num('--dot-badge-shift'),
     hit: num('--dot-hit'),
     bubbleGap: num('--bubble-gap'),
     bubbleOut: num('--bubble-out'),
@@ -120,16 +126,29 @@ function widen(b: Bounds, m: number): Bounds {
   return { minLng: b.minLng - m, minLat: b.minLat - m, maxLng: b.maxLng + m, maxLat: b.maxLat + m }
 }
 
-function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[], night: ReadonlySet<string> | null) {
+function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[], night: ReadonlySet<string> | null, badge: ReadonlySet<string> | null) {
   const top: ExpressionSpecification = ['==', ['get', 'top'], 1]
   const font = styleFont(map)
-  map.addSource('bars', { type: 'geojson', data: barsToGeoJSON(bars, night) })
+  map.addSource('bars', { type: 'geojson', data: barsToGeoJSON(bars, night, badge) })
   map.addLayer({
     id: 'dots',
     type: 'circle',
     source: 'bars',
     paint: {
       'circle-color': ['case', ['==', ['get', 'club'], 1], tk.dotClub, top, tk.dotTop, tk.dot],
+    },
+  })
+  map.addLayer({
+    id: 'badges',
+    type: 'circle',
+    source: 'bars',
+    filter: ['==', ['get', 'pty'], 1],
+    paint: {
+      'circle-color': tk.badge,
+      'circle-radius': tk.badgeR,
+      'circle-stroke-color': tk.badgeStroke,
+      'circle-stroke-width': tk.strokeWidth,
+      'circle-translate': [tk.badgeShift, -tk.badgeShift],
     },
   })
   map.addLayer({
@@ -154,14 +173,16 @@ function addLayers(map: MaplibreMap, tk: Tokens, bars: MapBar[], night: Readonly
   })
 }
 
-function applyData(map: MaplibreMap, bars: MapBar[], night: ReadonlySet<string> | null) {
-  map.getSource<GeoJSONSource>('bars')?.setData(barsToGeoJSON(bars, night))
+function applyData(map: MaplibreMap, bars: MapBar[], night: ReadonlySet<string> | null, badge: ReadonlySet<string> | null) {
+  map.getSource<GeoJSONSource>('bars')?.setData(barsToGeoJSON(bars, night, badge))
 }
 
 function applyFilter(map: MaplibreMap, chips: ReadonlySet<ChipKey>, bubbled: string[] = []) {
   const chip = chipFilter(chips)
   const unbubbled = ['!', ['in', ['get', 'id'], ['literal', bubbled]]]
   map.setFilter('dots', chip as FilterSpecification | null)
+  const party = ['==', ['get', 'pty'], 1]
+  map.setFilter('badges', (chip ? ['all', chip, party] : party) as FilterSpecification)
   map.setFilter('labels', (chip ? ['all', chip, unbubbled] : unbubbled) as FilterSpecification)
 }
 
@@ -283,6 +304,7 @@ export default function CityMap(props: Props) {
     if (p.results.length > 0) {
       exploreIds.current = []
       layer.sync(resultSpecs(p.results, latestKind.current), lookOf(p))
+      layer.party(p.badge ?? null)
       return applyFilter(map, p.chips, layer.ids())
     }
     if (map.isMoving() || pressed.current.size > 0) {
@@ -297,6 +319,7 @@ export default function CityMap(props: Props) {
     )
     layer.sync(exploreSpecs(map, visible, exploreIds.current, tokens.current.bubbleGap, latestKind.current), lookOf(p))
     exploreIds.current = layer.ids()
+    layer.party(p.badge ?? null)
     applyFilter(map, p.chips, layer.ids())
   }
 
@@ -370,7 +393,7 @@ export default function CityMap(props: Props) {
     map.on('load', () => {
       const p = latest.current
       applyTheme(map, tk)
-      addLayers(map, tk, p.bars, p.night ?? null)
+      addLayers(map, tk, p.bars, p.night ?? null, p.badge ?? null)
       ready.current = true
       names()
       setLoaded(true)
@@ -415,9 +438,9 @@ export default function CityMap(props: Props) {
 
   useEffect(() => {
     const map = mapRef.current
-    if (map && ready.current) applyData(map, bars, latest.current.night ?? null)
+    if (map && ready.current) applyData(map, bars, latest.current.night ?? null, latest.current.badge ?? null)
     refreshBubbles()
-  }, [bars, props.night])
+  }, [bars, props.night, props.badge])
 
   useEffect(() => {
     const map = mapRef.current

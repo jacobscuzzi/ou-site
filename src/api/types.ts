@@ -134,6 +134,7 @@ export type EventsResponse = {
   from: string
   to: string
   layer?: Layer
+  places?: MapBar[]
 }
 
 export type DaysResponse = {

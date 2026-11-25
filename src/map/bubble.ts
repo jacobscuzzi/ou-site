@@ -150,6 +150,11 @@ export class BubbleLayer {
     this.stack(specs)
   }
 
+  // A party tonight at the place (drink layer): a small dot on the bubble, like the badge on the pin.
+  party(ids: ReadonlySet<string> | null) {
+    for (const [id, item] of this.items) item.el.toggleAttribute('data-party', ids?.has(id) === true)
+  }
+
   mark(selectedId: string | null) {
     for (const [id, item] of this.items) item.el.toggleAttribute('data-selected', id === selectedId)
   }

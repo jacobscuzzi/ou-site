@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useLang, useT } from '../i18n'
-import { dayNumber, longDay, sameNight, shortDay, tonight, weekend, type Night } from '../night'
+import { dayNumber, longDay, shortDay, type Night } from '../night'
 import { CalendarIcon } from './icons'
 import './DayStrip.css'
 
@@ -50,37 +50,6 @@ export default function DayStrip({ days, counts, value, onPick, onCalendar }: Pr
       <button type="button" className="strip-cal" aria-label={t.moreDates} onClick={onCalendar}>
         <CalendarIcon />
       </button>
-    </div>
-  )
-}
-
-export function NightToggle({ value, onPick }: { value: Night | null; onPick: (n: Night | null) => void }) {
-  const t = useT()
-  const today = tonight()
-  const tonightNight = { from: today, to: today }
-  const we = weekend(today)
-  const options: [Night, string][] = sameNight(tonightNight, we)
-    ? [[tonightNight, t.tonight]]
-    : [
-        [tonightNight, t.tonight],
-        [we, t.thisWeekend],
-      ]
-  return (
-    <div className="strip strip-toggle" role="group" aria-label={t.nightsLabel}>
-      {options.map(([n, label]) => {
-        const on = sameNight(value, n)
-        return (
-          <button
-            key={label}
-            type="button"
-            className={on ? 'strip-opt strip-day-on' : 'strip-opt'}
-            aria-pressed={on}
-            onClick={() => onPick(on ? null : n)}
-          >
-            {label}
-          </button>
-        )
-      })}
     </div>
   )
 }

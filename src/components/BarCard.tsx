@@ -6,14 +6,19 @@ import CardChips from './CardChips'
 import Hours from './Hours'
 import Photo from './Photo'
 import { ActionLink } from './Actions'
-import { DealLine } from './EventCard'
+import EventCard, { DealLine, TonightLine } from './EventCard'
+import { useLayer } from '../mode'
+import { tonight } from '../night'
 import './BarCard.css'
 
 type Props = { bar: Bar; index: number; selected?: boolean; defaultOpen?: boolean; onSelect?: () => void; onOpen?: () => void }
 
 export default function BarCard({ bar, index, selected = false, defaultOpen = false, onSelect, onOpen }: Props) {
   const [open, setOpen] = useState(defaultOpen)
+  const [eventOpen, setEventOpen] = useState(false)
   const t = useT()
+  const layer = useLayer()
+  const party = layer === 'drink' ? bar.events?.find((e) => e.kind === 'party' && e.night === tonight()) : undefined
 
   function toggle() {
     if (!open) onOpen?.()
@@ -57,6 +62,12 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
         <CardChips bar={bar} open={open} />
 
         {bar.deal && <DealLine deal={bar.deal} />}
+        {party && <TonightLine event={party} open={eventOpen} onOpen={() => setEventOpen((v) => !v)} />}
+        {party && eventOpen && (
+          <div className="card-event" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+            <EventCard event={party} kinds={bar.kinds} showPlace={false} />
+          </div>
+        )}
         {bar.actions?.[0] && (
           <div className="card-cta">
             <ActionLink action={bar.actions[0]} kinds={bar.kinds} main />
