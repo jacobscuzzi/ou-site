@@ -107,3 +107,21 @@
   outline: none;
   box-shadow: var(--focus-ring);
 }
+
+.search-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--search-clear);
+  height: var(--search-clear);
+  margin-right: calc(-1 * var(--space-1));
+  border-radius: var(--radius-pill);
+  background: var(--fill);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.search-clear:active {
+  scale: 0.92;
+}

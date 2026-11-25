@@ -275,6 +275,7 @@
   --panel-in-ms: 320ms;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --intro-bg: #0b0b0d;
+  --search-clear: 28px;
   --mark-size: 36px;
   --mark-badge: 16px;
   --mark-badge-shift: 5px;

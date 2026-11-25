@@ -699,7 +699,7 @@ export default function App() {
     </>
   )
   const searchBar = (onHome: () => void, homeLabel: string) => (
-    <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={onHome} homeLabel={homeLabel}>
+    <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={onHome} onClear={home} homeLabel={homeLabel}>
       {layerSwitch}
     </SearchBar>
   )
@@ -869,7 +869,7 @@ export default function App() {
                 <Logo size="var(--text-hero)" /> ?
               </h1>
               <p className="start-text">{t.tagline}</p>
-              <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={home} homeLabel={t.startOver} />
+              <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={home} onClear={home} homeLabel={t.startOver} />
             </div>
             <Suggestions onPick={search} />
           </section>

@@ -1,7 +1,7 @@
-import { useState, type FormEvent, type ReactNode } from 'react'
+import { useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { useT } from '../i18n'
 import { useTypedPlaceholder } from '../typed'
-import { ArrowUpIcon } from './icons'
+import { ArrowUpIcon, CloseIcon } from './icons'
 import Logo from './Logo'
 import './SearchBar.css'
 
@@ -12,13 +12,23 @@ type Props = {
   onChange: (q: string) => void
   onSubmit: (q: string) => void
   onHome: () => void
+  onClear: () => void
   homeLabel: string
   children?: ReactNode
 }
 
-export default function SearchBar({ value, submitted, loading, onChange, onSubmit, onHome, homeLabel, children }: Props) {
+export default function SearchBar({ value, submitted, loading, onChange, onSubmit, onHome, onClear, homeLabel, children }: Props) {
   const t = useT()
   const [focused, setFocused] = useState(false)
+  const input = useRef<HTMLInputElement>(null)
+  const clearable = value !== '' || submitted !== null
+
+  // empties the field and ends the search; the cursor stays in the field for the next one
+  function clear() {
+    onChange('')
+    onClear()
+    input.current?.focus()
+  }
   const cycling = !focused && value === '' && submitted === null
   const typed = useTypedPlaceholder(t.suggestions.flat(), cycling)
 
@@ -43,6 +53,7 @@ export default function SearchBar({ value, submitted, loading, onChange, onSubmi
           <Logo size="var(--text-md)" small />
         </button>
         <input
+          ref={input}
           className="search-input"
           type="text"
           value={value}
@@ -60,6 +71,17 @@ export default function SearchBar({ value, submitted, loading, onChange, onSubmi
           autoComplete="off"
           aria-label={t.placeholder}
         />
+        {clearable && (
+          <button
+            className="search-clear"
+            type="button"
+            aria-label={t.clearSearch}
+            onPointerDown={(e) => e.preventDefault()}
+            onClick={clear}
+          >
+            <CloseIcon size={16} />
+          </button>
+        )}
         <button className="search-send" type="submit" disabled={loading || (!value.trim() && !typed.full)} aria-label={t.search}>
           <ArrowUpIcon />
         </button>
