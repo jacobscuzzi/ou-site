@@ -66,8 +66,8 @@ function parisOffset(day: string) {
 const titles = ['Techno All Night', 'House Sessions', 'Afro Club', 'Disco Fever', 'Warehouse', 'Rap Night']
 const genres = [['techno'], ['house'], ['afro', 'hip_hop'], ['disco'], ['techno', 'electro'], ['hip_hop']]
 const tiles: Post[] = [
-  { platform: 'tiktok', postId: '7672815858439261473', url: 'https://www.tiktok.com/@nicolastheparisian/video/7672815858439261473', author: 'nicolastheparisian', likes: 926, kind: 'video' },
-  { platform: 'tiktok', postId: '7649444200856948000', url: 'https://www.tiktok.com/@timsurtiktok99/video/7649444200856948000', author: 'timsurtiktok99', likes: 558, kind: 'video' },
+  { platform: 'tiktok', postId: '7672815858439261473', url: 'https://www.tiktok.com/@nicolastheparisian/video/7672815858439261473', author: 'nicolastheparisian', likes: 926, kind: 'video', thumb: '/photos/tt/7672815858439261473.webp' },
+  { platform: 'tiktok', postId: '7649444200856948000', url: 'https://www.tiktok.com/@timsurtiktok99/video/7649444200856948000', author: 'timsurtiktok99', likes: 558, kind: 'video', thumb: '/photos/tt/7649444200856948000.webp' },
 ]
 
 function party(p: MockPlace, night: string, n: number): Event {

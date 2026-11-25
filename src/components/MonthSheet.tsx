@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { fetchDays } from '../api/client'
+import { useBackClose } from '../backClose'
 import type { Layer } from '../api/types'
 import { useLang, useT } from '../i18n'
 import { addDays, dayNumber, longDay, monthTitle, shortDay, tonight, weekday } from '../night'
@@ -36,6 +37,7 @@ export default function MonthSheet({ layer, value, onPick, onClose }: Props) {
   const closeLatest = useRef(onClose)
   closeLatest.current = onClose
   const box = useRef<HTMLDivElement>(null)
+  useBackClose(onClose)
 
   useEffect(() => {
     closeRef.current?.focus()

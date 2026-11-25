@@ -157,3 +157,12 @@ export function NextIcon({ size = 18 }: IconProps) {
     </svg>
   )
 }
+
+export function SoundIcon({ on, size = 18 }: IconProps & { on: boolean }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M4 9h4l5-4v14l-5-4H4z" />
+      {on ? <path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" /> : <path d="M17 9.5l5 5M22 9.5l-5 5" />}
+    </svg>
+  )
+}

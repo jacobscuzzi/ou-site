@@ -82,7 +82,7 @@ export default function BarCard({ bar, index, selected = false, defaultOpen = fa
           </p>
         )}
 
-        <Posts posts={bar.posts ?? []} focusable />
+        <Posts posts={bar.posts ?? []} place={bar.name} actions={bar.actions ?? []} kinds={bar.kinds} focusable />
 
         <BarDetail bar={bar} open={open} />
       </div>

@@ -21,7 +21,7 @@ export function useSheetHistory(height: SheetHeight, shown: boolean, collapse: (
 
   useEffect(() => {
     const pop = () => {
-      if (!pushed.current) return
+      if (!pushed.current || history.state?.sheet || history.state?.overlay) return
       pushed.current = false
       latest.current()
     }

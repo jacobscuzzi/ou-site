@@ -17,6 +17,8 @@ const danceBars = new Set([
   'caveau-de-la-huchette',
 ])
 
+const THUMBS = new Set(['7643377685233831176', '7647527797480557857', '7649444200856948000', '7672815858439261473'])
+
 const tiktok = (author: string, postId: string, kind: Post['kind'], likes: number | null): Post => ({
   platform: 'tiktok',
   postId,
@@ -24,6 +26,7 @@ const tiktok = (author: string, postId: string, kind: Post['kind'], likes: numbe
   author,
   likes,
   kind,
+  thumb: THUMBS.has(postId) ? `/photos/tt/${postId}.webp` : null,
 })
 
 const posts: Record<string, Post[]> = {

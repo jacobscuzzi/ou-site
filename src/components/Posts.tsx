@@ -1,64 +1,84 @@
-import type { Post } from '../api/types'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import type { Action, Post } from '../api/types'
 import { useLang, useT } from '../i18n'
-import { allowTikTok, useTikTokAllowed } from '../tiktok'
-import { HeartIcon, ImagesIcon, PlayIcon } from './icons'
+import { layerEmoji, useLayer } from '../mode'
+import { HeartIcon, PlayIcon } from './icons'
 import './Posts.css'
 
-const PARAMS = 'description=0&music_info=0&rel=0&controls=1&progress_bar=1&play_button=1&volume_control=1&fullscreen_button=1'
+const TikTokFeed = lazy(() => import('./TikTokFeed'))
 
-// The TikToks of a venue or an event in one row that scrolls sideways; the players load once the
-// viewer has said yes, and each one only when it comes near the screen.
-export default function Posts({ posts, focusable }: { posts: Post[]; focusable: boolean }) {
+type Props = { posts: Post[]; place: string; actions?: Action[]; kinds?: string[]; focusable: boolean }
+
+export function byLikes(posts: Post[]) {
+  return [...posts].sort((a, b) => (b.likes ?? -1) - (a.likes ?? -1))
+}
+
+export function PostStill({ post, className }: { post: Post; className: string }) {
+  const layer = useLayer()
+  if (post.thumb) return <img className={className} src={post.thumb} alt="" loading="lazy" decoding="async" />
+  return (
+    <span className={`${className} post-blank`}>
+      <span className="post-blank-emoji">{layerEmoji[layer]}</span>
+      <span className="post-blank-author">@{post.author}</span>
+    </span>
+  )
+}
+
+// The TikToks of a place or a party as one stacked preview; nothing loads from TikTok until it is
+// tapped, then the feed opens over everything.
+export default function Posts({ posts, place, actions = [], kinds = [], focusable }: Props) {
   const t = useT()
   const lang = useLang()
-  const allowed = useTikTokAllowed()
+  const [open, setOpen] = useState(false)
+  const opener = useRef<HTMLButtonElement>(null)
+  const wasOpen = useRef(false)
+
+  useEffect(() => {
+    if (wasOpen.current && !open) opener.current?.focus({ preventScroll: true })
+    wasOpen.current = open
+  }, [open])
 
   if (posts.length === 0) return null
+  const sorted = byLikes(posts)
+  const top = sorted[0]
   const compact = new Intl.NumberFormat(lang, { notation: 'compact', maximumFractionDigits: 1 })
 
   return (
     <section className="posts" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
-      <h3 className="menu-title">
-        {t.postsTitle}
-        {posts.length > 1 && <span className="posts-count">{posts.length}</span>}
-      </h3>
-      <ul className="posts-row" data-single={posts.length === 1 || undefined}>
-        {posts.map((p) => (
-          <li key={p.postId} className="post">
-            {allowed ? (
-              <iframe
-                className="post-frame"
-                src={`https://www.tiktok.com/player/v1/${p.postId}?${PARAMS}`}
-                title={t.postLabel(p.author, p.kind)}
-                loading="lazy"
-                allow="fullscreen; encrypted-media"
-                tabIndex={focusable ? 0 : -1}
-              />
-            ) : (
-              <button
-                type="button"
-                className="post-cover"
-                tabIndex={focusable ? 0 : -1}
-                aria-label={`${t.showTikToks}. ${t.postLabel(p.author, p.kind)}`}
-                onClick={allowTikTok}
-              >
-                <span className="post-play">{p.kind === 'photo' ? <ImagesIcon /> : <PlayIcon />}</span>
-                <span className="post-show">{t.showTikToks}</span>
-              </button>
+      <button type="button" ref={opener} className="posts-preview" tabIndex={focusable ? 0 : -1} onClick={() => setOpen(true)}>
+        <span className="posts-stack" data-n={Math.min(sorted.length, 3)}>
+          {sorted.slice(0, 3).map((p) => (
+            <PostStill key={p.postId} post={p} className="posts-still" />
+          ))}
+          <span className="posts-play">
+            <PlayIcon />
+          </span>
+          {sorted.length > 1 && <span className="posts-badge">{sorted.length}</span>}
+        </span>
+        <span className="posts-text">
+          <span className="posts-title">{t.watchPosts(sorted.length)}</span>
+          <span className="posts-meta">
+            <span className="post-author">@{top.author}</span>
+            {top.likes !== null && (
+              <span className="post-likes">
+                <HeartIcon />
+                {compact.format(top.likes)}
+              </span>
             )}
-            <a className="post-meta" href={p.url} target="_blank" rel="noopener noreferrer" tabIndex={focusable ? 0 : -1}>
-              <span className="post-author">@{p.author}</span>
-              {p.likes !== null && (
-                <span className="post-likes">
-                  <HeartIcon />
-                  {compact.format(p.likes)}
-                </span>
-              )}
-            </a>
-          </li>
-        ))}
-      </ul>
-      {!allowed && <p className="posts-note">{t.playerNote}</p>}
+          </span>
+        </span>
+      </button>
+      {open && (
+        <Suspense fallback={null}>
+          <TikTokFeed
+            posts={sorted}
+            place={place}
+            actions={actions}
+            kinds={kinds}
+            onClose={() => setOpen(false)}
+          />
+        </Suspense>
+      )}
     </section>
   )
 }

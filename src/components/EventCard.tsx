@@ -114,7 +114,7 @@ export default function EventCard({ event, kinds, selected = false, onSelect, sh
           {main && main.kind === 'tickets' && <ActionLink action={main} kinds={kinds} main focusable={focusable} />}
         </div>
       )}
-      <Posts posts={event.posts} focusable={focusable} />
+      <Posts posts={event.posts} place={event.placeName} actions={event.actions} kinds={kinds} focusable={focusable} />
     </article>
   )
 }

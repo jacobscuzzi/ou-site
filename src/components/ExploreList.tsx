@@ -107,7 +107,7 @@ export default function ExploreList({ bars, state, warming, selectedId, onSelect
                     </span>
                   )}
                 </div>
-                <Posts posts={postsOf?.(bar.id) ?? []} focusable />
+                <Posts posts={postsOf?.(bar.id) ?? []} place={bar.name} actions={bar.action ? [bar.action] : []} kinds={bar.kinds} focusable />
               </li>
             )
           })}

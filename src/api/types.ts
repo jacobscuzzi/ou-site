@@ -49,6 +49,7 @@ export type Post = {
   author: string
   likes: number | null
   kind: 'video' | 'photo'
+  thumb: string | null
 }
 
 export type MenuCategory = 'beer' | 'wine' | 'cocktail' | 'spirit' | 'cider' | 'other'
