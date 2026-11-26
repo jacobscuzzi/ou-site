@@ -165,3 +165,9 @@ export async function postReport(report: { placeId?: string; eventId?: string; m
     throw new Error(body?.error ?? `Report failed (${res.status})`)
   }
 }
+
+// The visible time of this page load, as a beacon: it leaves even while the page is closing.
+export function sendSession(id: string, seconds: number) {
+  if (useMock || !navigator.sendBeacon) return
+  navigator.sendBeacon(`${baseUrl}/api/session`, new Blob([JSON.stringify({ id, seconds })], { type: 'application/json' }))
+}

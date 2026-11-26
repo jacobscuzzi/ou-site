@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import { trackVisit } from './visit'
 import './styles/tokens.css'
 import './styles/global.css'
 
@@ -34,3 +35,4 @@ async function start() {
 }
 
 start()
+trackVisit()
