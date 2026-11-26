@@ -202,7 +202,6 @@ const en = {
   close: 'Close',
   layerMenu: (name: string) => `${name}, change layer`,
   layerNames: { drink: 'Have Drinks', eat: 'Lets Eat', dance: 'Go out', coffee: 'Coffee' } as Record<Layer, string>,
-  introLabel: 'Where the fuck in Paris? où',
   skipIntro: 'Skip the intro',
   photosOf: (name: string) => `Photos of ${name}`,
   comingUp: 'Coming up',
@@ -445,7 +444,6 @@ const fr: typeof en = {
   close: 'Fermer',
   layerMenu: (name: string) => `${name} affiché, changer`,
   layerNames: { drink: 'Boire un verre', eat: 'Manger', dance: 'Danser', coffee: 'Café' },
-  introLabel: 'Where the fuck in Paris? où',
   skipIntro: "Passer l'intro",
   photosOf: (name: string) => `Photos de ${name}`,
   comingUp: 'À venir',
@@ -732,5 +730,5 @@ export function useT() {
 export function initialLang(): Lang {
   const asked = new URLSearchParams(location.search).get('lang')
   if (asked === 'en' || asked === 'fr') return asked
-  return (navigator.language ?? '').toLowerCase().startsWith('fr') ? 'fr' : 'en'
+  return (navigator.languages?.[0] ?? navigator.language ?? '').toLowerCase().startsWith('fr') ? 'fr' : 'en'
 }

@@ -312,6 +312,7 @@
   --intro-ink: #ffffff;
   --intro-snap: 90ms;
   --intro-rise: 300ms;
+  --intro-hit: 350ms;
   --intro-lift: 400ms;
   --intro-ease: cubic-bezier(0.7, 0, 0.2, 1);
   --app-width: 430px;

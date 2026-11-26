@@ -22,7 +22,10 @@
         q.addEventListener ? q.addEventListener('change', set) : q.addListener(set)
         try {
           if (!localStorage.getItem('ou-intro-off')) {
-            ;['rubik-spray-intro', 'rubik-wet-intro'].forEach(function (f) {
+            var fr = /^fr/i.test((navigator.languages && navigator.languages[0]) || navigator.language || '')
+            var lang = new URLSearchParams(location.search).get('lang')
+            if (lang === 'fr' || lang === 'en') fr = lang === 'fr'
+            ;(fr ? ['rubik-spray-intro'] : ['rubik-spray-intro', 'rubik-wet-intro']).forEach(function (f) {
               var l = document.createElement('link')
               l.rel = 'preload'
               l.as = 'font'

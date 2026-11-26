@@ -32,7 +32,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: calc(4 * var(--u));
+  gap: var(--gap);
+}
+
+.intro-words[data-layout='stage'] {
+  display: block;
+  position: relative;
+  width: calc(390 * var(--u));
+  height: calc(844 * var(--u));
+}
+
+.intro-words[data-layout='stage'] > * {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
 }
 
 .intro-line {
@@ -43,37 +56,21 @@
   animation: intro-snap var(--intro-snap) var(--ease) both;
 }
 
-.intro-where {
-  font-size: calc(92 * var(--u));
-  rotate: -5deg;
-}
-
-.intro-the {
-  font-size: calc(70 * var(--u));
-  rotate: 3deg;
-  margin-left: calc(120 * var(--u));
-  animation-delay: 200ms;
-}
-
-.intro-fuck {
-  font-family: 'ou intro wet', sans-serif;
-  font-size: calc(132 * var(--u));
-  line-height: 1;
+.intro-line[data-pink] {
   color: var(--pink);
-  rotate: -4deg;
-  animation-delay: 400ms;
 }
 
-.intro-paris {
-  font-size: calc(68 * var(--u));
-  line-height: 1;
-  rotate: 2deg;
-  animation-delay: 600ms;
+.intro-line[data-wet] {
+  font-family: 'ou intro wet', sans-serif;
 }
 
 .intro-logo {
-  margin-top: calc(52 * var(--u));
-  animation: intro-rise var(--intro-rise) var(--ease) 1000ms both;
+  display: block;
+  animation: intro-rise var(--intro-rise) var(--ease) both;
+}
+
+.intro-logo[data-hit] {
+  animation: intro-hit var(--intro-hit) var(--ease) both;
 }
 
 .intro-logo .logo {
@@ -92,6 +89,24 @@
   100% {
     opacity: 1;
     scale: 1;
+  }
+}
+
+@keyframes intro-hit {
+  0% {
+    opacity: 0;
+    scale: 2.4;
+    rotate: 8deg;
+  }
+  62% {
+    opacity: 1;
+    scale: 0.92;
+    rotate: -2deg;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+    rotate: 0deg;
   }
 }
 
