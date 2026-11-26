@@ -56,7 +56,6 @@ const one = (day: string): Night => ({ from: day, to: day })
 const nightLayer = (l: Layer) => l === 'dance'
 
 const NO_RESULTS: Bar[] = []
-const VIEW_KEY = 'ou-view'
 const BARS_RETRIES = 6
 const BARS_RETRY_DELAY = 5000
 const BARS_TIMEOUT = 10000
@@ -66,14 +65,6 @@ const LAYERS_RETRY_DELAY = 1500
 const LAYERS_TIMEOUT = 5000
 const lang = initialLang()
 const desktop = '(min-width: 768px)'
-
-function initialView(): View {
-  try {
-    return localStorage.getItem(VIEW_KEY) === 'search' ? 'search' : 'map'
-  } catch {
-    return 'map'
-  }
-}
 
 export default function App() {
   const [start] = useState(initialLayer)
@@ -106,8 +97,8 @@ export default function App() {
   const [hasMore, setHasMore] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
   const [moreError, setMoreError] = useState<string | null>(null)
-  const [view, setView] = useState<View>(initialView)
-  const [mapUsed, setMapUsed] = useState(() => initialView() === 'map')
+  const [view, setView] = useState<View>('map')
+  const [mapUsed, setMapUsed] = useState(true)
   const [mapEntries, setMapEntries] = useState(0)
   const [mapFailed, setMapFailed] = useState(false)
   const [suggesting, setSuggesting] = useState(false)
@@ -213,14 +204,6 @@ export default function App() {
       ctrl.abort()
     }
   }, [])
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(VIEW_KEY, view)
-    } catch {
-      // storage unavailable, the choice just lasts for this visit
-    }
-  }, [view])
 
   useEffect(() => {
     document.documentElement.classList.toggle('locked', mode === 'map')

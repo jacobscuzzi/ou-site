@@ -122,6 +122,32 @@ export function topInView(bars: MapBar[], b: Bounds | null, chips: ReadonlySet<C
     .slice(0, n)
 }
 
+const KM_PER_LAT = 111.32
+const NEAR_KM = 0.8
+const MIN_KM = 0.5
+const AROUND = 6
+
+function km(a: [number, number], b: { lat: number; lng: number }) {
+  const dx = (b.lng - a[0]) * KM_PER_LAT * Math.cos((a[1] * Math.PI) / 180)
+  return Math.hypot(dx, (b.lat - a[1]) * KM_PER_LAT)
+}
+
+// A view centred on the user that holds the best places close by, or the closest ones when
+// the neighbourhood is thin. Null outside the city.
+export function aroundMe(at: [number, number], bars: MapBar[], n = AROUND): Bounds | null {
+  if (!inBounds({ lng: at[0], lat: at[1] }, PARIS)) return null
+  const near = bars.filter((bar) => km(at, bar) <= NEAR_KM).sort(byQuality)
+  const picked = near.length >= n / 2 ? near.slice(0, n) : [...bars].sort((a, b) => km(at, a) - km(at, b)).slice(0, n)
+  const lngKm = KM_PER_LAT * Math.cos((at[1] * Math.PI) / 180)
+  let dLat = MIN_KM / KM_PER_LAT
+  let dLng = MIN_KM / lngKm
+  for (const bar of picked) {
+    dLat = Math.max(dLat, Math.abs(bar.lat - at[1]))
+    dLng = Math.max(dLng, Math.abs(bar.lng - at[0]))
+  }
+  return { minLng: at[0] - dLng, minLat: at[1] - dLat, maxLng: at[0] + dLng, maxLat: at[1] + dLat }
+}
+
 export function boundsOf(points: { lat: number; lng: number }[]): Bounds | null {
   if (points.length === 0) return null
   const lats = points.map((p) => p.lat)

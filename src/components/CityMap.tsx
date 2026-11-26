@@ -16,7 +16,7 @@ import { useLang, useT, type Lang } from '../i18n'
 import { danceKind } from '../kind'
 import { useLayer } from '../mode'
 import { dealLabel } from '../deals'
-import { barsToGeoJSON, boundsOf, chipFilter, passes, PARIS, type Bounds, type ChipKey } from '../map/geo'
+import { aroundMe, barsToGeoJSON, boundsOf, chipFilter, passes, PARIS, type Bounds, type ChipKey } from '../map/geo'
 import { BubbleLayer, resultSpecs, type BubbleSpec } from '../map/bubble'
 import { still } from '../motion'
 import { assignTiers, type Tier } from '../map/tiers'
@@ -455,6 +455,10 @@ export default function CityMap(props: Props) {
   const pressed = useRef(new Set<number>())
   const waiting = useRef(false)
   const me = useRef<Marker | null>(null)
+  // where the map opens: around the user when the position is already shared, until they move the map
+  const startAt = useRef<Position | null>(null)
+  const started = useRef(false)
+  const moved = useRef(false)
   const [locating, setLocating] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [live, setLive] = useState(false)
@@ -706,12 +710,16 @@ export default function CityMap(props: Props) {
       if (window.matchMedia(PHONE).matches) collapseAttribution(map)
       applyLook(map, tk, p.results.length > 0, lookOf(p))
       emitBounds()
+      startNearMe()
     })
     const names = () => map.getContainer().classList.toggle('citymap-names', map.getZoom() >= LABEL_ZOOM)
     map.on('zoom', names)
     map.on('movestart', (e) => {
       window.clearTimeout(settleTimer)
-      if (e.originalEvent) setLive(true)
+      if (e.originalEvent) {
+        setLive(true)
+        moved.current = true
+      }
     })
     map.on('moveend', queue)
     map.on('moveend', checkStray)
@@ -751,6 +759,7 @@ export default function CityMap(props: Props) {
     if (map && ready.current) applyData(map, bars, latest.current.badge ?? null, latest.current.marks ?? null, dealTextOf)
     refreshBubbles()
     placeRings()
+    startNearMe()
   }, [bars, props.night, props.badge, props.marks])
 
   useEffect(() => {
@@ -813,6 +822,7 @@ export default function CityMap(props: Props) {
     const map = mapRef.current
     if (!active || !map || !ready.current) return
     map.resize()
+    startNearMe()
     latest.current.onBounds(clearBounds(map))
     refreshBubbles()
   }, [active])
@@ -848,6 +858,45 @@ export default function CityMap(props: Props) {
     if (known) show(known)
     return onHere(show)
   }, [])
+
+  useEffect(() => {
+    const known = freshHere()
+    if (known) {
+      startAt.current = known
+      return
+    }
+    let gone = false
+    // only a permission already given: opening the map never shows the location prompt
+    navigator.permissions
+      ?.query({ name: 'geolocation' })
+      .then((s) => (s.state === 'granted' ? askHere() : null))
+      .then((at) => {
+        if (gone || !at) return
+        startAt.current = at
+        startNearMe()
+      })
+      .catch(() => {})
+    return () => {
+      gone = true
+    }
+  }, [])
+
+  function startNearMe() {
+    const map = mapRef.current
+    const tm = timing.current
+    const at = startAt.current
+    const p = latest.current
+    if (started.current || !at || !map || !tm || !ready.current || !p.active) return
+    if (moved.current || p.selectedId || p.results.length > 0) {
+      started.current = true
+      return
+    }
+    if (p.bars.length === 0) return
+    started.current = true
+    const shown = p.bars.filter((bar) => passes(bar, p.chips))
+    const b = aroundMe(at, shown.length > 0 ? shown : p.bars)
+    if (b) fitTo(map, b, tm)
+  }
 
   function locate() {
     if (locating || !navigator.geolocation) return
