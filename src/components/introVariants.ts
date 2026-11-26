@@ -1,5 +1,3 @@
-import type { Lang } from '../i18n'
-
 export type IntroId = 'en' | 'fr1' | 'fr2'
 
 // Sizes and offsets are px of the 390 px design frame, scaled with the viewport by --u.
@@ -79,11 +77,11 @@ function flagged(): IntroId | null {
   return asked === 'en' || asked === 'fr1' || asked === 'fr2' ? asked : null
 }
 
-// French visitors get one of the French intros at random on the first visit and keep it afterwards.
-export function pickIntro(lang: Lang, random = Math.random): IntroId {
+// Every visitor, French or English, gets one of the French intros at random on the first visit and keeps it.
+// The English intro stays reachable with ?intro=en for testing.
+export function pickIntro(random = Math.random): IntroId {
   const forced = flagged()
   if (forced) return forced
-  if (lang !== 'fr') return 'en'
   try {
     const kept = localStorage.getItem(PICKED)
     if (kept === 'fr1' || kept === 'fr2') return kept

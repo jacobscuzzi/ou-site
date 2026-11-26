@@ -81,7 +81,7 @@ function Words({ v }: { v: IntroVariant }) {
 export default function Intro({ onDone }: { onDone: () => void }) {
   const t = useT()
   const lang = useLang()
-  const [v] = useState(() => variants[pickIntro(lang)])
+  const [v] = useState(() => variants[pickIntro()])
   const [phase, setPhase] = useState<'wait' | 'play' | 'lift'>('wait')
   const done = useRef(onDone)
   done.current = onDone
@@ -114,7 +114,9 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   if (phase === 'wait') return <div className="intro intro-wait" aria-hidden="true" />
   return (
     <div className="intro" lang={lang} data-variant={v.id} data-phase={phase} onPointerDown={skip} role="button" tabIndex={0} aria-label={t.skipIntro} onKeyDown={skip}>
-      <p className="visually-hidden">{v.label}</p>
+      <p className="visually-hidden" lang={v.id === 'en' ? 'en' : 'fr'}>
+        {v.label}
+      </p>
       <Words v={v} />
     </div>
   )
