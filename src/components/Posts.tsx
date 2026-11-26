@@ -9,10 +9,6 @@ const TikTokFeed = lazy(() => import('./TikTokFeed'))
 
 type Props = { posts: Post[]; place: string; actions?: Action[]; kinds?: string[]; focusable: boolean }
 
-export function byLikes(posts: Post[]) {
-  return [...posts].sort((a, b) => (b.likes ?? -1) - (a.likes ?? -1))
-}
-
 export function PostStill({ post, className }: { post: Post; className: string }) {
   const layer = useLayer()
   if (post.thumb) return <img className={className} src={post.thumb} alt="" loading="lazy" decoding="async" />
@@ -39,7 +35,8 @@ export default function Posts({ posts, place, actions = [], kinds = [], focusabl
   }, [open])
 
   if (posts.length === 0) return null
-  const sorted = byLikes(posts)
+  // the server's order: posts about this place alone first, then the most liked
+  const sorted = posts
   const top = sorted[0]
   const compact = new Intl.NumberFormat(lang, { notation: 'compact', maximumFractionDigits: 1 })
 
