@@ -354,7 +354,8 @@ function collapseAttribution(map: MaplibreMap) {
 
 const tierOf: ExpressionSpecification = ['coalesce', ['feature-state', 't'], 3]
 const tierWas: ExpressionSpecification = ['coalesce', ['feature-state', 'p'], 3]
-const grown: ExpressionSpecification = ['coalesce', ['feature-state', 'g'], 1]
+// clamped, so a dot can never grow past the largest tier whatever the feature state holds
+const grown: ExpressionSpecification = ['max', 0, ['min', 1, ['coalesce', ['feature-state', 'g'], 1]]]
 
 function tierRadius(tk: Tokens, tier: ExpressionSpecification, wide: boolean): ExpressionSpecification {
   return ['match', tier, 1, 0, 2, wide ? tk.r2Max : tk.r2Min, wide ? tk.r3Max : tk.r3Min]
@@ -461,6 +462,7 @@ export default function CityMap(props: Props) {
   const tiers = useRef(new Map<string, Tier>())
   const fades = useRef(new Map<string, number>())
   const grow = useRef(0)
+  const growing = useRef<string[]>([])
   const theme = useTheme()
   const lang = useLang()
   const langRef = useRef(lang)
@@ -536,15 +538,21 @@ export default function CityMap(props: Props) {
       fades.current.set(id, state.f)
       prev.set(id, r.tier)
     }
+    // an interrupted grow would leave its dots halfway: finish it before starting the next one
     window.cancelAnimationFrame(grow.current)
+    for (const id of growing.current) if (!moved.includes(id)) map.setFeatureState({ source: 'bars', id }, { g: 1 })
+    growing.current = moved
     if (moved.length === 0) return
     const done = () => moved.forEach((id) => map.setFeatureState({ source: 'bars', id }, { g: 1 }))
     if (still()) return done()
     const t0 = performance.now()
-    const step = (now: number) => {
-      const g = Math.min(1, (now - t0) / tk.tierMs)
+    // performance.now(), not the frame timestamp: after the window sat in the background the first
+    // frame can carry a time seconds before t0, and a g far below 0 blew the dots up to huge discs
+    const step = () => {
+      const g = Math.min(1, Math.max(0, (performance.now() - t0) / tk.tierMs))
       for (const id of moved) map.setFeatureState({ source: 'bars', id }, { g })
       if (g < 1) grow.current = window.requestAnimationFrame(step)
+      else growing.current = []
     }
     grow.current = window.requestAnimationFrame(step)
   }
