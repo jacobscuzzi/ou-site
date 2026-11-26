@@ -5,7 +5,9 @@ type PromptEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ 
 const VISITS_KEY = 'ou-visits'
 const COUNTED_KEY = 'ou-visit-counted'
 const DISMISSED_KEY = 'ou-install-dismissed'
-const QUIET_DAYS = 14
+const DISMISS_COUNT_KEY = 'ou-install-dismissals'
+// the pause after each close grows: people who come back often see the hint again soon, without being nagged
+const QUIET_DAYS = [2, 5, 14]
 const IN_APP = /musical_ly|BytedanceWebview|TikTok|Instagram|FBAN|FBAV/i
 const IOS_OTHER = /CriOS|FxiOS|EdgiOS/
 
@@ -78,10 +80,16 @@ function countVisit(): number {
 
 export const visits = countVisit()
 
-export function dismissedRecently() {
+// quietDays is the pause after the n-th close (1-based); an older single close counts as the first
+export function quietDays(n: number) {
+  return QUIET_DAYS[Math.min(Math.max(n, 1), QUIET_DAYS.length) - 1]
+}
+
+export function dismissedRecently(now = Date.now()) {
   try {
     const at = Number(localStorage.getItem(DISMISSED_KEY))
-    return at > 0 && Date.now() - at < QUIET_DAYS * 24 * 60 * 60 * 1000
+    const n = Number(localStorage.getItem(DISMISS_COUNT_KEY)) || 1
+    return at > 0 && now - at < quietDays(n) * 24 * 60 * 60 * 1000
   } catch {
     return false
   }
@@ -90,6 +98,7 @@ export function dismissedRecently() {
 export function dismissInstall() {
   try {
     localStorage.setItem(DISMISSED_KEY, String(Date.now()))
+    localStorage.setItem(DISMISS_COUNT_KEY, String((Number(localStorage.getItem(DISMISS_COUNT_KEY)) || 0) + 1))
   } catch {
     // storage unavailable, the hint just comes back next visit
   }
