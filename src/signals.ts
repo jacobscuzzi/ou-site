@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { fetchSignals, putSignal } from './api/client'
+import { takeSource } from './source'
 import type { Layer, SignalKind } from './api/types'
 
 // What the device keeps of a place it marked, so "My places" can show it in any layer.
@@ -63,7 +64,7 @@ export function remember(placeId: string, snap: Snapshot) {
 // On load the server's list and the device's mirror meet: the newer state of each place wins,
 // and what only the device knows is sent up (the cookie may be newer than the marks).
 export async function syncMarks(signal?: AbortSignal) {
-  const res = await fetchSignals(signal)
+  const res = await fetchSignals(signal, takeSource())
   const server = new Map(res.signals.map((s) => [s.placeId, s]))
   const next = { ...marks }
   for (const [id, s] of server) {

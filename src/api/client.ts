@@ -134,9 +134,11 @@ export function actionHref(a: Action) {
 }
 
 // My places: the device cookie travels with these same-origin calls; the mock keeps them on the device.
-export async function fetchSignals(signal?: AbortSignal): Promise<SignalsResponse> {
+// source: the bio link the device came in by, sent on the first open only
+export async function fetchSignals(signal?: AbortSignal, source?: string): Promise<SignalsResponse> {
   if (useMock) return { signals: [] }
-  const res = await fetch(`${baseUrl}/api/signals`, { signal, cache: 'no-store' })
+  const query = source ? `?src=${encodeURIComponent(source)}` : ''
+  const res = await fetch(`${baseUrl}/api/signals${query}`, { signal, cache: 'no-store' })
   if (!res.ok) throw new Error(`Signals failed (${res.status})`)
   return res.json()
 }
