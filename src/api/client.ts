@@ -43,9 +43,18 @@ function bboxParam(b: Bounds) {
   return [b.minLng, b.minLat, b.maxLng, b.maxLat].map((n) => n.toFixed(5)).join(',')
 }
 
-export function searchBars(q: string, layer: Layer, bbox: Bounds | null, night: { from: string; to: string } | null, signal?: AbortSignal) {
+export function searchBars(
+  q: string,
+  layer: Layer,
+  bbox: Bounds | null,
+  night: { from: string; to: string } | null,
+  signal?: AbortSignal,
+  near?: [number, number] | null,
+) {
   const params = new URLSearchParams({ q, layer })
   if (bbox) params.set('bbox', bboxParam(bbox))
+  // the device position, only used by the backend when the query asks for places near the user
+  if (near) params.set('near', near.map((n) => n.toFixed(5)).join(','))
   if (night && night.from === night.to) params.set('date', night.from)
   else if (night) {
     params.set('from', night.from)

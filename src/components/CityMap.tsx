@@ -28,6 +28,7 @@ import { focusOn, fitTo, glideTo, inView, lngLatBounds, padding, type CameraTimi
 import { applyTheme, styleFont } from '../map/theme'
 import { useMetro } from '../map/useMetro'
 import { LocateIcon, MetroIcon } from './icons'
+import { askHere, freshHere, onHere, type Position } from '../here'
 import './CityMap.css'
 
 if (getWorkerUrl() === '') setWorkerUrl(workerUrl)
@@ -831,26 +832,31 @@ export default function CityMap(props: Props) {
     else anchor.current = null
   }, [anchorKey])
 
+  // the "me" dot follows the shared position, whether the locate button or a "near me" search asked for it
+  useEffect(() => {
+    const show = (at: Position) => {
+      const map = mapRef.current
+      if (!map) return
+      if (!me.current) {
+        const dot = document.createElement('div')
+        dot.className = 'city-me'
+        me.current = new Marker({ element: dot })
+      }
+      me.current.setLngLat(at).addTo(map)
+    }
+    const known = freshHere()
+    if (known) show(known)
+    return onHere(show)
+  }, [])
+
   function locate() {
     if (locating || !navigator.geolocation) return
     setLocating(true)
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocating(false)
-        const map = mapRef.current
-        if (!map) return
-        const at: [number, number] = [pos.coords.longitude, pos.coords.latitude]
-        if (!me.current) {
-          const dot = document.createElement('div')
-          dot.className = 'city-me'
-          me.current = new Marker({ element: dot })
-        }
-        me.current.setLngLat(at).addTo(map)
-        if (timing.current) glideTo(map, at, timing.current)
-      },
-      () => setLocating(false),
-      { timeout: 10000, maximumAge: 60000 },
-    )
+    void askHere().then((at) => {
+      setLocating(false)
+      const map = mapRef.current
+      if (at && map && timing.current) glideTo(map, at, timing.current)
+    })
   }
 
   return (

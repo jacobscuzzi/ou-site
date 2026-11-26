@@ -27,7 +27,8 @@ import FocusToggle from './components/FocusToggle'
 import MyPlaces from './components/MyPlaces'
 import ReportSheet from './components/ReportSheet'
 import { idsOf, syncMarks, useMarks } from './signals'
-import { onOpenReport, onToast } from './toast'
+import { onOpenReport, onToast, toast } from './toast'
+import { askHere, freshHere } from './here'
 import { DEAL_WORDS, DealsContext } from './deals'
 import { HeartIcon } from './components/icons'
 import { onOpenPhotos } from './photos'
@@ -97,6 +98,7 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
+  const askedHere = useRef<string | null>(null) // the query a location prompt was already shown for
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [highlightId, setHighlightId] = useState<string | null>(null)
   const [searchId, setSearchId] = useState<string | null>(null)
@@ -298,8 +300,16 @@ export default function App() {
     setLoadingMore(false)
     setMoreError(null)
 
-    searchBars(query, layerRef.current, areaRef.current, pickedNight(), ctrl.signal)
+    searchBars(query, layerRef.current, areaRef.current, pickedNight(), ctrl.signal, freshHere())
       .then((res) => {
+        // "near me" without a position: ask for it once per query, then search again with it
+        if (res.meta.needsLocation && askedHere.current !== query) {
+          askedHere.current = query
+          void askHere().then((at) => {
+            if (at) setAttempt((n) => n + 1)
+            else toast(strings[layerRef.current][lang].locationNeeded)
+          })
+        }
         if (res.meta.layerSwitched && res.layer) {
           applyLayer(res.layer)
           setMoved((n) => n + 1)
@@ -415,7 +425,7 @@ export default function App() {
         res = await moreBars(searchId, next, ctrl.signal)
       } catch (err) {
         if ((err as Error).name !== 'SearchExpired') throw err
-        const fresh = await searchBars(query, layer, area, pickedNight(), ctrl.signal)
+        const fresh = await searchBars(query, layer, area, pickedNight(), ctrl.signal, freshHere())
         setSearchId(fresh.searchId)
         res = await moreBars(fresh.searchId, next, ctrl.signal)
       }

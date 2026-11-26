@@ -178,7 +178,7 @@ export type SearchResponse = {
   layer?: Layer
   results: Bar[]
   hasMore: boolean
-  meta: { parsed: boolean; rankingVersion: number; layerSwitched?: boolean; dateRange?: { from: string; to: string } }
+  meta: { parsed: boolean; rankingVersion: number; layerSwitched?: boolean; nearMe?: boolean; needsLocation?: boolean; dateRange?: { from: string; to: string } }
 }
 
 export type MapBar = {
