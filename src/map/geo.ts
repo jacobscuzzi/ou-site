@@ -26,8 +26,8 @@ const musicGroups = {
 type CuisineChip = keyof typeof cuisineGroups
 type MusicChip = keyof typeof musicGroups
 
-// coffee chips read one place tag each
-const tagChips = { laptop: ['laptop_friendly'], quiet: ['quiet'], bakery: ['bakery'] }
+// these chips read one place tag each
+const tagChips = { halal: ['halal'], laptop: ['laptop_friendly'], quiet: ['quiet'], bakery: ['bakery'] }
 type TagChip = keyof typeof tagChips
 
 export type ChipKey = 'open' | 'terrace' | 'dancing' | 'cheap' | 'meal' | 'fastfood' | 'espresso' | 'clubs' | 'dancebars' | 'deal' | CuisineChip | MusicChip | TagChip
@@ -43,7 +43,7 @@ const musicChips = Object.keys(musicGroups) as MusicChip[]
 
 export const layerChips: Record<Layer, ChipKey[]> = {
   drink: ['open', 'terrace', 'dancing', 'cheap'],
-  eat: ['open', 'terrace', 'meal', 'fastfood', ...cuisineChips],
+  eat: ['open', 'halal', 'terrace', 'meal', 'fastfood', ...cuisineChips],
   dance: ['open', 'clubs', 'dancebars', ...musicChips, 'cheap'],
   coffee: ['open', 'terrace', 'espresso', 'laptop', 'quiet', 'bakery'],
 }

@@ -787,6 +787,15 @@
    ]
   },
   {
+   "id": "not_halal",
+   "en": "Not halal",
+   "fr": "Pas halal",
+   "group": "diet",
+   "layers": [
+    "eat"
+   ]
+  },
+  {
    "id": "gluten_free",
    "en": "Gluten-free options",
    "fr": "Sans gluten",

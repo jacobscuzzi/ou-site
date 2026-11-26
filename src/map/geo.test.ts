@@ -21,6 +21,6 @@ test('tapping an active chip removes it', () => {
 
 test('price chips read the dish and espresso prices', async () => {
   const { layerChips } = await import('./geo.ts')
-  assert.deepEqual(layerChips.eat.slice(0, 4), ['open', 'terrace', 'meal', 'fastfood'])
+  assert.deepEqual(layerChips.eat.slice(0, 5), ['open', 'halal', 'terrace', 'meal', 'fastfood'])
   assert.ok(layerChips.coffee.includes('espresso'))
 })
