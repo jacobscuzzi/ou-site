@@ -876,7 +876,7 @@ export default function App() {
             <div className="start-hero">
               <p className="eyebrow">{t.eyebrow}</p>
               <h1 className="start-title" tabIndex={-1}>
-                <Logo size="var(--text-hero)" /> ?
+                <Logo size="var(--text-hero)" asking="left" />
               </h1>
               <p className="start-text">{t.tagline}</p>
               <SearchBar value={value} submitted={query} loading={loading} onChange={setValue} onSubmit={search} onHome={home} onClear={home} homeLabel={t.startOver} />
