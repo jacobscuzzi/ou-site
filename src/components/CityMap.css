@@ -324,6 +324,7 @@
   height: var(--mark-badge);
   border-radius: var(--radius-pill);
   border: var(--bubble-badge-border) solid var(--surface);
+  box-shadow: var(--hairline);
   color: var(--mark-ink);
   font-size: var(--text-chip);
   line-height: 1;
@@ -331,10 +332,10 @@
 
 .spot[data-mark='like'] .spot-body::before {
   content: '';
-  background: var(--mark-like) var(--mark-heart) center / 70% no-repeat;
+  background: var(--mark-bg) var(--mark-heart) center / 70% no-repeat;
 }
 
 .spot[data-mark='want'] .spot-body::before {
   content: '';
-  background: var(--mark-want) var(--mark-bookmark) center / 60% no-repeat;
+  background: var(--mark-bg) var(--mark-flag) center / 66% no-repeat;
 }

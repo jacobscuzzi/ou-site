@@ -283,12 +283,14 @@
   --mark-size: 36px;
   --mark-badge: 16px;
   --mark-badge-shift: 5px;
+  --mark-pin: 22px;
+  --mark-bg: var(--surface);
   --mark-like: var(--pink);
   --mark-want: var(--ink);
   --mark-dislike: #9a9aa2;
   --mark-ink: var(--surface);
-  --mark-heart: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z'/%3E%3C/svg%3E");
-  --mark-bookmark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z'/%3E%3C/svg%3E");
+  --mark-heart: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ff1f8e' d='M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z'/%3E%3C/svg%3E");
+  --mark-flag: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23111114' d='M6 3a1 1 0 0 1 1 1v1h10.4a.6.6 0 0 1 .5.9L16 9.5l1.9 3.6a.6.6 0 0 1-.5.9H7v6a1 1 0 0 1-2 0V4a1 1 0 0 1 1-1z'/%3E%3C/svg%3E");
   --mark-pop-ms: 260ms;
   --marks-menu: 180px;
   --erow-when: 40px;
@@ -421,7 +423,8 @@
   --post-ink: #ffffff;
   --dot-pale: #7d3a5c;
   --mark-dislike: #5c5c64;
-  --mark-want: #3a3a42;
+  --mark-want: #f4f4f6;
   --ring-edge: rgba(0, 0, 0, 0.55);
   --mark-ink: #ffffff;
+  --mark-flag: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23f4f4f6' d='M6 3a1 1 0 0 1 1 1v1h10.4a.6.6 0 0 1 .5.9L16 9.5l1.9 3.6a.6.6 0 0 1-.5.9H7v6a1 1 0 0 1-2 0V4a1 1 0 0 1 1-1z'/%3E%3C/svg%3E");
 }

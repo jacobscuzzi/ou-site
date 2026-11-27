@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { Event, MapBar, Post } from '../api/types'
 import { cuisineLabel, useLang, useT } from '../i18n'
 import { useLayer } from '../mode'
@@ -22,6 +23,7 @@ type Props = {
   onRetry: () => void
   title?: string
   empty?: string
+  action?: ReactNode
   // drink layer: the party a bar has tonight, and what a tap on its line does
   eventOf?: (id: string) => Event | undefined
   onEvent?: (e: Event) => void
@@ -76,12 +78,15 @@ function Row({ bar, selected, onSelect }: { bar: MapBar; selected: boolean; onSe
   )
 }
 
-export default function ExploreList({ bars, state, warming, selectedId, onSelect, onRetry, title, empty, eventOf, onEvent, postsOf }: Props) {
+export default function ExploreList({ bars, state, warming, selectedId, onSelect, onRetry, title, empty, action, eventOf, onEvent, postsOf }: Props) {
   const t = useT()
 
   return (
     <section className="explore">
-      <h2 className="explore-title">{title ?? t.exploreTitle}</h2>
+      <div className="explore-head">
+        <h2 className="explore-title">{title ?? t.exploreTitle}</h2>
+        {action}
+      </div>
       {state === 'loading' && (
         <div className="explore-status" role="status">
           <span className="visually-hidden">{t.exploreLoading}</span>

@@ -4,7 +4,7 @@ import type { Bar, Event, Layer, MapBar, Post } from './api/types'
 import { initialLang, LangContext, strings } from './i18n'
 import { initialLayer, LayerContext, modeWanted, rememberLayer } from './mode'
 import { tick } from './haptic'
-import { layerChips, topInView, withChip, type Bounds, type ChipKey } from './map/geo'
+import { layerChips, passes, topInView, withChip, type Bounds, type ChipKey } from './map/geo'
 import Logo from './components/Logo'
 import LayerSwitch from './components/LayerSwitch'
 import SearchBar from './components/SearchBar'
@@ -74,6 +74,7 @@ export default function App() {
   const [agendaOpen, setAgendaOpen] = useState(false)
   const [dealsOn, setDealsOn] = useState(false)
   const [mineOpen, setMineOpen] = useState(false)
+  const [mineOn, setMineOn] = useState(false)
   const [report, setReport] = useState<Parameters<Parameters<typeof onOpenReport>[0]>[0] | null>(null)
   const [toastText, setToastText] = useState<string | null>(null)
   const marks = useMarks()
@@ -483,6 +484,19 @@ export default function App() {
     if (query !== null) setAttempt((n) => n + 1)
   }
 
+  function toggleMine() {
+    setDealsOn(false)
+    setMineOn((v) => {
+      if (!v) setSheet('half')
+      return !v
+    })
+  }
+
+  function toggleDeals() {
+    setMineOn(false)
+    setDealsOn((v) => !v)
+  }
+
   function toggleChip(key: ChipKey) {
     setChips((prev) => withChip(prev, key))
   }
@@ -550,6 +564,19 @@ export default function App() {
   const badgeIds = useMemo(() => (tonightOf.size > 0 ? new Set(tonightOf.keys()) : null), [tonightOf])
   const kindsOf = (id: string) => shownBars.find((b) => b.id === id)?.kinds ?? []
   const markMap = useMemo(() => new Map(Object.entries(marks).map(([id, m]) => [id, m.kind])), [marks])
+  // heart mode: only the places this device liked or wants to go to, in the current layer
+  const mineIds = useMemo(() => new Set([...idsOf(marks, 'like'), ...idsOf(marks, 'want')]), [marks])
+  const mineBars = useMemo(() => mapBars.filter((b) => mineIds.has(b.id)), [mapBars, mineIds])
+  const mineShown = mineOn && query === null && mineBars.length > 0
+  useEffect(() => {
+    if (mineOn && barsState === 'ready' && mineBars.length === 0) setMineOn(false)
+  }, [mineOn, barsState, mineBars.length])
+  const mapShown = useMemo(() => (mineShown ? shownBars.filter((b) => mineIds.has(b.id)) : shownBars), [mineShown, shownBars, mineIds])
+  const mineList = useMemo(() => {
+    if (!mineShown) return []
+    const likedFirst = (b: MapBar) => (marks[b.id]?.kind === 'like' ? 0 : 1)
+    return mineBars.filter((b) => passes(b, chips)).sort((a, b) => likedFirst(a) - likedFirst(b) || b.quality - a.quality)
+  }, [mineShown, mineBars, marks, chips])
   // liked and want-to-go places are at least circles, disliked ones stay dots
   const boostIds = useMemo(() => {
     const base = dealIds ?? nightIds
@@ -633,7 +660,8 @@ export default function App() {
     setMonthOpen(false)
     document.querySelector<HTMLElement>('.strip-cal')?.focus({ preventScroll: true })
   }
-  const exploreState = barsState !== 'ready' ? barsState : top.length > 0 ? 'ready' : 'empty'
+  const listed = mineShown ? mineList : top
+  const exploreState = barsState !== 'ready' ? barsState : listed.length > 0 ? 'ready' : 'empty'
   const previewId = selectedId && (query === null || !results.some((b) => b.id === selectedId)) ? selectedId : null
 
   useEffect(() => {
@@ -732,9 +760,18 @@ export default function App() {
         )}
         <Chips bars={mapBars} value={chips} onToggle={toggleChip} />
         {query === null && suggesting && <Suggestions single onPick={search} />}
-        <button type="button" className="mine-fab" aria-label={t.myPlaces} onClick={() => setMineOpen(true)}>
-          <HeartIcon size={20} />
-        </button>
+        {query === null && (mineBars.length > 0 || mineShown) && (
+          <button
+            type="button"
+            className={mineShown ? 'mine-fab mine-fab-on' : 'mine-fab'}
+            aria-pressed={mineShown}
+            aria-label={mineShown ? t.mineOff : t.mineOn}
+            onClick={toggleMine}
+          >
+            <HeartIcon size={20} />
+            {mineShown && <span className="mine-fab-label">{t.mineLabel(mineBars.length)}</span>}
+          </button>
+        )}
         {query !== null && stray && !loading && (
           <button type="button" className="search-here" onClick={searchHere}>
             <SearchIcon />
@@ -755,7 +792,7 @@ export default function App() {
       <Suspense fallback={null}>
         <CityMap
           onLive={() => setMapLive(true)}
-          bars={shownBars}
+          bars={mapShown}
           results={results}
           chips={chips}
           selectedId={selectedId}
@@ -768,6 +805,7 @@ export default function App() {
           onBounds={setBounds}
           onFail={() => setMapFailed(true)}
           padKey={`${sheet}:${query === null}:${layer}`}
+          frameKey={mineShown ? `mine:${layer}` : ''}
           night={dealIds ?? ringIds}
           boost={boostIds}
           sink={sinkIds}
@@ -776,7 +814,7 @@ export default function App() {
           badge={badgeIds}
         />
       </Suspense>
-      {query === null && <FocusToggle on={dealsOn} onToggle={() => setDealsOn((v) => !v)} />}
+      {query === null && <FocusToggle on={dealsOn} onToggle={toggleDeals} />}
       {sheet !== 'peek' && (
         <button type="button" className="sheet-down" onClick={() => setSheet('peek')} aria-label={t.backToMap}>
           <DownIcon />
@@ -819,14 +857,15 @@ export default function App() {
         ) : query === null ? (
           <div className="pane">
             <ExploreList
-              bars={top}
+              bars={listed}
               state={exploreState}
               warming={barsWarming}
               selectedId={selectedId}
               onSelect={pickFromList}
               onRetry={() => setBarsAttempt((n) => n + 1)}
-              title={dealsShown ? t.dealsTitle(top.length) : undefined}
-              empty={dealsShown ? t.dealsEmpty : undefined}
+              title={mineShown ? t.mineTitle(mineList.length) : dealsShown ? t.dealsTitle(top.length) : undefined}
+              empty={mineShown ? t.mineEmpty : dealsShown ? t.dealsEmpty : undefined}
+              action={mineShown ? <button type="button" className="explore-action" onClick={() => setMineOpen(true)}>{t.mineAll}</button> : undefined}
               eventOf={(id) => tonightOf.get(id)}
               postsOf={(id) => rowPosts.get(id)}
               onEvent={layer === 'drink' ? openEvent : undefined}

@@ -58,6 +58,8 @@ type Props = {
   onFail: () => void
   onLive?: () => void
   padKey?: string
+  // a new key frames all the places on the map (heart mode), '' leaves the camera alone
+  frameKey?: string
   // places with a party on the chosen night: a turning dashed ring around their marker
   night?: ReadonlySet<string> | null
   // places that are at least a circle (party tonight, liked, deal) and places that stay a dot (disliked)
@@ -127,6 +129,8 @@ function readTokens() {
     markShift: num('--mark-badge-shift'),
     markLike: str('--mark-like'),
     markWant: str('--mark-want'),
+    markBg: str('--mark-bg'),
+    markPin: num('--mark-pin'),
     markDislike: str('--mark-dislike'),
     markInk: str('--mark-ink'),
     bubbleGap: num('--bubble-gap'),
@@ -263,8 +267,9 @@ function addLayers(
     filter: ['!=', ['get', 'sg'], ''],
     layout: {
       'icon-image': ['concat', 'mk-', ['get', 'sg']],
-      'icon-anchor': 'bottom-left',
-      'icon-offset': [tk.markShift, -tk.markShift],
+      // a like or a want replaces the dot with its own pin; a dislike keeps the small corner badge
+      'icon-anchor': ['case', ['==', ['get', 'sg'], 'dislike'], 'bottom-left', 'center'],
+      'icon-offset': ['case', ['==', ['get', 'sg'], 'dislike'], ['literal', [tk.markShift, -tk.markShift]], ['literal', [0, 0]]],
       'icon-allow-overlap': true,
       'icon-ignore-placement': true,
     },
@@ -301,39 +306,43 @@ function applyData(
   map.getSource<GeoJSONSource>('bars')?.setData(barsToGeoJSON(bars, null, badge, marks, dealText))
 }
 
-// heart, bookmark and strike badges for the circles and dots, drawn once on a canvas
+// a like is a heart and a want a flag on a disc of the surface colour, so they stand apart from the
+// pink dots; a dislike is a strike on a small grey badge. Drawn once on a canvas.
 const MARK_PATHS: Record<string, string> = {
   like: 'M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z',
-  want: 'M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z',
+  want: 'M6 3a1 1 0 0 1 1 1v1h10.4a.6.6 0 0 1 .5.9L16 9.5l1.9 3.6a.6.6 0 0 1-.5.9H7v6a1 1 0 0 1-2 0V4a1 1 0 0 1 1-1z',
   dislike: 'M6 6l12 12',
 }
 
 function addMarkImages(map: MaplibreMap, tk: Tokens) {
-  const size = tk.markSize * 2
   for (const [kind, path] of Object.entries(MARK_PATHS)) {
+    const pin = kind !== 'dislike'
+    const size = (pin ? tk.markPin : tk.markSize) * 2
+    const ink = kind === 'like' ? tk.markLike : kind === 'want' ? tk.markWant : tk.markInk
     const c = document.createElement('canvas')
     c.width = c.height = size
     const ctx = c.getContext('2d')
     if (!ctx) continue
     ctx.beginPath()
-    ctx.arc(size / 2, size / 2, size / 2 - 1, 0, Math.PI * 2)
-    ctx.fillStyle = kind === 'dislike' ? tk.markDislike : kind === 'like' ? tk.markLike : tk.markWant
+    ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2)
+    ctx.fillStyle = pin ? tk.markBg : tk.markDislike
     ctx.fill()
-    ctx.strokeStyle = tk.badgeStroke
-    ctx.lineWidth = 2
+    ctx.strokeStyle = pin ? ink : tk.badgeStroke
+    ctx.lineWidth = pin ? 3 : 2
     ctx.stroke()
-    ctx.translate(size * 0.2, size * 0.2)
-    ctx.scale((size * 0.6) / 24, (size * 0.6) / 24)
+    const inset = pin ? 0.24 : 0.2
+    ctx.translate(size * inset, size * inset)
+    ctx.scale((size * (1 - 2 * inset)) / 24, (size * (1 - 2 * inset)) / 24)
     const p = new Path2D(path)
-    ctx.strokeStyle = tk.markInk
-    ctx.lineWidth = 3
-    ctx.lineCap = 'round'
-    ctx.lineJoin = 'round'
-    if (kind !== 'dislike') {
-      ctx.fillStyle = tk.markInk
+    if (pin) {
+      ctx.fillStyle = ink
       ctx.fill(p)
+    } else {
+      ctx.strokeStyle = ink
+      ctx.lineWidth = 3
+      ctx.lineCap = 'round'
+      ctx.stroke(p)
     }
-    ctx.stroke(p)
     const name = `mk-${kind}`
     if (map.hasImage(name)) map.removeImage(name)
     map.addImage(name, ctx.getImageData(0, 0, size, size), { pixelRatio: 2 })
@@ -347,6 +356,8 @@ function applyFilter(map: MaplibreMap, chips: ReadonlySet<ChipKey>, bubbled: str
   const party = ['==', ['get', 'pty'], 1]
   map.setFilter('badges', (chip ? ['all', chip, party] : party) as FilterSpecification)
   map.setFilter('labels', (chip ? ['all', chip, unbubbled] : unbubbled) as FilterSpecification)
+  const marked = ['!=', ['get', 'sg'], '']
+  map.setFilter('mark-icons', (chip ? ['all', chip, marked] : marked) as FilterSpecification)
 }
 
 function collapseAttribution(map: MaplibreMap) {
@@ -437,7 +448,7 @@ function clearBounds(map: MaplibreMap): Bounds {
 }
 
 export default function CityMap(props: Props) {
-  const { bars, results, chips, selectedId, highlightId, active, fitKey, anchorKey, padKey } = props
+  const { bars, results, chips, selectedId, highlightId, active, fitKey, anchorKey, padKey, frameKey } = props
   const t = useT()
   const layer = useLayer()
   const kindOf = (kinds: string[] | undefined) => danceKind(kinds, layer)
@@ -767,6 +778,14 @@ export default function CityMap(props: Props) {
     if (map && ready.current) latest.current.onBounds(clearBounds(map))
     refreshBubbles()
   }, [padKey])
+
+  useEffect(() => {
+    const map = mapRef.current
+    const tm = timing.current
+    const b = boundsOf(latest.current.bars)
+    if (!frameKey || !map || !tm || !b || !ready.current) return
+    fitTo(map, b, tm)
+  }, [frameKey, bars.length > 0])
 
   useEffect(() => {
     refreshBubbles()

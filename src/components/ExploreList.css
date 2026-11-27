@@ -4,6 +4,25 @@
   gap: var(--space-3);
 }
 
+.explore-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.explore-action {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--pink);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .explore-title {
   margin: 0;
   font-size: var(--text-md);

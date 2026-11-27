@@ -188,6 +188,18 @@
   fill: currentColor;
 }
 
+.mine-fab-on {
+  grid-auto-flow: column;
+  gap: var(--space-2);
+  width: auto;
+  padding: 0 var(--space-4) 0 var(--space-3);
+  background: var(--pink);
+  border-color: var(--pink);
+  color: var(--on-pink);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
 @keyframes mine-in {
   from {
     transform: translateY(100%);
