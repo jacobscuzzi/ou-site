@@ -24,7 +24,7 @@ import { useTheme } from '../theme'
 import { thumbOf } from '../photos'
 import { recolorMetro } from '../map/metro'
 import { RingLayer, type RingStyle } from '../map/rings'
-import { focusOn, fitTo, glideTo, inView, lngLatBounds, padding, type CameraTiming } from '../map/camera'
+import { focusOn, fitTo, glideTo, inView, lngLatBounds, padding, visibleInset, type CameraTiming } from '../map/camera'
 import { applyTheme, styleFont } from '../map/theme'
 import { useMetro } from '../map/useMetro'
 import { LocateIcon, MetroIcon } from './icons'
@@ -423,7 +423,7 @@ function nearestDot(map: MaplibreMap, x: number, y: number, r: number) {
 }
 
 function clearBounds(map: MaplibreMap): Bounds {
-  const pad = padding(map)
+  const pad = visibleInset(map)
   const box = map.getContainer()
   const right = box.clientWidth - pad.right
   const bottom = box.clientHeight - pad.bottom

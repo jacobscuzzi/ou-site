@@ -12,9 +12,20 @@ const ZOOM_STEP = 2
 const easeOut = (t: number) => 1 - (1 - t) ** 3
 
 export function padding(map: MaplibreMap): Pad {
+  return measure(map, 'var(--map-pad-top) var(--map-pad-right) var(--map-pad-bottom) var(--map-pad-left)')
+}
+
+// The part of the map the user actually sees: below the search bar and the chips, above the sheet,
+// beside the side panel. padding() adds room for bubbles and controls on top, which is right for
+// placing the camera but would leave only a thin band as "in view" when the sheet is half open.
+export function visibleInset(map: MaplibreMap): Pad {
+  return measure(map, 'calc(var(--top-clear) + var(--control-size) + var(--strip-clear, 0px)) var(--map-pad-right) var(--sheet-now, 0px) var(--map-pad-left)')
+}
+
+function measure(map: MaplibreMap, insets: string): Pad {
   const probe = document.createElement('div')
   probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none'
-  probe.style.padding = 'var(--map-pad-top) var(--map-pad-right) var(--map-pad-bottom) var(--map-pad-left)'
+  probe.style.padding = insets
   map.getContainer().appendChild(probe)
   const css = getComputedStyle(probe)
   const pad = {
